@@ -1,0 +1,143 @@
+import { createRouter, createWebHistory } from 'vue-router';
+import LoginLayout from '@/layout/LoginLayout.vue';
+import MainLayout from '@/layout/MainLayout.vue';
+import Login from '@/components/Login.vue';
+import RecuperarContrasena from '@/components/RecuperarContrasena.vue';
+import Inicio from '@/views/Inicio.vue';
+import InventarioBienes from '@/views/InventarioBienes.vue';
+import Incorporaciones from '@/views/Incorporaciones.vue';
+import Desincorporaciones from '@/views/Desincorporaciones.vue';
+import Movimientos from '@/views/Movimientos.vue';
+import Mantenimiento from '@/views/Mantenimiento.vue';
+import Presupuestos from '@/views/Presupuestos.vue';
+import Dependencias from '@/views/Dependencias.vue';
+import Cargos from '@/views/Cargos.vue';
+import Personal from '@/views/Personal.vue';
+import Usuarios from '@/views/Usuarios.vue';
+
+const routes = [
+  {
+    path: '/',
+    redirect: '/inicio'
+  },
+  {
+    path: '/login',
+    name: 'LoginLayout',
+    component: LoginLayout,
+    meta: { autenticado: false },
+    children: [
+      {
+        path: '',
+        name: 'Login',
+        component: Login
+      },
+      {
+        path: '/recuperar-contrasena',
+        name: 'RecuperarContrasena',
+        component: RecuperarContrasena
+      }
+    ],
+  },
+  {
+    path: '/',
+    name: 'MainLayout',
+    component: MainLayout,
+    meta: { autenticado: true },
+    children: [
+      {
+        path: 'inicio',
+        name: 'Inicio',
+        component: Inicio
+      },
+      {
+        path: 'inventario',
+        name: 'InventarioBienes',
+        component: InventarioBienes
+      },
+      {
+        path: 'incorporaciones',
+        name: 'Incorporaciones',
+        component: Incorporaciones
+      },
+      {
+        path: 'desincorporaciones',
+        name: 'Desincorporaciones',
+        component: Desincorporaciones,
+        meta: { roles: ['Administrador', 'Supervisor'] }
+      },
+      {
+        path: 'movimientos',
+        name: 'Movimientos',
+        component: Movimientos,
+        meta: { roles: ['Administrador', 'Supervisor'] }
+      },
+      {
+        path: 'mantenimiento',
+        name: 'Mantenimiento',
+        component: Mantenimiento
+      },
+      {
+        path: 'presupuestos',
+        name: 'Presupuestos',
+        component: Presupuestos,
+        meta: { roles: ['Administrador'] }
+      },
+      {
+        path: 'dependencias',
+        name: 'Dependencias',
+        component: Dependencias,
+        meta: { roles: ['Administrador'] }
+      },
+      {
+        path: 'cargos',
+        name: 'Cargos',
+        component: Cargos,
+        meta: { roles: ['Administrador'] }
+      },
+      {
+        path: 'personal',
+        name: 'Personal',
+        component: Personal,
+        meta: { roles: ['Administrador'] }
+      },
+      {
+        path: 'usuarios',
+        name: 'Usuarios',
+        component: Usuarios,
+        meta: { roles: ['Administrador'] }
+      }
+    ],
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
+
+router.beforeEach((to, from, next) => {
+	const userData = JSON.parse(localStorage.getItem('user_session'));
+  const isAuthenticated = userData && userData.autenticado;
+  const userRole = userData?.usuario.rol;
+
+  if (to.meta.autenticado && !isAuthenticated) {
+    return next('/login');
+  }
+	if (!to.meta.autenticado && isAuthenticated) {
+    return next('/inicio')
+	}
+
+  const requiredRoles = to.meta.roles;
+  
+  if (isAuthenticated && requiredRoles) {
+    if (requiredRoles.includes(userRole)) {
+      next();
+    } else {
+      next('/inicio'); 
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;

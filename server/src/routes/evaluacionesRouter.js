@@ -1,0 +1,9 @@
+import express from 'express';
+import EvaluacionesController from '../controllers/evaluacionesController.js';
+
+const EvaluacionesRouter = express.Router();
+
+EvaluacionesRouter.route('/')
+  .post(EvaluacionesController.crear);
+
+export default EvaluacionesRouter;

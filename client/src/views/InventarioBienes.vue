@@ -1,0 +1,171 @@
+<script setup>
+import { onMounted, ref } from 'vue';
+import Breadcrumbs from '@/components/Breadcrumbs.vue';
+import MiniCard from '@/components/MiniCard.vue';
+import Table from '@/components/Table.vue';
+import DrawerRegister from '@/components/InventarioBienes/BienesRegister.vue';
+import DrawerView from '@/components/InventarioBienes/BienesView.vue';
+import DrawerEdit from '@/components/InventarioBienes/BienesEdit.vue';
+import DialogDelete from '@/components/DialogDelete.vue';
+import bienesServices from '@/services/bienes.services.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showSuccess, showError } = useNotificaciones();
+
+
+// --- Configuración de la vista ---
+const items = [{ label: 'Inventario de bienes', route: '/inventario' }];
+
+const columns = [
+  { field: 'numero', header: 'Número de bien', type: 'codigo', sortable: true },
+  { field: 'descripcion', header: 'Descripción', type: 'descripcion', sortable: true },
+  { field: 'categoria', header: 'Categoría', sortable: true },
+  { field: 'dependencia', header: 'Dependencia', sortable: true },
+  { field: 'responsable', header: 'Responsable', sortable: true },
+  { field: 'estatus', header: 'Estatus', type: 'estatus' }
+];
+
+const filtros = [
+  {
+    field: 'estatus', 
+    placeholder: 'Filtrar por estatus',
+    options: ['Operativo', 'No asignado', 'Desincorporado', 'En mantenimiento']
+  },
+  {
+    field: 'categoria',
+    placeholder: 'Filtrar por categoría',
+    options: ['Mueble', 'Tecnológico', 'Vehículo o Equipo de Elevación']
+  }
+];
+
+
+// --- Funciones de los Modales ---
+const isDrawerRegisterOpen = ref(false);
+const isDrawerViewOpen = ref(false);
+const isDrawerEditOpen = ref(false);
+const confirmDialogRef = ref(null);
+
+const handleViewRequest = async (item) => {
+  selectedBien.value = await leerBien(item.id);
+  if (selectedBien.value) {
+    isDrawerViewOpen.value = true;
+  }
+}
+
+const handleEditRequest = async (item) => {
+  selectedBien.value = await leerBien(item.id);
+  if (selectedBien.value) {
+    isDrawerEditOpen.value = true;
+  }
+}
+
+const handleDeleteRequest = (item) => {
+  const info = {
+    'Número de bien': item.numero,
+    'Descripción': item.descripcion,
+    'Categoría': item.categoria
+  };
+  confirmDialogRef.value.openConfirm(item, info);
+}
+
+
+// --- Operaciones con la API ---
+const bienes = ref([]);
+const selectedBien = ref(null);
+
+async function listarBienes() {
+  try {
+    bienes.value = await bienesServices.listar();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al listar bienes: ', error);
+  }
+}
+
+async function leerBien(id) {
+  try {
+    return await bienesServices.leer(id);
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al leer bien: ', error);
+  }
+}
+
+async function crearBien(bien) {
+  try {
+    const respuesta = await bienesServices.crear(bien);
+    showSuccess(respuesta.message);
+    await listarBienes();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al crear bien: ', error);
+  }
+}
+
+async function actualizarBien(bien) {
+  try {
+    const respuesta = await bienesServices.actualizar(bien);
+    showSuccess(respuesta.message);
+    await listarBienes();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al actualizar bien: ', error);
+  }
+}
+
+async function eliminarBien(id) {
+  try {
+    const respuesta = await bienesServices.eliminar(id);
+    showSuccess(respuesta.message);
+    await listarBienes();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al eliminar bien: ', error);
+  }
+}
+
+onMounted(async () => {
+  await listarBienes();
+});
+</script>
+
+<template>
+  <Breadcrumbs :items="items" />
+  <div class="flex flex-col px-4 pb-4">
+    <div class="flex items-center justify-between gap-5 flex-wrap">
+      <div class="flex items-center gap-4">
+        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+          <i class="fi-sr-boxes grid place-items-center"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg dark:text-slate-50">Inventario de bienes</span>
+          <span class="-mt-0.5 text-xs text-slate-400">Gestión completa del inventario de bienes</span>
+        </div>
+      </div>
+      <Button @click="isDrawerRegisterOpen = true" label="Agregar Bien" icon="fi-sr-plus-small" class="h-9" />
+    </div>
+
+    <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+      <MiniCard label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincoporado').length" icon="fi-sr-boxes" color="blue" />
+      <MiniCard label="Muebles" :value="bienes.filter(b => b.categoria === 'Mueble').length" icon="fi-sr-archive" color="slate" />
+      <MiniCard label="Tecnológicos" :value="bienes.filter(b => b.categoria === 'Tecnológico').length" icon="fi-sr-computer" color="indigo" />
+      <MiniCard label="Vehículos" :value="bienes.filter(b => b.categoria === 'Vehículo o Equipo de Elevación').length" icon="fi-sr-truck-moving" color="emerald" />
+    </div>
+
+    <Table
+      :data="bienes" 
+      :columns="columns"
+      :globalFilterFields="['numero', 'descripcion', 'categoria', 'dependencia', 'responsable']"
+      :headerFilters="filtros"
+      @view="handleViewRequest"
+      @edit="handleEditRequest"
+      @delete="handleDeleteRequest"
+    />
+    
+  </div>
+
+  <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearBien" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :bien="selectedBien" />
+  <DrawerEdit v-model:visible="isDrawerEditOpen" :bien="selectedBien" @confirmEdit="actualizarBien" />
+  <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarBien" />
+
+</template>
