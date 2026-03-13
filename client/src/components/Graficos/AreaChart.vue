@@ -326,26 +326,21 @@ const processedData = computed(() => {
     };
   });
 });
-
-// --- LÓGICA PARA LÍNEA SUAVE (BÉZIER) ---
+// --- LÓGICA PARA LÍNEA RECTA ---
 const linePath = computed(() => {
   const pts = processedData.value;
   if (!pts || pts.length === 0) return '';
   
+  // Mueve el cursor al primer punto
   let d = `M ${pts[0].x},${isMounted.value ? pts[0].yAnimated : pts[0].yStatic}`;
   
-  for (let i = 0; i < pts.length - 1; i++) {
-    const curr = pts[i];
-    const next = pts[i + 1];
-    
-    const yCurr = isMounted.value ? curr.yAnimated : curr.yStatic;
-    const yNext = isMounted.value ? next.yAnimated : next.yStatic;
-    
-    // Puntos de control en el eje X para crear una curva natural
-    const cpX = (curr.x + next.x) / 2;
-    
-    d += ` C ${cpX},${yCurr} ${cpX},${yNext} ${next.x},${yNext}`;
+  // Dibuja una línea recta hacia cada uno de los puntos siguientes
+  for (let i = 1; i < pts.length; i++) {
+    const pt = pts[i];
+    const y = isMounted.value ? pt.yAnimated : pt.yStatic;
+    d += ` L ${pt.x},${y}`;
   }
+  
   return d;
 });
 

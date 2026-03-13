@@ -24,7 +24,7 @@ const alerta = computed(() => {
 
 onMounted(async() => {
   cargardo.value = true;
-  const data = await kpiServices.IBEO();
+  const data = await kpiServices.bienesPorEstatus();
   stats.value = baseStats.map(st => ({
     ...st,
     number: Number(data[st.key] ?? 0),

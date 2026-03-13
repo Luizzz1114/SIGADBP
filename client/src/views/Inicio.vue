@@ -1,15 +1,15 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Card from '@/components/Card.vue';
-import BienesEstatus from '@/components/KPIs/BienesEstatus.vue';
-import BienesPorDependencia from '@/components/KPIs/BienesPorDependencia.vue';
-import kpiServices from '@/services/kpi.services';
-import BienesPorCategoria from '@/components/KPIs/BienesPorCategoria.vue';
+import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
+import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
+import BienesPorCategoria from '@/components/PanelControl/BienesPorCategoria.vue';
+import kpiServices from '@/services/kpi.services.js';
 
-const infoCards = ref([]);
+const metricas = ref([]);
 
 onMounted(async() => {
-  infoCards.value = await kpiServices.obtenerInfoPaneles();
+  metricas.value = await kpiServices.obtenerMetricas();
 });
 </script>
 
@@ -27,11 +27,11 @@ onMounted(async() => {
     </div>
 
     <div class="flex *:flex-1 gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <Card label="Total de bienes" :value="infoCards.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
-      <Card label="Incorporaciones" :value="infoCards.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
-      <Card label="Desincorporaciones" :value="infoCards.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />
-      <Card label="Movimientos" :value="infoCards.movimientos_mes || 0" icon="fi-rr-priority-arrows rotate-90!" message="Este mes" />
-      <Card label="Mantenimientos" :value="infoCards.mantenimientos_mes || 0" icon="fi-rr-screw-alt" message="Este mes" />
+      <Card label="Total de bienes" :value="metricas.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
+      <Card label="Incorporaciones" :value="metricas.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
+      <Card label="Desincorporaciones" :value="metricas.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />
+      <Card label="Movimientos" :value="metricas.movimientos_mes || 0" icon="fi-rr-priority-arrows rotate-90!" message="Este mes" />
+      <Card label="Mantenimientos" :value="metricas.mantenimientos_mes || 0" icon="fi-rr-screw-alt" message="Este mes" />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">

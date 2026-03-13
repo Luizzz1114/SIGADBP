@@ -5,8 +5,8 @@ class PresupuestosService {
     return await PresupuestosRepositorio.listar();
   }
 
-  async listarActivosMantenimientoBienes() {
-    return await PresupuestosRepositorio.listarActivosMantenimientoBienes();
+  async listarActivosMantenimiento() {
+    return await PresupuestosRepositorio.listarActivosMantenimiento();
   }
 
   async listarActivos() {
@@ -25,8 +25,8 @@ class PresupuestosService {
     return await PresupuestosRepositorio.obtenerPorId(id);
   }
 
-  async indicadoresPresupuesto() {
-    return await PresupuestosRepositorio.indicadoresPresupuesto();
+  async obtenerResumenMetricas() {
+    return await PresupuestosRepositorio.obtenerResumenMetricas();
   }
 
   async crear(presupuesto) {

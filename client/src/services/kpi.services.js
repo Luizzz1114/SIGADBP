@@ -1,9 +1,12 @@
 import api from '@/api/axios';
 
 export default {
-  async IBEO() {
+
+  // --- DASHBOARD ---
+
+  async obtenerMetricas() {
     try {
-      const res = await api.get('/bienes/resumen-estatus');
+      const res = await api.get('/bienes/metricas/resumen');
       return res.data;
     } catch(error) {
       console.log(error);
@@ -11,9 +14,9 @@ export default {
     }
   },
 
-  async categoriasBienes() {
+  async bienesPorEstatus() {
     try {
-      const res = await api.get('/bienes/bienes-categoria');
+      const res = await api.get('/bienes/metricas/estatus');
       return res.data;
     } catch(error) {
       console.log(error);
@@ -21,9 +24,9 @@ export default {
     }
   },
 
-  async bienesPorDep() {
+  async bienesPorCategoria() {
     try {
-      const res = await api.get('/bienes/dependencia-categoria');
+      const res = await api.get('/bienes/metricas/categorias');
       return res.data;
     } catch(error) {
       console.log(error);
@@ -31,9 +34,9 @@ export default {
     }
   },
 
-  async obtenerInfoPaneles() {
+  async bienesPorDependencia() {
     try {
-      const res = await api.get('/bienes/paneles');
+      const res = await api.get('/bienes/metricas/dependencias');
       return res.data;
     } catch(error) {
       console.log(error);
@@ -41,9 +44,13 @@ export default {
     }
   },
 
-  async presupuesto() {
+
+
+
+  // --- PRESUPUESTOS ---
+  async presupuestosResumen() {
     try {
-      const res = await api.get('/presupuestos/kpi-presupuesto');
+      const res = await api.get('/presupuestos/metricas/resumen');
       return res.data;
     } catch(error) {
       console.log(error);

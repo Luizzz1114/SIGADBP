@@ -27,18 +27,9 @@ class Bienes {
 
   async validarNumeroBienUnico(validar) {
     const { numero, id = null } = validar;
-
     if (numero === 'S/N') return 0;
-
-    const params = [numero];
-    let sql = 'SELECT COUNT(*) FROM Bienes WHERE numeroBien = $1';
-
-    if (id) {
-      sql += ' AND id != $2';
-      params.push(id);
-    }
-
-    const resultado = await pool.query(sql, params);
+    const sql = 'SELECT COUNT(*) FROM Bienes WHERE numeroBien = $1 AND id IS DISTINCT FROM $2';
+    const resultado = await pool.query(sql, [numero, id]);
     return parseInt(resultado.rows[0].count);
   }
 
@@ -60,26 +51,26 @@ class Bienes {
     return resultado.rows;
   }
 
-  async bienesCategoria() {
-    const sql = 'SELECT * FROM kpiBienesPorCategoria;';
+  async obtenerMetricasPorCategoria() {
+    const sql = 'SELECT * FROM vistaBienesPorCategoria;';
     const resultado = await pool.query(sql);
     return resultado.rows[0];
   }
 
-  async estadoBienes() {
-    const sql = 'SELECT * FROM kpiEstatusBienes;';
+  async obtenerMetricasPorEstatus() {
+    const sql = 'SELECT * FROM vistaBienesPorEstatus;';
     const resultado = await pool.query(sql);
     return resultado.rows[0];
   }
 
-  async paneles() {
-    const sql = 'SELECT * FROM kpiContadoresBasicos;';
+  async obtenerResumenMetricas() {
+    const sql = 'SELECT * FROM vistaMetricasBasicas;';
     const resultado = await pool.query(sql);
     return resultado.rows[0];
   }
 
-  async categoriaDependencia() {
-    const sql = 'SELECT * FROM kpiBienesPorDependencia ORDER BY p_bienes DESC;';
+  async obtenerMetricasPorDependencia() {
+    const sql = 'SELECT * FROM vistaBienesPorDependencia ORDER BY p_bienes DESC;';
     const resultado = await pool.query(sql);
     return resultado.rows;
   }

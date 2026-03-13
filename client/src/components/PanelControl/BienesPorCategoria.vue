@@ -19,7 +19,7 @@ const categorias = computed(() => {
 });
 
 onMounted(async() => {
-  data.value = await kpiServices.categoriasBienes();
+  data.value = await kpiServices.bienesPorCategoria();
 });
 </script>
 

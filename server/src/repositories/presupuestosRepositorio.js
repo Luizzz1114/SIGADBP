@@ -7,7 +7,7 @@ class Presupuestos {
 		return resultado.rows;
 	}
 
-	async listarActivosMantenimientoBienes() {
+	async listarActivosMantenimiento() {
 		const sql = "SELECT * FROM vistaPresupuestos WHERE estatus = 'Activo' AND tipo = 'Mantenimiento de Bienes';";
 		const resultado = await pool.query(sql);
 		return resultado.rows;
@@ -32,8 +32,8 @@ class Presupuestos {
 		return parseInt(resultado.rows[0].count);
 	}
 
-	async indicadoresPresupuesto() {
-		const sql = 'SELECT * FROM kpiPresupuestos';
+	async obtenerResumenMetricas() {
+		const sql = 'SELECT * FROM vistaResumenPresupuestos;';
 		const resultado = await pool.query(sql);
 		return resultado.rows;
 	}

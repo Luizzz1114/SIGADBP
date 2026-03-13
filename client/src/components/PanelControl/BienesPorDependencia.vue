@@ -6,7 +6,7 @@ import kpiServices from '@/services/kpi.services';
 const data = ref([]);
 
 onMounted(async() => {
-  data.value = await kpiServices.bienesPorDep();
+  data.value = await kpiServices.bienesPorDependencia();
 });
 </script>
 

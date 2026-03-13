@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import PresupuestosKPIs from '@/components/KPIs/PresupuestosKPIs.vue';
+import PresupuestosResumen from '@/components/Presupuestos/PresupuestosResumen.vue';
 import Table from '@/components/Table.vue';
 import DrawerRegister from '@/components/Presupuestos/PresupuestoRegister.vue';
 import DrawerView from '@/components/Presupuestos/PresupuestoView.vue';
 import DrawerEdit from '@/components/Presupuestos/PresupuestoEdit.vue';
 import DialogDelete from '@/components/DialogDelete.vue';
 import presupuestosServices from '@/services/presupuestos.services.js';
-import kpiServices from '@/services/kpi.services';
+import kpiServices from '@/services/kpi.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showSuccess, showError } = useNotificaciones();
 
@@ -73,12 +73,12 @@ const handleDeleteRequest = (item) => {
 // --- Operaciones con la API ---
 const presupuestos = ref([]);
 const selectedPresupuesto = ref(null);
-const kpiData = ref(null);
+const dataResumen = ref(null);
 
 async function listarPresupuestos() {
   try {
     presupuestos.value = await presupuestosServices.listar();
-    kpiData.value = await kpiServices.presupuesto();
+    dataResumen.value = await kpiServices.presupuestosResumen();
   } catch (error) {
     showError(error.response?.data?.message);
     console.error('Error al listar presupuestos: ', error);
@@ -148,7 +148,7 @@ onMounted(async () => {
       <Button @click="isDrawerRegisterOpen = true" type="button" label="Nueva Partida" icon="fi-sr-plus-small" />
     </div>
 
-    <PresupuestosKPIs :data="kpiData" />
+    <PresupuestosResumen :data="dataResumen" />
 
     <Table
       :data="presupuestos"

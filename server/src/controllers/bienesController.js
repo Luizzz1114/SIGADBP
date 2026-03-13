@@ -48,39 +48,39 @@ class BienesController {
     }
   }
 	
-	async bienesCategoria(req, res) {
+	async obtenerMetricasPorCategoria(req, res) {
 		try {	
-			const resultados = await BienesServices.bienesCategoria();
+			const resultados = await BienesServices.obtenerMetricasPorCategoria();
 			res.status(200).json(resultados);
 		} catch (error) {
 			res.status(500).json({ message: 'Error al obtener bienes por categoría.', error: error.message });
 		}
 	}
 
-	async estadoBienes(req, res) {
+	async obtenerMetricasPorEstatus(req, res) {
 		try {
-			const resultados = await BienesServices.estadoBienes();
+			const resultados = await BienesServices.obtenerMetricasPorEstatus();
 			res.status(200).json(resultados);
 		} catch (error) {
 			res.status(500).json({ message: 'Error al obtener el estado de los bienes.', error: error.message });
 		}
 	}
 
-	async paneles(req, res) {
+	async obtenerResumenMetricas(req, res) {
 		try {
-			const resultados = await BienesServices.paneles();
+			const resultados = await BienesServices.obtenerResumenMetricas();
 			res.status(200).json(resultados);
 		} catch (error) {
-			res.status(500).json({ message: 'Error al obtener el estado de los paneles.', error: error.message });
+			res.status(500).json({ message: 'Error al obtener métricas.', error: error.message });
 		}
 	}
 
-	async categoriaDependencia(req, res) {
+	async obtenerMetricasPorDependencia(req, res) {
 		try {
-			const resultados = await BienesServices.categoriaDependencia();
+			const resultados = await BienesServices.obtenerMetricasPorDependencia();
 			res.status(200).json(resultados);
 		} catch (error) {
-			res.status(500).json({ message: 'Error al obtener dependencia por categoria.', error: error.message });
+			res.status(500).json({ message: 'Error al obtener métricas por dependencia.', error: error.message });
 		}
 	}
 

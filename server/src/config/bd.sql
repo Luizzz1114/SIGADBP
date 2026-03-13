@@ -525,7 +525,7 @@ WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración';
 
 
 -- CONTADORES BÁSICOS
-CREATE OR REPLACE VIEW kpiContadoresBasicos AS
+CREATE OR REPLACE VIEW vistaMetricasBasicas AS
 SELECT 
 (SELECT COUNT(*) FROM Bienes WHERE estatus != 'Desincorporado') AS total_bienes,
 (SELECT COUNT(*) FROM Incorporaciones WHERE fechaEntrada >= DATE_TRUNC('month', CURRENT_DATE)) AS incorporaciones_mes,
@@ -535,7 +535,7 @@ SELECT
 
 
 -- %IBEO
-CREATE OR REPLACE VIEW kpiEstatusBienes AS
+CREATE OR REPLACE VIEW vistaBienesPorEstatus AS
 WITH resumen_bienes AS (
   SELECT 
   COUNT(*) FILTER (WHERE estatus = 'Operativo') AS operativos,
@@ -553,7 +553,7 @@ FROM resumen_bienes;
 
 
 -- %IBDT, %IBTMCD, %IBTTCD, %IBTVCD
-CREATE OR REPLACE VIEW kpiBienesPorDependencia AS
+CREATE OR REPLACE VIEW vistaBienesPorDependencia AS
 WITH conteo_categorias AS (
 SELECT 
   idDependencia,
@@ -576,7 +576,7 @@ ROUND(COALESCE((C.vehiculos * 100.0) / NULLIF(C.total_bienes, 0), 0), 2) AS p_ve
 FROM Dependencias D
 LEFT JOIN conteo_categorias C ON D.id = C.idDependencia;
 
-CREATE OR REPLACE VIEW kpiBienesPorCategoria AS
+CREATE OR REPLACE VIEW vistaBienesPorCategoria AS
 WITH categorias AS (	
 SELECT  
   COUNT(*) FILTER (WHERE categoria = 'Mueble') AS muebles,
@@ -593,8 +593,8 @@ vehiculos, ROUND(COALESCE((vehiculos * 100.0) / NULLIF(total, 0), 0), 2) AS p_ve
 FROM categorias;
 
 
--- %IIET, %IIM, IIMB
-CREATE OR REPLACE VIEW kpiPresupuestos AS
+-- (%IIET, %IIM, IIMB)
+CREATE OR REPLACE VIEW vistaResumenPresupuestos AS
 WITH gastos_agrupados AS (
   SELECT idPresupuesto, SUM(monto) AS total_gastado
   FROM Gastos
@@ -611,9 +611,6 @@ WHERE P.estatus = 'Activo'
 AND P.aniofiscal = EXTRACT(YEAR FROM CURRENT_DATE)
 AND P.semestre = CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN 'Semestre I' ELSE 'Semestre II' END
 GROUP BY P.tipo, P.semestre, P.aniofiscal;
-
-
-
 
 -- INSERTS
 INSERT INTO Estados (nombre)

@@ -29,20 +29,20 @@ class BienesServices {
     return await BienesRepositorio.obtenerPorId(id);
   }
 
-  async bienesCategoria() {
-    return await BienesRepositorio.bienesCategoria();
+  async obtenerMetricasPorCategoria() {
+    return await BienesRepositorio.obtenerMetricasPorCategoria();
   }
   
-  async estadoBienes() {
-    return await BienesRepositorio.estadoBienes();
+  async obtenerMetricasPorEstatus() {
+    return await BienesRepositorio.obtenerMetricasPorEstatus();
   }
 
-  async paneles() {
-    return await BienesRepositorio.paneles();
+  async obtenerResumenMetricas() {
+    return await BienesRepositorio.obtenerResumenMetricas();
   }
 
-  async categoriaDependencia() {
-    return await BienesRepositorio.categoriaDependencia();
+  async obtenerMetricasPorDependencia() {
+    return await BienesRepositorio.obtenerMetricasPorDependencia();
   }
 
   async crear(bien) {

@@ -10,9 +10,9 @@ class PresupuestosController {
     }
   }
 
-  async listarActivosMantenimientoBienes(req, res) {
+  async listarActivosMantenimiento(req, res) {
     try {
-      const presupuestos = await PresupuestosService.listarActivosMantenimientoBienes();
+      const presupuestos = await PresupuestosService.listarActivosMantenimiento();
       res.status(200).json(presupuestos);
     } catch (error) {
       res.status(500).json({ message: 'Error al listar los presupuestos activos para mantenimiento de bienes', error: error.message });
@@ -48,12 +48,12 @@ class PresupuestosController {
     }
   }
 
-  async indicadoresPresupuesto(req, res) {
+  async obtenerResumenMetricas(req, res) {
     try {
-      const resultado = await PresupuestosService.indicadoresPresupuesto();
+      const resultado = await PresupuestosService.obtenerResumenMetricas();
       res.status(200).json(resultado);
     } catch (error) {
-      res.status(500).json({ message: 'Error al obtener indicadores de presupuesto', error: error.message });
+      res.status(500).json({ message: 'Error al obtener métricas de presupuesto', error: error.message });
     }
   }
 

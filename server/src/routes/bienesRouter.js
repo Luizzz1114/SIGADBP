@@ -3,34 +3,22 @@ import BienesController from '../controllers/bienesController.js';
 
 const BienesRouter = express.Router();
 
+BienesRouter.get('/metricas/resumen', BienesController.obtenerResumenMetricas);
+BienesRouter.get('/metricas/categorias', BienesController.obtenerMetricasPorCategoria);
+BienesRouter.get('/metricas/estatus', BienesController.obtenerMetricasPorEstatus);
+BienesRouter.get('/metricas/dependencias', BienesController.obtenerMetricasPorDependencia);
+
+BienesRouter.get('/operativos', BienesController.listarOperativos);
+BienesRouter.get('/no-asignados', BienesController.listarNoAsignados);
+BienesRouter.post('/validar-numero', BienesController.validarNumeroBienUnico);
+
 BienesRouter.route('/')
 	.get(BienesController.listar)
   .post(BienesController.crear)
   .put(BienesController.actualizar);
- 
-BienesRouter.route('/paneles')
-  .get(BienesController.paneles);
-  
-BienesRouter.route('/bienes-categoria')
-  .get(BienesController.bienesCategoria);  
-
-BienesRouter.route('/resumen-estatus')
-  .get(BienesController.estadoBienes);
-
-BienesRouter.route('/dependencia-categoria')
-  .get(BienesController.categoriaDependencia);
-
-BienesRouter.route('/operativos')
-  .get(BienesController.listarOperativos);
-
-BienesRouter.route('/no-asignados')
-  .get(BienesController.listarNoAsignados);
 
 BienesRouter.route('/:id')
   .get(BienesController.obtenerPorId)
   .delete(BienesController.eliminar);
- 
-BienesRouter.route('/validar-numero')
-  .post(BienesController.validarNumeroBienUnico);
 
 export default BienesRouter;
