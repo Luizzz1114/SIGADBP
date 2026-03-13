@@ -118,27 +118,34 @@ const tooltipStyle = ref({
 const updateTooltipPosition = (event) => {
   if (!chartContainer.value) return;
   const rect = chartContainer.value.getBoundingClientRect();
-  
-  // Posición base
+
   let x = event.clientX - rect.left;
-  let y = event.clientY - rect.top - 15; 
-  
-  let transformX = '-50%'; // Centrado por defecto
-  
-  // Detección de bordes para que el tooltip no se aplaste
+  let y = event.clientY - rect.top; 
+
+  let transformX = '-50%';
+  let transformY = '-100%';
+
   if (x > rect.width - 120) {
-    transformX = '-100%'; // Anclar a la izquierda del cursor
+    transformX = '-100%';
     x += 15;
   } else if (x < 120) {
-    transformX = '0%';    // Anclar a la derecha del cursor
+    transformX = '0%';
     x -= 15;
+  }
+
+  if (y < 80) {
+    transformY = '0%';
+    y += 15;
+  } else {
+    transformY = '-100%';
+    y -= 15;
   }
 
   tooltipStyle.value = {
     left: `${x}px`,
     top: `${y}px`,
-    transform: `translate(${transformX}, -100%)`,
-    whiteSpace: 'nowrap' // Crucial para que el texto no se rompa
+    transform: `translate(${transformX}, ${transformY})`,
+    whiteSpace: 'nowrap'
   };
 };
 
@@ -160,7 +167,7 @@ const onMouseLeave = () => {
 };
 
 // --- LÓGICA RESPONSIVE CON RESIZEOBSERVER ---
-const containerWidth = ref(400); // Valor inicial
+const containerWidth = ref(400);
 let resizeObserver = null;
 
 onMounted(() => {
@@ -201,16 +208,11 @@ const spacePerBar = computed(() => chartWidth.value / props.data.length);
 const barWidth = computed(() => Math.min(spacePerBar.value * 0.65, 32));
 
 // --- LÓGICA DEL EJE Y ---
-const maxValue = computed(() => {
-  if (!props.data.length) return 100;
-  const max = Math.max(...props.data.map(d => d.value));
-  if (max === 0) return 100;
-  return Math.ceil(Math.ceil(max / ticksCount) / 10) * 10 * ticksCount; 
-});
+const maxValue = 100;
 
 const computedYTicks = computed(() => {
   return Array.from({ length: ticksCount + 1 }, (_, i) => ({
-    value: (maxValue.value / ticksCount) * (ticksCount - i),
+    value: (maxValue / ticksCount) * (ticksCount - i),
     y: margins.top + (chartHeight / ticksCount) * i
   }));
 });
@@ -219,7 +221,7 @@ const computedYTicks = computed(() => {
 const processedData = computed(() => {
   const offset = (spacePerBar.value - barWidth.value) / 2;
   return props.data.map((item, index) => {
-    const height = maxValue.value === 0 ? 0 : (item.value / maxValue.value) * chartHeight;
+    const height = (item.value / maxValue) * chartHeight; 
     const yStatic = margins.top + chartHeight;
     return {
       ...item,

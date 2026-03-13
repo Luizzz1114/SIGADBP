@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import MiniCard from '@/components/MiniCard.vue';
+import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
 import DrawerRegister from '@/components/InventarioBienes/BienesRegister.vue';
 import DrawerView from '@/components/InventarioBienes/BienesView.vue';
@@ -13,7 +13,7 @@ const { showSuccess, showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
-const items = [{ label: 'Inventario de bienes', route: '/inventario' }];
+const items = [{ label: 'Inventario', route: '/inventario' }];
 
 const columns = [
   { field: 'numero', header: 'Número de bien', type: 'codigo', sortable: true },
@@ -141,14 +141,22 @@ onMounted(async () => {
           <span class="-mt-0.5 text-xs text-slate-400">Gestión completa del inventario de bienes</span>
         </div>
       </div>
-      <Button @click="isDrawerRegisterOpen = true" label="Agregar Bien" icon="fi-sr-plus-small" class="h-9" />
+      <div class="flex items-center gap-4">
+        <Button as="router-link" to="/inventario/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
+        <Button @click="isDrawerRegisterOpen = true" label="Agregar Bien" icon="fi-sr-plus-small" class="h-9" />
+      </div>
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <MiniCard label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincoporado').length" icon="fi-sr-boxes" color="blue" />
+      <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincoporado').length" icon="fi-rr-boxes" />
+      <Card label="Operativos" :value="bienes.filter(b => b.estatus === 'Operativo').length" icon="fi-rr-check-circle" />
+      <Card label="En Mantenimiento" :value="bienes.filter(b => b.estatus === 'En mantenimiento').length" icon="fi-rr-tools" />
+      <Card label="No asignados" :value="bienes.filter(b => b.estatus === 'No asignado').length" icon="fi-rr-minus-circle" />
+    <!--
       <MiniCard label="Muebles" :value="bienes.filter(b => b.categoria === 'Mueble').length" icon="fi-sr-archive" color="slate" />
       <MiniCard label="Tecnológicos" :value="bienes.filter(b => b.categoria === 'Tecnológico').length" icon="fi-sr-computer" color="indigo" />
       <MiniCard label="Vehículos" :value="bienes.filter(b => b.categoria === 'Vehículo o Equipo de Elevación').length" icon="fi-sr-truck-moving" color="emerald" />
+    -->
     </div>
 
     <Table

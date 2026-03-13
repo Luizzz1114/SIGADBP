@@ -84,6 +84,12 @@ class Bienes {
     return resultado.rows;
   }
 
+  async IBEO(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Bienes en Estado Operativo (%IBEO)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
   async crear(bien, client) {
     const { numero, descripcion, marca, modelo, categoria } = bien;
     const sql = 'INSERT INTO Bienes (numeroBien, descripcion, marca, modelo, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING id;';
@@ -95,6 +101,12 @@ class Bienes {
     const { idBien, idIncorporacion, responsable, dependencia } = incorporacion;
     const sql = "UPDATE Bienes SET idIncorporacion = $1, idPersonal = $2, idDependencia = $3, estatus = CASE WHEN estatus = 'No asignado' THEN 'Operativo' ELSE estatus END WHERE id = $4;";
     await client.query(sql, [idIncorporacion, responsable, dependencia, idBien]);
+  }
+
+  async registrarMetrica(client, metrica) {
+    const {  } = metrica;
+    const sql = 'INSERT INTO (periodo, valor, idIndicador, fecha) VALUES ($1, $2, $3, $4)';
+    //await 
   }
 
   async actualizar(bien, client) {

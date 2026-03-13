@@ -908,3 +908,11 @@ SELECT setval(pg_get_serial_sequence('Mantenimientos', 'id'), coalesce(max(id),0
 SELECT setval(pg_get_serial_sequence('Gastos', 'id'), coalesce(max(id),0) + 1, false) FROM Gastos;
 SELECT setval(pg_get_serial_sequence('Movimientos', 'id'), coalesce(max(id),0) + 1, false) FROM Movimientos;
 SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(id),0) + 1, false) FROM Desincorporaciones;
+
+
+
+--- ==========================================
+--- 8. KPIs
+--- ==========================================
+INSERT INTO Indicadores (perspectiva, denominacion, formula, meta, precaucion, peligro, frecuencia) VALUES
+('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', '%IBEO = Número de bienes en estado operativo / Total de bienes activos × 100', 90.00, 89.99, 70.00, 'Mensual');

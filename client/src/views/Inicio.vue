@@ -26,7 +26,7 @@ onMounted(async() => {
       </div>
     </div>
 
-    <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex *:flex-1 gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card label="Total de bienes" :value="infoCards.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
       <Card label="Incorporaciones" :value="infoCards.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
       <Card label="Desincorporaciones" :value="infoCards.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />

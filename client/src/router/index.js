@@ -14,6 +14,7 @@ import Dependencias from '@/views/Dependencias.vue';
 import Cargos from '@/views/Cargos.vue';
 import Personal from '@/views/Personal.vue';
 import Usuarios from '@/views/Usuarios.vue';
+import InventarioBienesKPIs from '@/views/KPIs/InventarioBienesKPIs.vue';
 
 const routes = [
   {
@@ -50,9 +51,19 @@ const routes = [
         component: Inicio
       },
       {
-        path: 'inventario',
-        name: 'InventarioBienes',
-        component: InventarioBienes
+        path: '/inventario',
+        children: [
+          {
+            path: '',
+            name: 'InventarioBienes',
+            component: InventarioBienes
+          },
+          {
+            path: 'estadisticas',
+            name: 'InventarioBienesKPIs',
+            component: InventarioBienesKPIs
+          }
+        ]
       },
       {
         path: 'incorporaciones',

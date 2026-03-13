@@ -159,7 +159,7 @@ i, span::before, span::after {
 }
 
 .p-datatable-tbody > tr > td {
-  padding: 0.5rem 1rem !important;
+  padding: 0.45rem 1rem !important;
 }
 
 .p-datatable-tbody > tr > td:first-child {
