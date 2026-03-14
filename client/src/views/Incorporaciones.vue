@@ -30,14 +30,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedIncorporacion.value = await leerIncorporacion(item.id);
+  selectedIncorporacion.value = await obtenerIncorporacion(item.id);
   if (selectedIncorporacion.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedIncorporacion.value = await leerIncorporacion(item.id);
+  selectedIncorporacion.value = await obtenerIncorporacion(item.id);
   if (selectedIncorporacion.value) {
     isDrawerEditOpen.value = true;  
   }
@@ -68,12 +68,12 @@ async function listarIncorporaciones() {
   }
 }
 
-async function leerIncorporacion(id) {
+async function obtenerIncorporacion(id) {
   try {
-    return await incorporacionesServices.leer(id);
+    return await incorporacionesServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer incorporación: ', error);
+    console.error('Error al obtener incorporación: ', error);
   }
 }
 

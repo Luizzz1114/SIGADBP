@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { obtenerHoy, obtenerFinAnio } from '@/utils/formatters.js';
-import { listarDependenciasResponsables, listarOperativos, listarPersonal } from '@/utils/fetch.utils.js';
+import { listarDependenciasConResponsables, listarBienesOperativos, listarPersonal } from '@/utils/fetch.utils.js';
 import { movimientoSchema, tiposMovimiento } from '@/utils/movimientos.utils.js';
 
 const visible = defineModel('visible');
@@ -64,7 +64,7 @@ const origenSeleccionado = ref(null);
 
 watch(visible, async(isOpen) => {
   if (isOpen) {
-    dependencias.value = await listarDependenciasResponsables();
+    dependencias.value = await listarDependenciasConResponsables();
     personal.value = await listarPersonal();
     return;
   }
@@ -77,7 +77,7 @@ const onChangeOrigen = async (event) => {
   bienesSeleccionados.value = []; 
   
   if (dependencia?.id) {
-    const data = await listarOperativos(dependencia.id);
+    const data = await listarBienesOperativos();
     bienes.value = data.filter(b => b.idd === dependencia.id);
   } else {
     bienes.value = [];

@@ -8,7 +8,7 @@ import DrawerView from '@/components/Presupuestos/PresupuestoView.vue';
 import DrawerEdit from '@/components/Presupuestos/PresupuestoEdit.vue';
 import DialogDelete from '@/components/DialogDelete.vue';
 import presupuestosServices from '@/services/presupuestos.services.js';
-import kpiServices from '@/services/kpi.services.js';
+import metricasServices from '@/services/metricas.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showSuccess, showError } = useNotificaciones();
 
@@ -45,14 +45,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedPresupuesto.value = await leerPresupuesto(item.id);
+  selectedPresupuesto.value = await obtenerPresupuesto(item.id);
   if (selectedPresupuesto.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedPresupuesto.value = await leerPresupuesto(item.id);
+  selectedPresupuesto.value = await obtenerPresupuesto(item.id);
   if (selectedPresupuesto.value) {
     isDrawerEditOpen.value = true;
   }
@@ -78,7 +78,7 @@ const dataResumen = ref(null);
 async function listarPresupuestos() {
   try {
     presupuestos.value = await presupuestosServices.listar();
-    dataResumen.value = await kpiServices.presupuestosResumen();
+    dataResumen.value = await metricasServices.presupuestosResumen();
   } catch (error) {
     showError(error.response?.data?.message);
     console.error('Error al listar presupuestos: ', error);
@@ -96,12 +96,12 @@ async function crearPresupuesto(presupuesto) {
   }
 }
 
-async function leerPresupuesto(id) {
+async function obtenerPresupuesto(id) {
   try {
-    return await presupuestosServices.leer(id);
+    return await presupuestosServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer presupuesto: ', error);
+    console.error('Error al obtener presupuesto: ', error);
   }
 }
 

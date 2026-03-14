@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue';
-import kpiServices from '@/services/kpi.services';
+import metricasServices from '@/services/metricas.services.js';
 
 const cargardo = ref(false);
 const stats = ref([]);
@@ -24,7 +24,7 @@ const alerta = computed(() => {
 
 onMounted(async() => {
   cargardo.value = true;
-  const data = await kpiServices.bienesPorEstatus();
+  const data = await metricasServices.bienesPorEstatus();
   stats.value = baseStats.map(st => ({
     ...st,
     number: Number(data[st.key] ?? 0),

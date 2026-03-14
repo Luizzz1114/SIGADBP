@@ -7,7 +7,7 @@ export default {
     return res.data;
   },
 
-  async leer(id) {
+  async obtener(id) {
     const res = await api.get(`/bienes/${id}`);
     return res.data;
   },
@@ -27,13 +27,13 @@ export default {
     return res.data;
   },
 
-  async listarNoAsignados() {
-    const res = await api.get('/bienes/no-asignados');
+  async listarOperativos() {
+    const res = await api.get('/bienes/operativos');
     return res.data;
   },
 
-  async listarOperativos() {
-    const res = await api.get('/bienes/operativos');
+  async listarNoAsignados() {
+    const res = await api.get('/bienes/no-asignados');
     return res.data;
   },
 

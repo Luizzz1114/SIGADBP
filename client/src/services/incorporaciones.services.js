@@ -12,7 +12,7 @@ export default {
     return res.data;
   },
 
-  async leer(id) {
+  async obtener(id) {
     const res = await api.get(`/incorporaciones/${id}`);
     return res.data;
   },

@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { createDependenciaSchema, tiposDependencias } from '@/utils/dependencias.utils.js';
-import { listarEstados, listarMunicipios, listarParroquias } from '@/utils/fetch.utils.js';
+import { listarEstados, listarMunicipiosPorEstado, listarParroquiasPorMunicipio } from '@/utils/fetch.utils.js';
 
 const visible = defineModel('visible', { type: Boolean, default: false });
 const emit = defineEmits(['register']);
@@ -38,7 +38,7 @@ const onEstadoChange = async (event, form) => {
   if (form.parroquia) form.parroquia.value = '';
   if (form.municipio) form.municipio.value = '';
   if (estado) {
-    municipios.value = await listarMunicipios(estado);
+    municipios.value = await listarMunicipiosPorEstado(estado);
   }
 };
 
@@ -47,7 +47,7 @@ const onMunicipioChange = async (event, form) => {
   parroquias.value = [];
   if (form.parroquia) form.parroquia.value = '';
   if (municipio) {
-    parroquias.value = await listarParroquias(municipio);
+    parroquias.value = await listarParroquiasPorMunicipio(municipio);
   }
 };
 

@@ -2,7 +2,7 @@
 import { ref, computed, watch} from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { createDependenciaSchema, tiposDependencias } from '@/utils/dependencias.utils.js';
-import { listarEstados, listarMunicipios, listarParroquias } from '@/utils/fetch.utils.js';
+import { listarEstados, listarMunicipiosPorEstado, listarParroquiasPorMunicipio } from '@/utils/fetch.utils.js';
 
 const visible = defineModel('visible', { type: Boolean, default: false });
 const emit = defineEmits(['confirmEdit']);
@@ -51,8 +51,8 @@ watch(() => visible.value, async (isOpen) => {
   if (isOpen && props.dependencia) {
     [estados.value, municipios.value, parroquias.value] = await Promise.all([
       listarEstados(),
-      listarMunicipios(props.dependencia.ide),
-      listarParroquias(props.dependencia.idm)
+      listarMunicipiosPorEstado(props.dependencia.ide),
+      listarParroquiasPorMunicipio(props.dependencia.idm)
     ]);
   }
 });
@@ -64,7 +64,7 @@ const onEstadoChange = async (event, form) => {
   if (form.municipio) form.municipio.value = null;
   if (form.parroquia) form.parroquia.value = null;
   if (estado) {
-    municipios.value = await listarMunicipios(estado);
+    municipios.value = await listarMunicipiosPorEstado(estado);
   }
 };
 
@@ -73,7 +73,7 @@ const onMunicipioChange = async (event, form) => {
   parroquias.value = [];
   if (form.parroquia) form.parroquia.value = null;
   if (municipio) {
-    parroquias.value = await listarParroquias(municipio);
+    parroquias.value = await listarParroquiasPorMunicipio(municipio);
   }
 };
 </script>

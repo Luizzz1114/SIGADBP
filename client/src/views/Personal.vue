@@ -40,14 +40,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedPersonal.value = await leerPersonal(item.id);
+  selectedPersonal.value = await obtenerPersonal(item.id);
   if (selectedPersonal.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedPersonal.value = await leerPersonal(item.id);
+  selectedPersonal.value = await obtenerPersonal(item.id);
   if (selectedPersonal.value) {
     isDrawerEditOpen.value = true;
   }
@@ -86,12 +86,12 @@ async function crearPersonal(data) {
   }
 }
 
-async function leerPersonal(id) {
+async function obtenerPersonal(id) {
   try {
-    return await personalServices.leer(id);
+    return await personalServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer personal: ', error);
+    console.error('Error al obtener personal: ', error);
   }
 }
 

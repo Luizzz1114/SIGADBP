@@ -4,12 +4,12 @@ import Card from '@/components/Card.vue';
 import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
 import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
 import BienesPorCategoria from '@/components/PanelControl/BienesPorCategoria.vue';
-import kpiServices from '@/services/kpi.services.js';
+import metricasServices from '@/services/metricas.services.js';
 
 const metricas = ref([]);
 
 onMounted(async() => {
-  metricas.value = await kpiServices.obtenerMetricas();
+  metricas.value = await metricasServices.obtenerMetricas();
 });
 </script>
 

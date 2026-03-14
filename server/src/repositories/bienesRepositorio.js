@@ -134,7 +134,7 @@ class Bienes {
     const { dependencia, personal } = personalDependencia;
     const sql = `UPDATE Bienes SET idPersonal = $1, idDependencia = $2
 	    WHERE id IN ( SELECT idBien FROM DetallesMovimientos WHERE idMovimiento = $3 );`;
-    await client.query(sql, [dependencia, personal, id]);
+    await client.query(sql, [personal, dependencia, id]);
   }
 
   async eliminar(id) {

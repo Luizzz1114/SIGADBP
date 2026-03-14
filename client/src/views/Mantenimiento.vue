@@ -44,14 +44,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedMantenimiento.value = await leerMantenimiento(item.id);
+  selectedMantenimiento.value = await obtenerMantenimiento(item.id);
   if (selectedMantenimiento.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedMantenimiento.value = await leerMantenimiento(item.id);
+  selectedMantenimiento.value = await obtenerMantenimiento(item.id);
   if (selectedMantenimiento.value) {
     isDrawerEditOpen.value = true;
   }
@@ -81,13 +81,13 @@ async function listarMantenimientos() {
   }
 };
 
-async function leerMantenimiento(id) {
+async function obtenerMantenimiento(id) {
   try {
-    const res = await mantenimientoServices.leer(id);
+    const res = await mantenimientoServices.obtener(id);
     return res;
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer mantenimiento:', error);
+    console.error('Error al obtener mantenimiento:', error);
   }
 }
 

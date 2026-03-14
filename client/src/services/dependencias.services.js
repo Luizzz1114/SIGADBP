@@ -12,7 +12,7 @@ export default {
     return res.data;
   },
   
-  async leer(id) {
+  async obtener(id) {
     const res = await api.get(`/dependencias/${id}`);
     return res.data;
   },
@@ -27,15 +27,14 @@ export default {
     return res.data;
   },
 
+  async listarResponsables() {
+    const res = await api.get('/dependencias/responsables');
+    return res.data;
+  },
+
   async validarNombre(nombre, id = null) {
     const res = await api.post('/dependencias/validar-nombre', { nombre, id });
     return res.data.esUnica;
-  },
-
-
-  async listarDependenciasResponsables() {
-    const res = await api.get('/dependencias/responsables');
-    return res.data;
   }
 
 }

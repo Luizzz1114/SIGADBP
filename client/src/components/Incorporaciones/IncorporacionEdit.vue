@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { formatearMonto, formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
-import { listarBienesNoAsignados, listarPresupuestos } from '@/utils/fetch.utils.js';
+import { listarBienesNoAsignados, listarPresupuestosActivos } from '@/utils/fetch.utils.js';
 import { incorporacionSchema, motivos } from '@/utils/incorporaciones.utils.js';
 import MoneyInput from '@/components/MoneyInput.vue';
 
@@ -69,7 +69,7 @@ watch(visible, async(isOpen) => {
    
     const [bs, pres] = await Promise.all([
       listarBienesNoAsignados(),
-      listarPresupuestos()
+      listarPresupuestosActivos()
     ]);
     
     presupuestos.value = pres;

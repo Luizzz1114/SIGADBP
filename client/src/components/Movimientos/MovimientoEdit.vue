@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
-import { listarOperativos } from '@/utils/fetch.utils.js';
+import { listarBienesOperativos } from '@/utils/fetch.utils.js';
 import { movimientoSchema, tiposMovimiento } from '@/utils/movimientos.utils.js';
 
 const visible = defineModel('visible');
@@ -79,7 +79,7 @@ watch(visible, async(isOpen) => {
   if (isOpen) {
     let bs = [];
     if (props.movimiento.id_origen) {
-      const data = await listarOperativos(props.movimiento.id_origen);
+      const data = await listarBienesOperativos();
       bs = data.filter(b => b.idd === props.movimiento.id_origen);
     }
 

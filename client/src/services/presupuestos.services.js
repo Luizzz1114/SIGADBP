@@ -13,7 +13,7 @@ export default {
     return res.data;
   },
 
-  async leer(id) {
+  async obtener(id) {
     const res = await api.get(`/presupuestos/${id}`);
     return res.data;
   },

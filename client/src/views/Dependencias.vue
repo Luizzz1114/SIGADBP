@@ -37,14 +37,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedDependencia.value = await leerDependencia(item.id);
+  selectedDependencia.value = await obtenerDependencia(item.id);
   if (selectedDependencia.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedDependencia.value = await leerDependencia(item.id);
+  selectedDependencia.value = await obtenerDependencia(item.id);
   if (selectedDependencia.value) {
     isDrawerEditOpen.value = true;  
   }
@@ -72,12 +72,12 @@ async function listarDependencias() {
   }
 }
 
-async function leerDependencia(id) {
+async function obtenerDependencia(id) {
   try {
-    return await dependenciasServices.leer(id);
+    return await dependenciasServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer dependencia: ', error);
+    console.error('Error al obtener dependencia: ', error);
   }
 }
 

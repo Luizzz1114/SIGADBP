@@ -31,14 +31,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedDesincorporacion.value = await leerDesincorporacion(item.id);
+  selectedDesincorporacion.value = await obtenerDesincorporacion(item.id);
   if (selectedDesincorporacion.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedDesincorporacion.value = await leerDesincorporacion(item.id);
+  selectedDesincorporacion.value = await obtenerDesincorporacion(item.id);
   if (selectedDesincorporacion.value) {
     isDrawerEditOpen.value = true;  
   }
@@ -69,12 +69,12 @@ async function listarDesincorporaciones() {
   }
 }
 
-async function leerDesincorporacion(id) {
+async function obtenerDesincorporacion(id) {
   try {
-    return await desincorporacionesServices.leer(id);
+    return await desincorporacionesServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer desincorporación: ', error);
+    console.error('Error al obtener desincorporación: ', error);
     return null;
   }
 }

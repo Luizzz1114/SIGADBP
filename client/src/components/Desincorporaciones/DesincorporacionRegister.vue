@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { obtenerHoy, obtenerFinAnio } from '@/utils/formatters.js';
-import { listarDependenciasResponsables, listarOperativos } from '@/utils/fetch.utils.js';
+import { listarDependenciasConResponsables, listarBienesOperativos } from '@/utils/fetch.utils.js';
 import { desincorporacionSchema, tiposDesincorporacion } from '@/utils/desincorporaciones.utils.js';
 
 const visible = defineModel('visible');
@@ -57,7 +57,7 @@ const bienes = ref([]);
 
 watch(visible, async(isOpen) => {
   if (isOpen) {
-    dependencias.value = await listarDependenciasResponsables();
+    dependencias.value = await listarDependenciasConResponsables();
     return;
   }
   resetForm();
@@ -67,7 +67,7 @@ const onChangeDependencia = async (event) => {
   const dependencia = event.value.id;
 
   bienesSeleccionados.value = [];
-  const data = await listarOperativos(dependencia);
+  const data = await listarBienesOperativos();
   bienes.value = data.filter(b => b.idd === dependencia);
 };
 </script>

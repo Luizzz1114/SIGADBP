@@ -45,14 +45,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedBien.value = await leerBien(item.id);
+  selectedBien.value = await obtenerBien(item.id);
   if (selectedBien.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedBien.value = await leerBien(item.id);
+  selectedBien.value = await obtenerBien(item.id);
   if (selectedBien.value) {
     isDrawerEditOpen.value = true;
   }
@@ -81,12 +81,12 @@ async function listarBienes() {
   }
 }
 
-async function leerBien(id) {
+async function obtenerBien(id) {
   try {
-    return await bienesServices.leer(id);
+    return await bienesServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer bien: ', error);
+    console.error('Error al obtener bien: ', error);
   }
 }
 
@@ -148,7 +148,7 @@ onMounted(async () => {
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincoporado').length" icon="fi-rr-boxes" />
+      <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincorporado').length" icon="fi-rr-boxes" />
       <Card label="Operativos" :value="bienes.filter(b => b.estatus === 'Operativo').length" icon="fi-rr-check-circle" />
       <Card label="En Mantenimiento" :value="bienes.filter(b => b.estatus === 'En mantenimiento').length" icon="fi-rr-tools" />
       <Card label="No asignados" :value="bienes.filter(b => b.estatus === 'No asignado').length" icon="fi-rr-minus-circle" />

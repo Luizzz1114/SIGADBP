@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import BarChart from '../Graficos/BarChart.vue';
-import kpiServices from '@/services/kpi.services';
+import metricasServices from '@/services/metricas.services.js';
 
 const data = ref([]);
 
@@ -19,7 +19,7 @@ const categorias = computed(() => {
 });
 
 onMounted(async() => {
-  data.value = await kpiServices.bienesPorCategoria();
+  data.value = await metricasServices.bienesPorCategoria();
 });
 </script>
 

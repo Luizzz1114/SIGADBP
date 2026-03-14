@@ -39,14 +39,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedMovimiento.value = await leerMovimiento(item.id);
+  selectedMovimiento.value = await obtenerMovimiento(item.id);
   if (selectedMovimiento.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedMovimiento.value = await leerMovimiento(item.id);
+  selectedMovimiento.value = await obtenerMovimiento(item.id);
   if (selectedMovimiento.value) {
     isDrawerEditOpen.value = true;
   }
@@ -79,12 +79,12 @@ async function listarMovimientos() {
   }
 }
 
-async function leerMovimiento(id) {
+async function obtenerMovimiento(id) {
   try {
-    return await movimientosServices.leer(id);
+    return await movimientosServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer movimiento: ', error);
+    console.error('Error al obtener movimiento: ', error);
   }
 }
 

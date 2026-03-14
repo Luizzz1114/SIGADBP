@@ -12,7 +12,7 @@ export default {
     return res.data;
   },
 
-  async leer(id) {
+  async obtener(id) {
     const res = await api.get(`/personal/${id}`);
     return res.data;
   },

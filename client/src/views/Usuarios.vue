@@ -39,14 +39,14 @@ const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
-  selectedUsuario.value = await leerUsuario(item.id);
+  selectedUsuario.value = await obtenerUsuario(item.id);
   if (selectedUsuario.value) {
     isDrawerViewOpen.value = true;
   }
 }
 
 const handleEditRequest = async (item) => {
-  selectedUsuario.value = await leerUsuario(item.id);
+  selectedUsuario.value = await obtenerUsuario(item.id);
   if (selectedUsuario.value) {
     isDrawerEditOpen.value = true;
   }
@@ -74,12 +74,12 @@ async function listarUsuarios() {
   }
 }
 
-async function leerUsuario(id) {
+async function obtenerUsuario(id) {
   try {
-    return await usuariosServices.leer(id);
+    return await usuariosServices.obtener(id);
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error('Error al leer usuario: ', error);
+    console.error('Error al obtener usuario: ', error);
   }
 }
 

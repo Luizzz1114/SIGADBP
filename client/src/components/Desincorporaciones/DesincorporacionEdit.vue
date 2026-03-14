@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
-import { listarOperativos } from '@/utils/fetch.utils.js';
+import { listarBienesOperativos } from '@/utils/fetch.utils.js';
 import { desincorporacionSchema, tiposDesincorporacion } from '@/utils/desincorporaciones.utils.js';
 
 const visible = defineModel('visible');
@@ -67,7 +67,7 @@ const onFormSubmit = (e) => {
 // --- Operaciones con la API y Carga de Datos ---
 watch(visible, async(isOpen) => {
   if (isOpen) {
-    const bs = await listarOperativos(props.desincorporacion.idd);
+    const bs = await listarBienesOperativos();
     
     const bienesActuales = props.desincorporacion.bienes || [];
     bienesSeleccionados.value = bienesActuales.map(b => ({

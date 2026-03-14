@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { createUsuarioSchema, roles } from '@/utils/usuarios.utils.js';
-import { listarSinUsuario } from '@/utils/fetch.utils.js';
+import { listarPersonalSinUsuario } from '@/utils/fetch.utils.js';
 
 const visible = defineModel('visible', { type: Boolean, default: false });
 const emit = defineEmits(['register']);
@@ -32,7 +32,7 @@ const onFormSubmit = ({ valid, values, reset }) => {
 
 watch(visible, async(isOpen) => {
   if (isOpen === true) {
-    personal.value = await listarSinUsuario();
+    personal.value = await listarPersonalSinUsuario();
   }
 });
 </script>

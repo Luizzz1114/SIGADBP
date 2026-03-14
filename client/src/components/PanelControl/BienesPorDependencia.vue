@@ -1,12 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import kpiServices from '@/services/kpi.services';
+import metricasServices from '@/services/metricas.services.js';
 
 
 const data = ref([]);
 
 onMounted(async() => {
-  data.value = await kpiServices.bienesPorDependencia();
+  data.value = await metricasServices.bienesPorDependencia();
 });
 </script>
 
