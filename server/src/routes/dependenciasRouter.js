@@ -3,15 +3,16 @@ import DependenciasController from '../controllers/dependenciasController.js';
 
 const DependenciasRouter = express.Router();
 
-DependenciasRouter.get('/', DependenciasController.listar);
-
-DependenciasRouter.route('/responsables')
-  .get(DependenciasController.listarResponsables);
-
-DependenciasRouter.get('/:id', DependenciasController.obtenerPorId);
-DependenciasRouter.post('/', DependenciasController.crear);
+DependenciasRouter.get('/responsables', DependenciasController.listarResponsables);
 DependenciasRouter.post('/validar-nombre', DependenciasController.validarNombreUnico);
-DependenciasRouter.put('/', DependenciasController.actualizar);
-DependenciasRouter.delete('/:id', DependenciasController.eliminar);
+
+DependenciasRouter.route('/')
+  .get(DependenciasController.listar)
+  .post(DependenciasController.crear)
+  .put(DependenciasController.actualizar);
+
+DependenciasRouter.route('/:id')
+  .get(DependenciasController.obtenerPorId)
+  .delete(DependenciasController.eliminar);
 
 export default DependenciasRouter;
