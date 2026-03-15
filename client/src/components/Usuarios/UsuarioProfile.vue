@@ -35,15 +35,16 @@ const resolver = (options) => {
 };
 
 const onFormSubmit = async ({ valid, values, reset }) => {
+  if(!valid) return;
   try {
-    if(!valid) return;
     const resultado = await usuariosServices.actualizar(values);
     showSuccess(resultado.message);
+  } catch(error) {
+    showError(error.response?.data?.message);
+    console.log('Error al actualizar usuario: ', error);
+  } finally {
     visible.value = false;
     reset();
-  } catch(error) {
-    showError(error.response?.data?.message || 'Error al actualizar usuario.');
-    console.log('Error al actualizar usuario: ', error);
   }
 }
 </script>
@@ -137,7 +138,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   <span class="font-medium! text-right">{{ usuario.fechasalida || 'N/A' }}</span>
                 </div>
                 <div class="flex justify-between gap-3">
-                  <span class="text-slate-500 dark:text-slate-400">Antigüedad</span>
+                  <span class="text-slate-500 dark:text-slate-400">Años de servicio</span>
                   <span class="font-medium! text-right">{{ usuario.antiguedad + ' años' || 'N/A' }}</span>
                 </div>
               </div>

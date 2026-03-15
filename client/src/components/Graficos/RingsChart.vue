@@ -14,8 +14,7 @@
           <circle 
             cx="100" cy="100" :r="ring.radius" 
             class="fill-none stroke-current transition-all duration-1000 ease-out"
-            :class="ring.colorClass"
-            :stroke-width="strokeWidth"
+            :class="ring.color" :stroke-width="strokeWidth"
             stroke-linecap="round"
             :stroke-dasharray="ring.circumference"
             :stroke-dashoffset="ring.offset"
@@ -32,9 +31,7 @@
       >
         <div class="flex items-center gap-2">
           <span 
-            class="w-3 h-3 rounded-full" 
-            :class="item.bgClass"
-          ></span>
+            class="w-3 h-3 rounded-full bg-current" :class="item.color" ></span>
           <span class="text-sm font-semibold text-slate-700 dark:text-slate-200 w-20">
             {{ item.label }}
           </span>
@@ -42,8 +39,7 @@
         
         <div class="flex items-center gap-3 text-sm">
           <span class="font-bold text-slate-800 dark:text-white w-12 text-right">
-            {{ item.value }}
-          </span>
+            {{ item.total }} </span>
           <span class="text-slate-400 dark:text-slate-500 font-medium w-10 text-right">
             {{ item.percentage }}%
           </span>
@@ -84,14 +80,15 @@ const ringsData = computed(() => {
     const radius = baseRadius - (index * gap);
     const circumference = 2 * Math.PI * radius;
     
-    // Tomamos el porcentaje directamente de tu objeto
-    const percentage = item.percentage || 0;
+    // Asumimos que de tu objeto 'categorias', 'item.value' contiene el porcentaje.
+    // Si usas el mapeo que te sugerí anteriormente, sería item.percentage.
+    const percentage = item.value || 0; 
     
     const targetOffset = circumference - (percentage / 100) * circumference;
     const offset = isAnimated.value ? targetOffset : circumference;
     
     return {
-      ...item,
+      ...item, // Esto ya incluye tu 'color' (ej: 'text-slate-400') y 'total'
       radius,
       circumference,
       offset

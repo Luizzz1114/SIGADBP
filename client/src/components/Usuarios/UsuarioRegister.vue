@@ -31,7 +31,7 @@ const onFormSubmit = ({ valid, values, reset }) => {
 }
 
 watch(visible, async(isOpen) => {
-  if (isOpen === true) {
+  if (isOpen) {
     personal.value = await listarPersonalSinUsuario();
   }
 });

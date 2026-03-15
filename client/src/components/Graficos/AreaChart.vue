@@ -1,26 +1,4 @@
 <template>
-  <div class="flex justify-between sm:items-end mt-4">
-    <div class="flex flex-col sm:flex-row gap-1 sm:gap-8 text-sm font-medium text-slate-400 dark:text-slate-400 flex-wrap">
-      <div class="flex items-center gap-1">
-        <span class="size-2 rounded-full bg-emerald-400"></span> ≥ {{ thresholdConfig.optimal }}%
-      </div>
-      <div class="flex items-center gap-1">
-        <span class="size-2 rounded-full bg-orange-400"></span> {{ thresholdConfig.warning }}% - {{ thresholdConfig.optimal - 1 }}%
-      </div>
-      <div class="flex items-center gap-1">
-        <span class="size-2 rounded-full bg-red-400"></span> < {{ thresholdConfig.warning }}%
-      </div>
-    </div>
-    <div v-if="latestValue" class="text-right flex flex-col items-end">
-      <span class="block text-2xl font-black" :class="getThresholdTextColor(latestValue.value)">
-        {{ latestValue.value }}%
-      </span>
-      <span class="text-sm font-medium text-slate-400">
-        Mes actual
-      </span>
-    </div>
-  </div>
-
   <div class="w-full relative mt-4 overflow-x-auto">
     <div 
       ref="chartContainer" 
@@ -170,10 +148,9 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 
-// --- PROPS DEL COMPONENTE ---
+// --- PROPS LIMPIOS ---
+// Ya no necesitamos 'title', 'subtitle' ni 'goal'. Solo la data y la config de umbrales.
 const props = defineProps({
-  title: { type: String, default: '% Bienes en Estado Operativo' },
-  subtitle: { type: String, default: 'Evolución mensual (%IBEO)' },
   data: { type: Array, required: true },
   thresholdConfig: {
     type: Object,
@@ -196,32 +173,25 @@ const updateTooltipPosition = (event) => {
   if (!chartContainer.value) return;
   const rect = chartContainer.value.getBoundingClientRect();
 
-  // Obtenemos la posición inicial del mouse relativa al contenedor
   let x = event.clientX - rect.left;
   let y = event.clientY - rect.top; 
 
   let transformX = '-50%';
   let transformY = '-100%';
-  const offset = 15; // Distancia del cursor al tooltip
+  const offset = 15; 
 
-  // --- CONTROL BORDES HORIZONTALES ---
   if (x > rect.width - 120) {
-    // Si está muy a la derecha, anclar el borde derecho del tooltip y moverlo a la izquierda
     transformX = '-100%';
     x -= offset;
   } else if (x < 100) {
-    // Si está muy a la izquierda (Eje Y), anclar el borde izquierdo del tooltip y moverlo a la derecha
     transformX = '0%';
     x += offset; 
   }
 
-  // --- CONTROL BORDES VERTICALES ---
   if (y < 80) {
-    // Si está muy cerca del techo, anclar por arriba para que el tooltip baje
     transformY = '0%';
     y += offset;
   } else {
-    // Comportamiento normal: el tooltip sube
     transformY = '-100%';
     y -= offset;
   }
@@ -249,7 +219,7 @@ const onMouseLeave = () => {
   tooltipData.value = null;
 };
 
-// --- LÓGICA RESPONSIVE (ResizeObserver) ---
+// --- LÓGICA RESPONSIVE ---
 const containerWidth = ref(400);
 let resizeObserver = null;
 
@@ -272,10 +242,9 @@ onUnmounted(() => {
 
 // --- CONFIGURACIÓN GEOMÉTRICA ---
 const svgHeight = 220; 
-// Nueva configuración
-const margins = { top: 20, right: 20, bottom: 40, left: 45 };
-const minSpacePerPoint = 60; // Espacio mínimo entre meses
-const ticksCount = 4; // Mostrará 100%, 50%, 0%
+const margins = { top: 20, right: 20, bottom: 40, left: 45 }; // Márgenes restaurados a la normalidad
+const minSpacePerPoint = 60; 
+const ticksCount = 2; // Mostrará 100%, 50%, 0%
 const maxValue = 100;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
 
@@ -288,13 +257,7 @@ const svgWidth = computed(() => {
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const hoverZoneWidth = computed(() => chartWidth.value / (props.data.length || 1));
 
-// --- LÓGICA DE COLORES SEMÁNTICOS ---
-const getThresholdTextColor = (value) => {
-  if (value >= props.thresholdConfig.optimal) return 'text-emerald-500';
-  if (value >= props.thresholdConfig.warning) return 'text-amber-500';
-  return 'text-rose-500';
-};
-
+// --- LÓGICA DE COLORES SEMÁNTICOS (Para el Tooltip) ---
 const getThresholdFillColor = (value) => {
   if (value >= props.thresholdConfig.optimal) return 'fill-emerald-400';
   if (value >= props.thresholdConfig.warning) return 'fill-orange-400';
@@ -322,19 +285,18 @@ const processedData = computed(() => {
       x: margins.left + (index * step),
       yStatic,
       yAnimated,
-      colorClass: getThresholdFillColor(item.value)
+      colorClass: getThresholdFillColor(item.value) // Agregamos el color dinámico al objeto
     };
   });
 });
+
 // --- LÓGICA PARA LÍNEA RECTA ---
 const linePath = computed(() => {
   const pts = processedData.value;
   if (!pts || pts.length === 0) return '';
   
-  // Mueve el cursor al primer punto
   let d = `M ${pts[0].x},${isMounted.value ? pts[0].yAnimated : pts[0].yStatic}`;
   
-  // Dibuja una línea recta hacia cada uno de los puntos siguientes
   for (let i = 1; i < pts.length; i++) {
     const pt = pts[i];
     const y = isMounted.value ? pt.yAnimated : pt.yStatic;
@@ -352,14 +314,8 @@ const areaPath = computed(() => {
   const bottomY = margins.top + chartHeight;
   let d = linePath.value;
   
-  // Se cierra la curva hacia la base del gráfico
   d += ` L ${pts[pts.length - 1].x},${bottomY} L ${pts[0].x},${bottomY} Z`;
   
   return d;
-});
-
-const latestValue = computed(() => {
-  if (!props.data || props.data.length === 0) return null;
-  return props.data[props.data.length - 1];
 });
 </script>

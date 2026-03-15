@@ -131,6 +131,7 @@ onMounted(async () => {
 <template>
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
+    
     <div class="flex items-center justify-between gap-5 flex-wrap">
       <div class="flex items-center gap-4">
         <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
@@ -147,16 +148,11 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincorporado').length" icon="fi-rr-boxes" />
       <Card label="Operativos" :value="bienes.filter(b => b.estatus === 'Operativo').length" icon="fi-rr-check-circle" />
       <Card label="En Mantenimiento" :value="bienes.filter(b => b.estatus === 'En mantenimiento').length" icon="fi-rr-tools" />
       <Card label="No asignados" :value="bienes.filter(b => b.estatus === 'No asignado').length" icon="fi-rr-minus-circle" />
-    <!--
-      <MiniCard label="Muebles" :value="bienes.filter(b => b.categoria === 'Mueble').length" icon="fi-sr-archive" color="slate" />
-      <MiniCard label="Tecnológicos" :value="bienes.filter(b => b.categoria === 'Tecnológico').length" icon="fi-sr-computer" color="indigo" />
-      <MiniCard label="Vehículos" :value="bienes.filter(b => b.categoria === 'Vehículo o Equipo de Elevación').length" icon="fi-sr-truck-moving" color="emerald" />
-    -->
     </div>
 
     <Table

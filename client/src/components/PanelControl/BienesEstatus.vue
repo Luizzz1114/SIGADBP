@@ -11,17 +11,6 @@ const baseStats = [
   { label:'No asignados', key:'noasignados', icono:'fi-rr-minus-circle', color:'#c2c2c2' }
 ];
 
-const alerta = computed(() => {
-  const porcentaje = stats.value.find(s => s.key === 'operativos')?.value ?? 0;
-  if (porcentaje >= 90) {
-    return { label: 'Operatividad ≥ 90%', severity: 'success' };
-  }
-  if (porcentaje > 70) {
-    return { label: 'Operatividad 70% - 90%', severity: 'warn' };
-  }
-  return { label: 'Operatividad < 70%', severity: 'danger' };
-});
-
 onMounted(async() => {
   cargardo.value = true;
   const data = await metricasServices.bienesPorEstatus();
@@ -38,7 +27,6 @@ onMounted(async() => {
   <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
     <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
       <span class="font-bold text-base dark:text-slate-50">Estado de los bienes</span>
-      <Tag v-if="!cargardo" :value="alerta.label" :severity="alerta.severity" class="ring-1 ring-inset ring-current/10"/>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 p-4 gap-4">
       <div v-for="card in stats" :key="card.key" class="flex flex-col justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg dark:bg-slate-800 dark:border-slate-700">

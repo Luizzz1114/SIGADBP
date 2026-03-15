@@ -1,6 +1,6 @@
 <script setup>
 import CustomTag from '@/components/CustomTag.vue';
-import MiniCard from '../MiniCard.vue';
+import MiniCard from '@/components/MiniCard.vue';
 
 const visible = defineModel('visible', { type: Boolean, default: false });
 defineProps({ usuario: Object });
