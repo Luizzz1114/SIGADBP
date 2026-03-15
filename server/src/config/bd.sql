@@ -519,6 +519,28 @@ INNER JOIN Cargos AS C ON HC.idCargo = C.id
 WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración';
 
 
+-- 11. VISTA GENERAL PARA LOS KPI
+CREATE OR REPLACE VIEW vistaIndicadores AS 
+SELECT I.id AS id_indicador, I.denominacion, I.frecuencia, I.meta, I.peligro,
+    COALESCE(json_agg(json_build_object(
+        'valor', M.valor,
+        'periodo', M.periodo,
+        'fecha', M.fecha
+      ) ORDER BY M.fecha ASC
+		) FILTER (WHERE M.fecha IS NOT NULL), 
+		'[]'::json
+	) AS historial_metricas
+FROM Indicadores I
+LEFT JOIN LATERAL (
+  SELECT valor, periodo, fecha 
+  FROM Metricas 
+  WHERE idIndicador = I.id 
+  ORDER BY fecha ASC 
+  LIMIT 12
+) AS M ON true
+GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
+
+
 
 
 --- VISTAS PARA LOS KPI Y DASHBOARD ---

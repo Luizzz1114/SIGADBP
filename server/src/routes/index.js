@@ -11,6 +11,7 @@ import DesincorporacionesRouter from './desincorporacionesRouter.js';
 import MantenimientosRouter from './mantenimientosRouter.js';
 import MovimientoRouter from './movimientosRouter.js';
 import EvaluacionesRouter from './evaluacionesRouter.js';
+import IndicadoresRouter from './indicadoresRouter.js'
 
 const router = Router();
 
@@ -30,5 +31,6 @@ router.use('/desincorporaciones', DesincorporacionesRouter);
 router.use('/mantenimientos', MantenimientosRouter);
 router.use('/movimientos', MovimientoRouter);
 router.use('/evaluaciones', EvaluacionesRouter);
+router.use('/metricas', IndicadoresRouter);
 
 export default router;

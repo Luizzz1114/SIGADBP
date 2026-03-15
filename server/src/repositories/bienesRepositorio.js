@@ -75,12 +75,6 @@ class Bienes {
     return resultado.rows;
   }
 
-  async IBEO(client) {
-    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Bienes en Estado Operativo (%IBEO)';";
-    const resultado = await client.query(sql);
-    return resultado.rows[0];
-  }
-
   async crear(bien, client) {
     const { numero, descripcion, marca, modelo, categoria } = bien;
     const sql = 'INSERT INTO Bienes (numeroBien, descripcion, marca, modelo, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING id;';

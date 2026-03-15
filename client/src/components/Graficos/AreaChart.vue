@@ -1,16 +1,16 @@
 <template>
-  <div class="w-full relative mt-4 overflow-x-auto">
+  <div class="w-full relative mt-4 overflow-x-auto pb-2" ref="chartWrapper">
     <div 
-      ref="chartContainer" 
       class="relative flex items-center justify-start w-full" 
+      :style="{ minWidth: `${svgWidth}px` }"
       role="region"
       aria-label="Gráfico de evolución mensual"
     >
       <svg 
         :viewBox="`0 0 ${svgWidth} ${svgHeight}`" 
-        :style="{ width: '100%', minWidth: `${svgWidth}px`, height: `${svgHeight}px` }"
+        :style="{ width: '100%', height: `${svgHeight}px` }"
         class="overflow-visible"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="none"
         role="img"
       >
         <defs>
@@ -114,7 +114,7 @@
           <text
             :x="item.x"
             :y="item.yStatic + 25"
-            text-anchor="middle"
+            :text-anchor="index === 0 ? 'start' : (index === processedData.length - 1 ? 'end' : 'middle')"
             class="fill-slate-500 dark:fill-slate-400 text-[13px] font-medium transition-all duration-300 group-hover:fill-slate-800 dark:group-hover:fill-slate-200"
             :class="{ 'font-bold fill-slate-700 dark:fill-slate-300': index === processedData.length - 1 }"
             aria-hidden="true"
@@ -123,36 +123,37 @@
           </text>
         </g>
       </svg>
-
-      <div 
-        v-if="tooltipVisible && tooltipData"
-        class="absolute z-50 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out"
-        :style="tooltipStyle"
-      >
-        <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
-          {{ tooltipData.label }}
-        </div>
-        <div class="flex items-center gap-2 px-2 pb-2 pt-1.5">
-          <svg viewBox="0 0 10 10" class="w-2.5 h-2.5 rounded-full shrink-0">
-            <circle cx="5" cy="5" r="5" :class="tooltipData.colorClass" />
-          </svg>
-          <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-            Operatividad: {{ tooltipData.value }}%
-          </span>
-        </div>
-      </div>
     </div>
   </div>
+
+  <Teleport to="body">
+    <div 
+      v-if="tooltipData"
+      v-show="tooltipVisible"
+      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out"
+      :style="tooltipStyle"
+    >
+      <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
+        {{ tooltipData.label }}
+      </div>
+      <div class="flex items-center gap-2 px-2 pb-2 pt-1.5">
+        <svg viewBox="0 0 10 10" class="w-2.5 h-2.5 rounded-full shrink-0">
+          <circle cx="5" cy="5" r="5" :class="tooltipData.colorClass" />
+        </svg>
+        <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+          Operatividad: {{ tooltipData.value }}%
+        </span>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 
-// --- PROPS LIMPIOS ---
-// Ya no necesitamos 'title', 'subtitle' ni 'goal'. Solo la data y la config de umbrales.
 const props = defineProps({
   data: { type: Array, required: true },
-  thresholdConfig: {
+  ranges: {
     type: Object,
     default: () => ({ optimal: 90, warning: 70 })
   }
@@ -160,8 +161,7 @@ const props = defineProps({
 
 const isMounted = ref(false);
 
-// --- ESTADO Y LÓGICA DEL TOOLTIP ---
-const chartContainer = ref(null);
+const chartWrapper = ref(null);
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 
@@ -170,25 +170,24 @@ const tooltipStyle = ref({
 });
 
 const updateTooltipPosition = (event) => {
-  if (!chartContainer.value) return;
-  const rect = chartContainer.value.getBoundingClientRect();
-
-  let x = event.clientX - rect.left;
-  let y = event.clientY - rect.top; 
+  // Ahora usamos clientX y clientY que son relativos a toda la pantalla del navegador
+  let x = event.clientX;
+  let y = event.clientY; 
 
   let transformX = '-50%';
   let transformY = '-100%';
   const offset = 15; 
 
-  if (x > rect.width - 120) {
+  // Límites basados en la ventana completa
+  if (x > window.innerWidth - 180) {
     transformX = '-100%';
     x -= offset;
-  } else if (x < 100) {
+  } else if (x < 150) {
     transformX = '0%';
     x += offset; 
   }
 
-  if (y < 80) {
+  if (y < 100) {
     transformY = '0%';
     y += offset;
   } else {
@@ -216,10 +215,8 @@ const onMouseMove = (event) => {
 
 const onMouseLeave = () => {
   tooltipVisible.value = false;
-  tooltipData.value = null;
 };
 
-// --- LÓGICA RESPONSIVE ---
 const containerWidth = ref(400);
 let resizeObserver = null;
 
@@ -228,11 +225,14 @@ onMounted(() => {
     setTimeout(() => { isMounted.value = true; }, 50);
   });
 
-  if (chartContainer.value) {
+  if (chartWrapper.value) {
     resizeObserver = new ResizeObserver((entries) => {
-      if (entries[0]) containerWidth.value = entries[0].contentRect.width;
+      if (entries[0]) {
+        // Restamos 2px para evitar barras de scroll fantasma por decimales
+        containerWidth.value = entries[0].contentRect.width - 2; 
+      }
     });
-    resizeObserver.observe(chartContainer.value);
+    resizeObserver.observe(chartWrapper.value);
   }
 });
 
@@ -240,15 +240,14 @@ onUnmounted(() => {
   if (resizeObserver) resizeObserver.disconnect();
 });
 
-// --- CONFIGURACIÓN GEOMÉTRICA ---
 const svgHeight = 220; 
-const margins = { top: 20, right: 20, bottom: 40, left: 45 }; // Márgenes restaurados a la normalidad
+// Márgenes restaurados a un valor limpio ya que controlamos el texto dinámicamente
+const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
 const minSpacePerPoint = 60; 
-const ticksCount = 2; // Mostrará 100%, 50%, 0%
+const ticksCount = 2; 
 const maxValue = 100;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
 
-// --- DIMENSIONES BASE DINÁMICAS ---
 const svgWidth = computed(() => {
   const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerPoint);
   return Math.max(containerWidth.value, minRequiredWidth, 400);
@@ -257,14 +256,12 @@ const svgWidth = computed(() => {
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const hoverZoneWidth = computed(() => chartWidth.value / (props.data.length || 1));
 
-// --- LÓGICA DE COLORES SEMÁNTICOS (Para el Tooltip) ---
 const getThresholdFillColor = (value) => {
-  if (value >= props.thresholdConfig.optimal) return 'fill-emerald-400';
-  if (value >= props.thresholdConfig.warning) return 'fill-orange-400';
+  if (value >= props.ranges.optimal) return 'fill-emerald-400';
+  if (value >= props.ranges.warning) return 'fill-orange-400';
   return 'fill-red-400';
 };
 
-// --- LÓGICA DE DATOS Y COORDENADAS ---
 const computedYTicks = computed(() => {
   return Array.from({ length: ticksCount + 1 }, (_, i) => ({
     value: (maxValue / ticksCount) * (ticksCount - i),
@@ -285,12 +282,11 @@ const processedData = computed(() => {
       x: margins.left + (index * step),
       yStatic,
       yAnimated,
-      colorClass: getThresholdFillColor(item.value) // Agregamos el color dinámico al objeto
+      colorClass: getThresholdFillColor(item.value) 
     };
   });
 });
 
-// --- LÓGICA PARA LÍNEA RECTA ---
 const linePath = computed(() => {
   const pts = processedData.value;
   if (!pts || pts.length === 0) return '';
@@ -306,7 +302,6 @@ const linePath = computed(() => {
   return d;
 });
 
-// --- LÓGICA PARA EL ÁREA DE DEGRADADO ---
 const areaPath = computed(() => {
   const pts = processedData.value;
   if (!pts || pts.length === 0) return '';

@@ -18,6 +18,14 @@ export const capitalizarInput = (e) => {
 
 
 
+export const obtenerMesAnio = (periodo) => {
+  const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const partes = periodo.split('-');
+  const mesNumero = parseInt(partes[0], 10);
+  const anio = partes[1];
+  return `${meses[mesNumero - 1]} ${anio}`;
+};
+
 export function fechaFormateada() {
   const fechaHoy = new Date();
   const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];

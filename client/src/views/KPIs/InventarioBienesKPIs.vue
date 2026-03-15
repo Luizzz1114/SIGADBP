@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import AreaChart from '@/components/Graficos/AreaChart.vue';
 import Card from '@/components/Card.vue';
+import AreaChart from '@/components/Graficos/AreaChart.vue';
+import metricasServices from '@/services/metricas.services';
+import { obtenerMesAnio } from '@/utils/formatters';
 
 
 // --- Configuración de la vista ---
@@ -11,22 +13,29 @@ const items = [
   { label: 'Estadísticas', route: '/inventario/estadisticas' }
 ];
 
-const historicoOperatividad = ref([
-  { label: 'Oct', value: 82 }, // Precaución (Amarillo)
-  { label: 'Nov', value: 88 }, // Precaución (Amarillo)
-  { label: 'Dic', value: 94 }, // Meta superada (Verde)
-  { label: 'Ene', value: 91 }, // Meta superada (Verde)
-  { label: 'Feb', value: 65 }, // Caída crítica simulada (Rojo)
-  { label: 'Mar', value: 95 }
-]);
 
-// 2. EL PROP 'thresholdConfig' (La configuración de alertas)
-// Según tu tabla: Meta >= 90%, Precaución 70% a 89%, Crítico < 70%
-const configuracionUmbrales = ref({
-  optimal: 90,  // De 90 para arriba dibuja verde
-  warning: 70   // De 70 a 89 dibuja amarillo. Menos de 70 dibuja rojo.
+// --- Operaciones con la API ---
+const operatividad = ref([]);
+const operatividadRangos = ref({});
+
+async function formatearIBEO() {
+  const respuesta = await metricasServices.obtenerIBEO()
+  if (respuesta && respuesta.length > 0) {
+    const indicador = respuesta[0];
+    operatividadRangos.value = {
+      optimal: Number(indicador.meta),
+      warning: Number(indicador.peligro)
+    };
+    operatividad.value = indicador.historial_metricas.map(item => ({
+      label: obtenerMesAnio(item.periodo),
+      value: Number(item.valor)
+    }));
+  }
+}
+
+onMounted(async () => {
+  await formatearIBEO();
 });
-
 </script>
 
 <template>
@@ -45,8 +54,10 @@ const configuracionUmbrales = ref({
     </div>
 
     <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <!--
       <Card label="Crecimiento Mensual" icon="fi-rr-arrow-trend-up" message="Bienes activos" value="14" trend="+5%" trendType="up" />
       <Card label="Tasa de Operatividad" icon="fi-rr-check-circle" message="13 bienes" value="95%" trend="+2%" trendType="up" />
+    -->
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -61,21 +72,19 @@ const configuracionUmbrales = ref({
               Rangos de alerta
             </span>
             <div class="flex items-center gap-x-4 gap-y-2 flex-wrap">
-              <Tag value="Meta: > 89%" severity="success" class="ring-1 ring-inset ring-current/10"/>
-              <Tag value="89% - 70%" severity="warn" class="ring-1 ring-inset ring-current/10"/>
-              <Tag value="< 70%" severity="danger" class="ring-1 ring-inset ring-current/10"/>
+              <Tag :value="`Meta: > ${operatividadRangos.optimal - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10"/>
+              <Tag :value="`${operatividadRangos.optimal - 1}% - ${operatividadRangos.warning}%`" severity="warn" class="ring-1 ring-inset ring-current/10"/>
+              <Tag :value="`< ${operatividadRangos.warning}%`" severity="danger" class="ring-1 ring-inset ring-current/10"/>
             </div>
           </div>
           <AreaChart 
-            :data="historicoOperatividad"
-            :thresholdConfig="configuracionUmbrales"
+            :data="operatividad"
+            :ranges="operatividadRangos"
           />
         </div>
       </div>
 
-      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-
-      </div>
+      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden"></div>
 
     </div>
 

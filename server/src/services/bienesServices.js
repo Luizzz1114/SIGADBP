@@ -110,24 +110,6 @@ class BienesServices {
   async eliminar(id) {
     return await BienesRepositorio.eliminar(id);
   }
-
-  async procesarKpiIBEO() {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-
-      const IBEO = await BienesRepositorio.IBEO(client);
-      const resultadosIBEO = await BienesRepositorio.listar();
-
-      
-
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
 }
 
 export default new BienesServices();

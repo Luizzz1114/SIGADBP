@@ -46,6 +46,18 @@ export default {
 
 
 
+  // --- % IBEO ---
+  async obtenerIBEO() {
+    try {
+      const res = await api.get('/metricas/');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+
 
   // --- PRESUPUESTOS ---
   async presupuestosResumen() {
