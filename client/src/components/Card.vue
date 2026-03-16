@@ -4,8 +4,6 @@ defineProps({
   value: [String, Number],
   icon: String,
   message: String,
-  trend: String,
-  trendType: String
 });
 </script>
 
@@ -15,12 +13,6 @@ defineProps({
       <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
         <i :class="icon"></i>
       </div>
-      <Tag
-        v-if="trend"
-        :value="trend"
-        :severity="{'up': 'success', 'neutral': 'secondary', 'down': 'danger'}[trendType]"
-        class="ring-1 ring-inset ring-current/10"
-      />
     </div>
     <div class="flex flex-col">
       <span class="text-sm font-medium text-slate-500 dark:text-slate-200">

@@ -536,7 +536,7 @@ LEFT JOIN LATERAL (
   FROM Metricas 
   WHERE idIndicador = I.id 
   ORDER BY fecha ASC 
-  LIMIT 12
+  LIMIT 6
 ) AS M ON true
 GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 
@@ -934,4 +934,5 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 --- 8. KPIs
 --- ==========================================
 INSERT INTO Indicadores (perspectiva, denominacion, formula, meta, precaucion, peligro, frecuencia) VALUES
-('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', '%IBEO = Número de bienes en estado operativo / Total de bienes activos × 100', 90.00, 89.99, 70.00, 'Mensual');
+('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', '%IBEO = Número de bienes en estado operativo / Total de bienes activos × 100', 90.00, 89.99, 70.00, 'Mensual'),
+('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 'ICMI = (Inventario Final Mes Actual - Inventario Final Mes Anterior) / Inventario Final Mes Anterior × 100', 5.00, 15.00, 15.01, 'Mensual');

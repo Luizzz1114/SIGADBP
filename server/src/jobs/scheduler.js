@@ -10,5 +10,13 @@ export const iniciarTareasProgramadas = () => {
     timezone: "America/Caracas"
   });
   
+  cron.schedule('0 0 1 * *', async () => {
+    console.log('Ejecutando tarea programada: ICMI');
+    await IndicadoresServices.procesarICMI();
+  }, {
+    scheduled: true,
+    timezone: "America/Caracas"
+  });
+
   console.log('📅 Tareas programadas (Cron jobs) inicializadas correctamente.');
 };

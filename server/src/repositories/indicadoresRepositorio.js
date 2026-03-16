@@ -7,9 +7,15 @@ class Indicadores {
     return resultado.rows[0];
   }
 
-  async listar() {
-    const sql = "SELECT * FROM vistaIndicadores;";
-    const resultado = await pool.query(sql);
+  async ICMI(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = 'Índice de Crecimiento Mensual de Inventario (ICMI)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
+  async listar(denominacion) {
+    const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";
+    const resultado = await pool.query(sql, [denominacion]);
     return resultado.rows;
   }
 

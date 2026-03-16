@@ -240,11 +240,11 @@ onUnmounted(() => {
   if (resizeObserver) resizeObserver.disconnect();
 });
 
-const svgHeight = 220; 
+const svgHeight = 250; 
 // Márgenes restaurados a un valor limpio ya que controlamos el texto dinámicamente
-const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
+const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
 const minSpacePerPoint = 60; 
-const ticksCount = 2; 
+const ticksCount = 4; 
 const maxValue = 100;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
 

@@ -46,10 +46,21 @@ export default {
 
 
 
-  // --- % IBEO ---
+
+  // --- KPIs ---
   async obtenerIBEO() {
     try {
-      const res = await api.get('/metricas/');
+      const res = await api.get('/metricas?siglas=IBEO');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+  async obtenerICMI() {
+    try {
+      const res = await api.get('/metricas?siglas=ICMI');
       return res.data;
     } catch(error) {
       console.log(error);
