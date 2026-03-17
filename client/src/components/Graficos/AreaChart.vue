@@ -1,7 +1,8 @@
 <template>
-  <div class="w-full relative mt-4 overflow-x-auto pb-2" ref="chartWrapper">
+  <div class="w-full mx-auto">
     <div 
-      class="relative flex items-center justify-start w-full" 
+      class="relative flex items-center justify-start w-full overflow-x-auto"
+      ref="chartWrapper"
       :style="{ minWidth: `${svgWidth}px` }"
       role="region"
       aria-label="Gráfico de evolución mensual"
@@ -15,9 +16,13 @@
       >
         <defs>
           <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3" />
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35" />
             <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
           </linearGradient>
+
+          <pattern id="diagonal-area-stripes" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.15" />
+          </pattern>
         </defs>
 
         <g class="y-axis" aria-hidden="true">
@@ -34,7 +39,7 @@
               :x="margins.left - 12"
               :y="tick.y + 4" 
               text-anchor="end"
-              class="fill-slate-400 dark:fill-slate-500 text-[13px] font-medium transition-colors duration-300"
+              class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
             >
               {{ tick.value }}%
             </text>
@@ -46,10 +51,15 @@
           fill="url(#blueGradient)" 
           class="transition-all duration-700 ease-out"
         />
+        <path 
+          :d="areaPath" 
+          fill="url(#diagonal-area-stripes)" 
+          class="transition-all duration-700 ease-out"
+        />
 
         <path 
           :d="linePath" 
-          class="stroke-blue-400 transition-all duration-700 ease-out" 
+          class="stroke-blue-400 dark:stroke-blue-400 transition-all duration-700 ease-out" 
           stroke-width="3" 
           fill="none" 
           stroke-linecap="round"
@@ -108,15 +118,15 @@
             :cx="item.x" 
             :cy="isMounted ? item.yAnimated : item.yStatic" 
             r="4" 
-            class="fill-blue-400 transition-all duration-700 ease-out group-hover:r-[6px]" 
+            class="fill-blue-400 transition-all duration-700 ease-out group-hover:[r:5px] group-hover:fill-blue-500" 
           />
 
           <text
             :x="item.x"
             :y="item.yStatic + 25"
             :text-anchor="index === 0 ? 'start' : (index === processedData.length - 1 ? 'end' : 'middle')"
-            class="fill-slate-500 dark:fill-slate-400 text-[13px] font-medium transition-all duration-300 group-hover:fill-slate-800 dark:group-hover:fill-slate-200"
-            :class="{ 'font-bold fill-slate-700 dark:fill-slate-300': index === processedData.length - 1 }"
+            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-blue-400 dark:group-hover:fill-blue-300!"
+            :class="{ 'font-semibold fill-slate-600 dark:fill-slate-300!': index === processedData.length - 1 }"
             aria-hidden="true"
           >
             {{ item.label }}

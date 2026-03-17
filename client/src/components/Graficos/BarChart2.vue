@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full mx-auto mt-4">
-    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto pb-2" role="region" aria-label="Gráfico de barras mensual">
+  <div class="w-full mx-auto">
+    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region" aria-label="Gráfico de barras mensual">
       <svg 
         :viewBox="`0 0 ${svgWidth} ${svgHeight}`" 
         :style="{ width: '100%', minWidth: `${svgWidth}px`, height: `${svgHeight}px` }"
@@ -8,6 +8,12 @@
         preserveAspectRatio="xMidYMid meet"
         role="img"
       >
+        <defs>
+          <clipPath id="bars-base-clip">
+            <rect x="0" y="0" width="100%" :height="margins.top + chartHeight" />
+          </clipPath>
+        </defs>
+
         <g class="y-axis" aria-hidden="true">
           <template v-for="(tick, index) in computedYTicks" :key="'tick-' + index">
             <line 
@@ -22,7 +28,7 @@
               :x="margins.left - 12"
               :y="tick.y + 4" 
               text-anchor="end"
-              class="fill-slate-400 dark:fill-slate-500 text-[13px] font-medium transition-colors duration-300"
+              class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
             >
               {{ tick.value }}
             </text>
@@ -45,21 +51,23 @@
             :width="spacePerBar" 
             :height="chartHeight" 
             fill="transparent"
-            class="transition-colors duration-200 group-hover:fill-slate-50/80 dark:group-hover:fill-slate-800/40"
+            class="transition-colors duration-200 group-hover:fill-slate-200/30 dark:group-hover:fill-slate-800/50"
           />
 
           <rect
             :x="item.x - (barWidth / 2)"
             :y="isMounted ? item.yAnimated : item.yStatic"
             :width="barWidth"
-            :height="isMounted ? item.height : 0"
-            rx="4"
-            class="fill-blue-400 transition-opacity duration-300 group-hover:opacity-80"
+            :height="isMounted ? item.height + 15 : 15"
+            rx="10"
+            clip-path="url(#bars-base-clip)"
+            class="fill-blue-400"
             :style="{ 
               transitionProperty: 'height, y', 
               transitionDuration: '700ms', 
               transitionTimingFunction: 'ease-out',
-              transitionDelay: `${index * 40}ms` 
+              transitionDelay: `${index * 40}ms`, 
+              marginBottom: '12px',
             }"
           />
 
@@ -67,8 +75,8 @@
             :x="item.x"
             :y="item.yStatic + 25"
             text-anchor="middle"
-            class="fill-slate-500 dark:fill-slate-400 text-[13px] font-medium transition-colors duration-300 group-hover:fill-slate-800 dark:group-hover:fill-slate-200"
-            :class="{ 'font-bold fill-slate-700 dark:fill-slate-300': index === processedData.length - 1 }"
+            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-blue-400 dark:group-hover:fill-blue-300!"
+            :class="{ 'font-semibold fill-slate-600 dark:fill-slate-300!': index === processedData.length - 1 }"
             aria-hidden="true"
           >
             {{ item.label }}
@@ -213,7 +221,7 @@ const svgWidth = computed(() => {
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
-const barWidth = computed(() => Math.min(spacePerBar.value * 0.55, 32)); // Ligeramente más anchas
+const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32)); // Ligeramente más anchas
 
 // --- LÓGICA DEL EJE Y (Enteros) ---
 const computedYTicks = computed(() => {

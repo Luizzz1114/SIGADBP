@@ -14,12 +14,28 @@ const items = [
   { label: 'Estadísticas', route: '/inventario/estadisticas' }
 ];
 
+const opRangos = ref();
+
+const toggleRangos = (event) => {
+  opRangos.value.toggle(event);
+};
+
+const opCrecimiento = ref();
+
+const toggleCrecimientoR = (event) => {
+  opCrecimiento.value.toggle(event);
+};
+
 
 // --- Operaciones con la API ---
 const crecimiento = ref([]);
-const crecimientoRangos = ref({});
 const operatividad = ref([]);
 const operatividadRangos = ref({});
+
+const crecimientoRangos = ref({
+  min: -5,
+  max: 15
+});
 
 const actualIBEO = computed(() => {
   if (!operatividad.value.length) return null;
@@ -40,10 +56,6 @@ async function formatearICMI() {
   const respuesta = await metricasServices.obtenerICMI();
   if (respuesta && respuesta.length > 0) {
     const indicador = respuesta[0];
-    crecimientoRangos.value = {
-      optimal: Number(indicador.meta),
-      warning: Number(indicador.peligro)
-    };
     crecimiento.value = indicador.historial_metricas.map(item => ({
       ...item,
       label: obtenerMesAnio(item.periodo),
@@ -52,13 +64,32 @@ async function formatearICMI() {
   }
 }
 
+// Evalúa si el índice de crecimiento cumplió la meta
+const crecimientoStatus = computed(() => {
+  const val = Number(variacionCrecimiento.value);
+  if (val < crecimientoRangos.value.min) return 'danger';
+  if (val > crecimientoRangos.value.max) return 'warn';
+  return 'success';
+});
+
+// Evalúa si la operatividad cumplió la meta
+const operatividadStatus = computed(() => {
+  if (!actualIBEO.value) return null;
+  const val = Number(actualIBEO.value.value);
+  
+  // Usando los rangos que definiste en tu código
+  if (val >= operatividadRangos.value.min) return 'success';
+  if (val <= operatividadRangos.value.max) return 'danger';
+  return 'warn'; 
+});
+
 async function formatearIBEO() {
   const respuesta = await metricasServices.obtenerIBEO()
   if (respuesta && respuesta.length > 0) {
     const indicador = respuesta[0];
     operatividadRangos.value = {
-      optimal: Number(indicador.meta),
-      warning: Number(indicador.peligro)
+      min: Number(indicador.meta),
+      max: Number(indicador.peligro)
     };
     operatividad.value = indicador.historial_metricas.map(item => ({
       ...item,
@@ -96,8 +127,14 @@ onMounted(async () => {
         label="Indice de Crecimiento"
         icon="fi-rr-arrow-trend-up"
         :value="variacionCrecimiento + '%'"
+        :status="crecimientoStatus"
       />
-      <Card label="Porcentaje de Operatividad" icon="fi-rr-check-circle" :value="actualIBEO?.value + '%'" />
+      <Card
+        label="Porcentaje de Operatividad"
+        icon="fi-rr-check-circle"
+        :value="[actualIBEO?.value ? actualIBEO.value : 0] + '%'"
+        :status="operatividadStatus"
+      />
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
@@ -105,6 +142,41 @@ onMounted(async () => {
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <span class="font-bold text-base dark:text-slate-50">Crecimiento mensual del inventario</span>
+          <Button
+            icon="fi-rr-info" 
+            severity="secondary"
+            outlined
+            class="size-8!"
+            @click="toggleCrecimientoR"
+          />
+          <Popover ref="opCrecimiento">
+            <div class="flex flex-col gap-3 p-1">
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <i class="fi-br-info text-blue-500"></i>
+                Rangos de alerta (Índice)
+              </span>
+              
+              <div class="flex items-center gap-2 flex-wrap">
+                <Tag 
+                  :value="`< ${crecimientoRangos.min}%`" 
+                  severity="danger" 
+                  class="ring-1 ring-inset ring-current/10"
+                />
+                
+                <Tag 
+                  :value="`Meta: ${crecimientoRangos.min}% a ${crecimientoRangos.max}%`" 
+                  severity="success" 
+                  class="ring-1 ring-inset ring-current/10"
+                />
+                
+                <Tag 
+                  :value="`> ${crecimientoRangos.max}%`" 
+                  severity="warn" 
+                  class="ring-1 ring-inset ring-current/10"
+                />
+              </div>
+            </div>
+          </Popover>
         </div>
         <div class="w-full p-5">
           <BarChart2
@@ -117,19 +189,28 @@ onMounted(async () => {
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <span class="font-bold text-base dark:text-slate-50">Bienes en estado operativo</span>
+          <Button
+            icon="fi-rr-info" 
+            severity="secondary"
+            outlined
+            class="size-8!"
+            @click="toggleRangos"
+          />
+          <Popover ref="opRangos" >
+            <div class="flex flex-col gap-3 p-1">
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <i class="fi-br-info text-blue-500"></i>
+                Rangos de alerta
+              </span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <Tag :value="`Meta: > ${operatividadRangos.min - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10"/>
+                <Tag :value="`${operatividadRangos.min - 1}% - ${operatividadRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10"/>
+                <Tag :value="`< ${operatividadRangos.max}%`" severity="danger" class="ring-1 ring-inset ring-current/10"/>
+              </div>
+            </div>
+          </Popover>
         </div>
         <div class="w-full p-5">
-          <div class="flex flex-col gap-3">
-            <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-              <i class="fi-br-info text-blue-500"></i>
-              Rangos de alerta
-            </span>
-            <div class="flex items-center gap-x-4 gap-y-2 flex-wrap">
-              <Tag :value="`Meta: > ${operatividadRangos.optimal - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10"/>
-              <Tag :value="`${operatividadRangos.optimal - 1}% - ${operatividadRangos.warning}%`" severity="warn" class="ring-1 ring-inset ring-current/10"/>
-              <Tag :value="`< ${operatividadRangos.warning}%`" severity="danger" class="ring-1 ring-inset ring-current/10"/>
-            </div>
-          </div>
           <AreaChart 
             :data="operatividad"
             :ranges="operatividadRangos"

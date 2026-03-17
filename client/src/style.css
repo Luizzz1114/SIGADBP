@@ -391,3 +391,7 @@ i, span::before, span::after {
   opacity: 0;
   transform: translateY(5px);
 }
+
+#nprogress .bar {
+  z-index: 999999 !important;
+}
