@@ -1,5 +1,6 @@
 import IndicadoresRepositorio from '../repositories/indicadoresRepositorio.js';
 import BienesRepositorio from '../repositories/bienesRepositorio.js';
+import PresupuestoRepositorio from '../repositories/presupuestosRepositorio.js';
 import pool from '../config/database.js';
 
 class IndicadoresServices {
@@ -11,6 +12,15 @@ class IndicadoresServices {
         break;
       case 'ICMI':
         denominacion = 'Índice de Crecimiento Mensual de Inventario (ICMI)';
+        break;
+      case 'IIET':
+        denominacion = '% Inversión en Equipos Tecnológicos (%IIET)';
+        break;
+      case 'IIM':
+        denominacion = '% Inversión en Muebles (%IIM)';
+        break;
+      case 'IIMB':
+        denominacion = '% Inversión en Mantenimiento de Bienes (%IIMB)';
         break;
       default:
         denominacion = null;
@@ -43,7 +53,7 @@ class IndicadoresServices {
     }
   }
 
-    async procesarICMI() {
+async procesarICMI() {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -66,6 +76,96 @@ class IndicadoresServices {
       client.release();
     }
   }
+
+async procesarKpiIIET() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IIET = await IndicadoresRepositorio.IIET(client);
+      const resultadosIIET = await PresupuestoRepositorio.obtenerResumenMetricas();
+
+      const itemTecnologico = resultadosIIET.find(
+        item => item.tipo === "Compra de Equipos Tecnológicos"
+      );
+
+      const porcentaje = itemTecnologico ? itemTecnologico.porcentaje_uso : "0.00";
+
+      const metrica = {
+        valor: porcentaje,
+        idIndicador: IIET.id
+      };
+
+      await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+async procesarKpiIIM() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IIM = await IndicadoresRepositorio.IIM(client);
+      const resultadosIIM = await PresupuestoRepositorio.obtenerResumenMetricas();
+
+      const itemMueble = resultadosIIM.find(
+        item => item.tipo === "Compra de Muebles"
+      );
+
+      const porcentaje = itemMueble ? itemMueble.porcentaje_uso : "0.00";
+
+      const metrica = {
+        valor: porcentaje,
+        idIndicador: IIM.id
+      };
+
+      await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+async procesarKpiIIMB() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IIMB = await IndicadoresRepositorio.IIMB(client);
+      const resultadosIIMB = await PresupuestoRepositorio.obtenerResumenMetricas();
+
+      const itemMantenimiento = resultadosIIMB.find(
+        item => item.tipo === "Mantenimiento de Bienes"
+      );
+
+      const porcentaje = itemMantenimiento ? itemMantenimiento.porcentaje_uso : "0.00";
+
+      const metrica = {
+        valor: porcentaje,
+        idIndicador: IIMB.id
+      };
+
+      await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }  
 }
 
 export default new IndicadoresServices();

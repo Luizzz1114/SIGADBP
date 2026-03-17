@@ -165,7 +165,7 @@ const props = defineProps({
   data: { type: Array, required: true },
   ranges: {
     type: Object,
-    default: () => ({ optimal: 90, warning: 70 })
+    default: () => ({ min: 90, max: 70 })
   }
 });
 
@@ -267,8 +267,8 @@ const chartWidth = computed(() => svgWidth.value - margins.left - margins.right)
 const hoverZoneWidth = computed(() => chartWidth.value / (props.data.length || 1));
 
 const getThresholdFillColor = (value) => {
-  if (value >= props.ranges.optimal) return 'fill-emerald-400';
-  if (value >= props.ranges.warning) return 'fill-orange-400';
+  if (value >= props.ranges.min) return 'fill-emerald-400';
+  if (value >= props.ranges.max) return 'fill-orange-400';
   return 'fill-red-400';
 };
 

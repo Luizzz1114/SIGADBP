@@ -135,7 +135,7 @@ onMounted(async () => {
     <div class="flex items-center justify-between gap-5 flex-wrap">
       <div class="flex items-center gap-4">
         <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
-          <i class="fi-sr-boxes grid place-items-center"></i>
+          <i class="fi-sr-boxes"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Inventario de bienes</span>

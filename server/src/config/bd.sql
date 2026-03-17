@@ -209,7 +209,6 @@ CREATE TABLE Indicadores (
   id SERIAL PRIMARY KEY,
   perspectiva VARCHAR(100) NOT NULL,
   denominacion VARCHAR(255) NOT NULL,
-  formula TEXT,
   meta NUMERIC(15, 2),
   peligro NUMERIC(15, 2),
   precaucion NUMERIC(15, 2),
@@ -294,7 +293,7 @@ BEGIN
   END IF;
 
   IF v_estatus IS DISTINCT FROM v_bien.estatus THEN
-    UPDATE Bienes SET estatus = v_estatus WHERE id = v_bien.id;
+    UPDATE Bienes SET estatus = v_estatus WHERE id = v_bien.id;-
   END IF;
 
   RETURN OLD;
@@ -634,6 +633,9 @@ AND P.aniofiscal = EXTRACT(YEAR FROM CURRENT_DATE)
 AND P.semestre = CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN 'Semestre I' ELSE 'Semestre II' END
 GROUP BY P.tipo, P.semestre, P.aniofiscal;
 
+
+
+
 -- INSERTS
 INSERT INTO Estados (nombre)
 VALUES ('Sucre');
@@ -933,6 +935,9 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 --- ==========================================
 --- 8. KPIs
 --- ==========================================
-INSERT INTO Indicadores (perspectiva, denominacion, formula, meta, precaucion, peligro, frecuencia) VALUES
-('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', '%IBEO = Número de bienes en estado operativo / Total de bienes activos × 100', 90.00, 89.99, 70.00, 'Mensual'),
-('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 'ICMI = (Inventario Final Mes Actual - Inventario Final Mes Anterior) / Inventario Final Mes Anterior × 100', 5.00, 15.00, 15.01, 'Mensual');
+INSERT INTO Indicadores (perspectiva, denominacion, meta, precaucion, peligro, frecuencia) VALUES
+('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90.00, 89.00, 70.00, 'Mensual'),
+('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15.00, -5.00, 15.01, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60.00, 59.00, 30, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60.00, 59.00, 30, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60.00, 59.00, 30, 'Mensual');

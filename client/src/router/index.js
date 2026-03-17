@@ -15,6 +15,7 @@ import Cargos from '@/views/Cargos.vue';
 import Personal from '@/views/Personal.vue';
 import Usuarios from '@/views/Usuarios.vue';
 import InventarioBienesKPIs from '@/views/KPIs/InventarioBienesKPIs.vue';
+import PresupuestosKPIs from '@/views/KPIs/PresupuestosKPIs.vue';
 
 const routes = [
   {
@@ -89,9 +90,19 @@ const routes = [
       },
       {
         path: 'presupuestos',
-        name: 'Presupuestos',
-        component: Presupuestos,
-        meta: { roles: ['Administrador'] }
+        meta: { roles: ['Administrador'] },
+        children: [
+          {
+            path: '',
+            name: 'Presupuestos',
+            component: Presupuestos,
+          },
+          {
+            path: 'estadisticas',
+            name: 'PresupuestosKPIs',
+            component: PresupuestosKPIs
+          }
+        ]
       },
       {
         path: 'dependencias',
