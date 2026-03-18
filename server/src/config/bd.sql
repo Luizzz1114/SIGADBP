@@ -941,3 +941,45 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, precaucion, peligro, f
 ('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60.00, 59.00, 30, 'Mensual'),
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60.00, 59.00, 30, 'Mensual'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60.00, 59.00, 30, 'Mensual');
+
+INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
+('09-2025', '01-09-2025', 79, 1),
+('10-2025', '01-10-2025', 85, 1),
+('11-2025', '01-11-2025', 87, 1),
+('12-2025', '01-12-2025', 95, 1),
+('01-2026', '01-01-2026', 92, 1),
+('02-2026', '01-02-2026', 95, 1),
+('03-2026', '01-03-2026', 92, 1);
+
+
+INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
+('09-2025', '01-09-2025', 13, 2),
+('10-2025', '01-10-2025', 9, 2),
+('11-2025', '01-11-2025', 14, 2),
+('12-2025', '01-12-2025', 13, 2),
+('01-2026', '01-01-2026', 12, 2),
+('02-2026', '01-02-2026', 11, 2),
+('03-2026', '01-03-2026', 14, 2);
+
+
+INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
+('I-2024', '30-06-2024', 67, 3),
+('II-2024', '30-12-2024', 50, 3),
+('I-2025', '30-06-2025', 20, 3),
+('II-2025', '30-12-2025', 87, 3),
+('I-2026', '30-06-2026', 56, 3),
+('II-2026', '30-12-2026', 62, 3);
+
+INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
+('I-2024', '30-06-2024', 40, 4),
+('II-2024', '30-12-2024', 55, 4),
+('I-2025', '30-06-2025', 39, 4),
+('II-2025', '30-12-2025', 78, 4),
+('I-2026', '30-06-2026', 50, 4),
+('II-2026', '30-12-2026', 70, 4);
+
+INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
+('I-2024', '30-06-2024', 10, 5),
+('II-2024', '30-12-2024', 45, 5),
+('I-2025', '30-06-2025', 87, 5),
+('II-2025', '30-12-2025', 90, 5);
