@@ -196,12 +196,10 @@ onUnmounted(() => {
 
 // --- CONFIGURACIÓN BASE ---
 const svgHeight = 250; 
-// Se aumentó margin left a 55 para que los números del eje Y no se corten
 const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
-// Punto intermedio: 60px para que quepa en escritorio sin scroll, pero no choque en móvil
-const minSpacePerBar = 60; 
+const minSpacePerBar = 90; 
 
 // --- CÁLCULO DE LÍMITE DINÁMICO ---
 const maxValue = computed(() => {
@@ -221,7 +219,7 @@ const svgWidth = computed(() => {
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
-const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32)); // Ligeramente más anchas
+const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32));
 
 // --- LÓGICA DEL EJE Y (Enteros) ---
 const computedYTicks = computed(() => {

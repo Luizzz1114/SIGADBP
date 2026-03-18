@@ -1,28 +1,32 @@
 <template>
   <div class="w-full mx-auto">
-    <div 
-      class="relative flex items-center justify-start w-full overflow-x-auto"
-      ref="chartWrapper"
-      :style="{ minWidth: `${svgWidth}px` }"
-      role="region"
-      aria-label="Gráfico de evolución mensual"
-    >
+    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region" aria-label="Gráfico de área mensual">
       <svg 
         :viewBox="`0 0 ${svgWidth} ${svgHeight}`" 
-        :style="{ width: '100%', height: `${svgHeight}px` }"
+        :style="{ width: '100%', minWidth: `${svgWidth}px`, height: `${svgHeight}px` }"
         class="overflow-visible"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
         role="img"
       >
         <defs>
-          <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
-          </linearGradient>
+          <clipPath id="chart-reveal-clip">
+            <rect 
+              x="0" 
+              y="0" 
+              :width="isMounted ? svgWidth : 0" 
+              :height="svgHeight" 
+              class="transition-all duration-1000 ease-out" 
+            />
+          </clipPath>
 
-          <pattern id="diagonal-area-stripes" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-            <line x1="0" y1="0" x2="0" y2="10" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.15" />
+          <pattern id="diagonalHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="8" class="stroke-blue-400" stroke-width="1.5" stroke-opacity="0.15" />
           </pattern>
+
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" class="stop-color-blue-400" stop-opacity="0.25" stop-color="#60a5fa" />
+            <stop offset="100%" class="stop-color-blue-400" stop-opacity="0.05" stop-color="#60a5fa" />
+          </linearGradient>
         </defs>
 
         <g class="y-axis" aria-hidden="true">
@@ -46,36 +50,38 @@
           </template>
         </g>
 
-        <path 
-          :d="areaPath" 
-          fill="url(#blueGradient)" 
-          class="transition-all duration-700 ease-out"
-        />
-        <path 
-          :d="areaPath" 
-          fill="url(#diagonal-area-stripes)" 
-          class="transition-all duration-700 ease-out"
-        />
+        <g clip-path="url(#chart-reveal-clip)">
+          <path 
+            :d="areaPath" 
+            fill="url(#areaGradient)" 
+            class="transition-all duration-300"
+          />
+          <path 
+            :d="areaPath" 
+            fill="url(#diagonalHatch)" 
+            class="transition-all duration-300"
+          />
 
-        <path 
-          :d="linePath" 
-          class="stroke-blue-400 dark:stroke-blue-400 transition-all duration-700 ease-out" 
-          stroke-width="3" 
-          fill="none" 
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+          <path 
+            :d="linePath" 
+            fill="none" 
+            class="stroke-blue-400 dark:stroke-blue-400" 
+            stroke-width="3" 
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
 
-        <line 
-          v-if="processedData.length > 0"
-          :x1="processedData[processedData.length - 1].x" 
-          :y1="isMounted ? processedData[processedData.length - 1].yAnimated : processedData[processedData.length - 1].yStatic" 
-          :x2="processedData[processedData.length - 1].x" 
-          :y2="margins.top + chartHeight" 
-          class="stroke-blue-400/50 dark:stroke-blue-400/50 transition-all duration-700 ease-out"
-          stroke-dasharray="4 4"
-          stroke-width="1.5"
-        />
+          <line
+            v-if="processedData.length"
+            :x1="processedData[processedData.length - 1].x"
+            :y1="processedData[processedData.length - 1].y"
+            :x2="processedData[processedData.length - 1].x"
+            :y2="margins.top + chartHeight"
+            class="stroke-blue-300 dark:stroke-blue-400"
+            stroke-width="1.5"
+            stroke-dasharray="4 4"
+          />
+        </g>
 
         <g 
           v-for="(item, index) in processedData" 
@@ -88,45 +94,37 @@
           @mouseleave="onMouseLeave"
         >
           <rect 
-            :x="item.x - (hoverZoneWidth / 2)" 
+            :x="item.x - (spacePerBar / 2)" 
             :y="margins.top" 
-            :width="hoverZoneWidth" 
+            :width="spacePerBar" 
             :height="chartHeight" 
             fill="transparent"
-            class="transition-colors"
           />
 
-          <line 
-            :x1="item.x" 
-            :y1="isMounted ? item.yAnimated : item.yStatic" 
-            :x2="item.x" 
-            :y2="margins.top + chartHeight" 
-            class="stroke-slate-400 dark:stroke-slate-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            stroke-dasharray="4 4"
-            stroke-width="1.5"
-          />
-
-          <circle 
-            v-if="index === processedData.length - 1"
-            :cx="item.x" 
-            :cy="isMounted ? item.yAnimated : item.yStatic" 
-            r="8" 
-            class="fill-blue-400/20 dark:fill-blue-400/20 animate-pulse transition-all duration-700 ease-out" 
+          <line
+            :x1="item.x"
+            :y1="margins.top"
+            :x2="item.x"
+            :y2="margins.top + chartHeight"
+            class="stroke-slate-300 dark:stroke-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            stroke-width="1"
+            stroke-dasharray="3 3"
           />
 
           <circle 
             :cx="item.x" 
-            :cy="isMounted ? item.yAnimated : item.yStatic" 
+            :cy="item.y" 
             r="4" 
-            class="fill-blue-400 transition-all duration-700 ease-out group-hover:[r:5px] group-hover:fill-blue-500" 
+            class="fill-blue-400 group-hover:r-[6px] transition-all duration-200"
+            clip-path="url(#chart-reveal-clip)"
           />
 
           <text
             :x="item.x"
-            :y="item.yStatic + 25"
-            :text-anchor="index === 0 ? 'start' : (index === processedData.length - 1 ? 'end' : 'middle')"
-            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-blue-400 dark:group-hover:fill-blue-300!"
-            :class="{ 'font-semibold fill-slate-600 dark:fill-slate-300!': index === processedData.length - 1 }"
+            :y="margins.top + chartHeight + 25"
+            text-anchor="middle"
+            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-blue-500 dark:group-hover:fill-blue-400!"
+            :class="{ 'font-semibold fill-slate-700 dark:fill-slate-200!': index === processedData.length - 1 }"
             aria-hidden="true"
           >
             {{ item.label }}
@@ -134,28 +132,28 @@
         </g>
       </svg>
     </div>
-  </div>
 
-  <Teleport to="body">
-    <div 
-      v-if="tooltipData"
-      v-show="tooltipVisible"
-      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out"
-      :style="tooltipStyle"
-    >
-      <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
-        {{ tooltipData.label }}
+    <Teleport to="body">
+      <div 
+        v-if="tooltipData"
+        v-show="tooltipVisible"
+        class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-md border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out"
+        :style="tooltipStyle"
+      >
+        <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
+          {{ tooltipData.label }}
+        </div>
+        <div class="flex items-center gap-2 px-2 pb-2 pt-1.5">
+          <svg viewBox="0 0 10 10" class="w-2.5 h-2.5 rounded-full shrink-0">
+            <circle cx="5" cy="5" r="5" class="fill-blue-400" />
+          </svg>
+          <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+            {{ type }}: {{ tooltipData.value }}%
+          </span>
+        </div>
       </div>
-      <div class="flex items-center gap-2 px-2 pb-2 pt-1.5">
-        <svg viewBox="0 0 10 10" class="w-2.5 h-2.5 rounded-full shrink-0">
-          <circle cx="5" cy="5" r="5" :class="tooltipData.colorClass" />
-        </svg>
-        <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-          Operatividad: {{ tooltipData.value }}%
-        </span>
-      </div>
-    </div>
-  </Teleport>
+    </Teleport>
+  </div>
 </template>
 
 <script setup>
@@ -163,32 +161,28 @@ import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   data: { type: Array, required: true },
-  ranges: {
-    type: Object,
-    default: () => ({ min: 90, max: 70 })
-  }
+  type: { type: String, default: 'Valor'}
 });
 
 const isMounted = ref(false);
-
 const chartWrapper = ref(null);
+const containerWidth = ref(400);
+
+// --- ESTADO Y LÓGICA DEL TOOLTIP ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
-
 const tooltipStyle = ref({ 
   left: '0px', top: '0px', transform: 'translate(-50%, -100%)', whiteSpace: 'nowrap'
 });
 
 const updateTooltipPosition = (event) => {
-  // Ahora usamos clientX y clientY que son relativos a toda la pantalla del navegador
   let x = event.clientX;
   let y = event.clientY; 
+  const offset = 15; 
 
   let transformX = '-50%';
   let transformY = '-100%';
-  const offset = 15; 
 
-  // Límites basados en la ventana completa
   if (x > window.innerWidth - 180) {
     transformX = '-100%';
     x -= offset;
@@ -227,9 +221,8 @@ const onMouseLeave = () => {
   tooltipVisible.value = false;
 };
 
-const containerWidth = ref(400);
+// --- LÓGICA RESPONSIVE ---
 let resizeObserver = null;
-
 onMounted(() => {
   requestAnimationFrame(() => {
     setTimeout(() => { isMounted.value = true; }, 50);
@@ -238,7 +231,6 @@ onMounted(() => {
   if (chartWrapper.value) {
     resizeObserver = new ResizeObserver((entries) => {
       if (entries[0]) {
-        // Restamos 2px para evitar barras de scroll fantasma por decimales
         containerWidth.value = entries[0].contentRect.width - 2; 
       }
     });
@@ -250,77 +242,76 @@ onUnmounted(() => {
   if (resizeObserver) resizeObserver.disconnect();
 });
 
+// --- CONFIGURACIÓN BASE ---
 const svgHeight = 250; 
-// Márgenes restaurados a un valor limpio ya que controlamos el texto dinámicamente
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
-const minSpacePerPoint = 60; 
-const ticksCount = 4; 
-const maxValue = 100;
+const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
+const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
+const minSpacePerBar = 90; 
 
+// --- CÁLCULO DE LÍMITE DINÁMICO ---
+const maxValue = computed(() => {
+  if (!props.data || props.data.length === 0) return 100;
+  const maxInData = Math.max(...props.data.map(item => item.value));
+  if (maxInData <= 0) return 100;
+  const targetMax = maxInData > 100 ? maxInData * 1.15 : 100;
+  return Math.ceil(targetMax / ticksCount) * ticksCount;
+});
+
+// --- DIMENSIONES Y CÁLCULOS ---
 const svgWidth = computed(() => {
-  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerPoint);
+  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar);
   return Math.max(containerWidth.value, minRequiredWidth, 400);
 });
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
-const hoverZoneWidth = computed(() => chartWidth.value / (props.data.length || 1));
+const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
 
-const getThresholdFillColor = (value) => {
-  if (value >= props.ranges.min) return 'fill-emerald-400';
-  if (value >= props.ranges.max) return 'fill-orange-400';
-  return 'fill-red-400';
-};
-
+// --- LÓGICA DEL EJE Y ---
 const computedYTicks = computed(() => {
-  return Array.from({ length: ticksCount + 1 }, (_, i) => ({
-    value: (maxValue / ticksCount) * (ticksCount - i),
-    y: margins.top + (chartHeight / ticksCount) * i
-  }));
-});
-
-const processedData = computed(() => {
-  const step = props.data.length > 1 ? chartWidth.value / (props.data.length - 1) : 0;
-  
-  return props.data.map((item, index) => {
-    const heightRatio = item.value / maxValue; 
-    const yStatic = margins.top + chartHeight; 
-    const yAnimated = margins.top + chartHeight - (heightRatio * chartHeight); 
-    
+  const max = maxValue.value;
+  return Array.from({ length: ticksCount + 1 }, (_, i) => {
+    const val = (max / ticksCount) * (ticksCount - i);
     return {
-      ...item,
-      x: margins.left + (index * step),
-      yStatic,
-      yAnimated,
-      colorClass: getThresholdFillColor(item.value) 
+      value: Math.round(val),
+      y: margins.top + (chartHeight / ticksCount) * i
     };
   });
 });
 
+// --- PROCESAMIENTO DE PUNTOS ---
+const processedData = computed(() => {
+  return props.data.map((item, index) => {
+    const heightRatio = item.value / maxValue.value; 
+    const yPos = margins.top + chartHeight - (heightRatio * chartHeight);
+    
+    return {
+      ...item,
+      x: margins.left + (index * spacePerBar.value) + (spacePerBar.value / 2),
+      y: yPos
+    };
+  });
+});
+
+// --- GENERACIÓN DE PATHS (Línea y Área) ---
 const linePath = computed(() => {
+  if (processedData.value.length === 0) return '';
   const pts = processedData.value;
-  if (!pts || pts.length === 0) return '';
-  
-  let d = `M ${pts[0].x},${isMounted.value ? pts[0].yAnimated : pts[0].yStatic}`;
-  
+  let d = `M ${pts[0].x} ${pts[0].y}`;
   for (let i = 1; i < pts.length; i++) {
-    const pt = pts[i];
-    const y = isMounted.value ? pt.yAnimated : pt.yStatic;
-    d += ` L ${pt.x},${y}`;
+    d += ` L ${pts[i].x} ${pts[i].y}`;
   }
-  
   return d;
 });
 
 const areaPath = computed(() => {
+  if (processedData.value.length === 0) return '';
   const pts = processedData.value;
-  if (!pts || pts.length === 0) return '';
-  
-  const bottomY = margins.top + chartHeight;
-  let d = linePath.value;
-  
-  d += ` L ${pts[pts.length - 1].x},${bottomY} L ${pts[0].x},${bottomY} Z`;
-  
+  let d = `M ${pts[0].x} ${margins.top + chartHeight}`;
+  for (let i = 0; i < pts.length; i++) {
+    d += ` L ${pts[i].x} ${pts[i].y}`;
+  }
+  d += ` L ${pts[pts.length - 1].x} ${margins.top + chartHeight} Z`;
   return d;
 });
 </script>

@@ -15,89 +15,74 @@ const items = [
 ];
 
 const opRangos = ref();
-const toggleRangos = (event) => {
-  opRangos.value.toggle(event);
-};
-
 const opCrecimiento = ref();
-const toggleCrecimientoR = (event) => {
-  opCrecimiento.value.toggle(event);
-};
 
 
-// --- Operaciones con la API ---
+// --- Estados ---
 const crecimiento = ref([]);
 const operatividad = ref([]);
-const crecimientoRangos = ref({});
-const operatividadRangos = ref({});
+const crecimientoRangos = ref({ min: 0, max: 0 });
+const operatividadRangos = ref({ min: 0, max: 0 });
 
 const actualIBEO = computed(() => {
-  if (!operatividad.value.length) return null;
-  return operatividad.value.reduce((max, actual) => actual.fecha > max.fecha ? actual : max);
+  const len = operatividad.value.length;
+  return len > 0 ? operatividad.value[len - 1].value : 0;
 });
 
 const variacionCrecimiento = computed(() => {
-  if (crecimiento.value.length < 2) return 0;
-  const ordenados = [...crecimiento.value].sort((a, b) => (b.fecha > a.fecha ? 1 : -1));
-  const actual = ordenados[0].value;
-  const anterior = ordenados[1].value;
+  const len = crecimiento.value.length;
+  if (len < 2) return 0;
+  const actual = crecimiento.value[len - 1].value;
+  const anterior = crecimiento.value[len - 2].value;
   if (anterior === 0) return 0;
-  const calculo = ((actual - anterior) / anterior) * 100;
-  return calculo.toFixed(2);
+  return (((actual - anterior) / anterior) * 100).toFixed(2);
 });
-
-async function formatearICMI() {
-  const respuesta = await metricasServices.obtenerICMI();
-  if (respuesta && respuesta.length > 0) {
-    const indicador = respuesta[0];
-    crecimientoRangos.value = {
-      min: Number(indicador.peligro),
-      max: Number(indicador.meta)
-    };
-    crecimiento.value = indicador.historial_metricas.map(item => ({
-      ...item,
-      label: obtenerMesAnio(item.periodo),
-      value: Number(item.valor)
-    }));
-  }
-}
-
-async function formatearIBEO() {
-  const respuesta = await metricasServices.obtenerIBEO()
-  if (respuesta && respuesta.length > 0) {
-    const indicador = respuesta[0];
-    operatividadRangos.value = {
-      min: Number(indicador.meta),
-      max: Number(indicador.peligro)
-    };
-    operatividad.value = indicador.historial_metricas.map(item => ({
-      ...item,
-      label: obtenerMesAnio(item.periodo),
-      value: Number(item.valor)
-    }));
-  }
-}
 
 const crecimientoStatus = computed(() => {
   const val = Number(variacionCrecimiento.value);
-  if (val < crecimientoRangos.value.min) return 'danger';
-  if (val > crecimientoRangos.value.max) return 'warn';
-  return 'success';
+  const { min, max } = crecimientoRangos.value;
+  return val < min ? 'danger' : val > max ? 'warn' : 'success';
 });
 
 const operatividadStatus = computed(() => {
-  if (!actualIBEO.value) return null;
-  const val = Number(actualIBEO.value.value);
-  if (val >= operatividadRangos.value.min) return 'success';
-  if (val <= operatividadRangos.value.max) return 'danger';
-  return 'warn'; 
+  const val = actualIBEO.value;
+  const { min, max } = operatividadRangos.value;
+  return val >= min ? 'success' : val <= max ? 'danger' : 'warn';
 });
 
+
+// --- Operaciones con la API ---
+const procesarHistorial = (historial) => {
+  return historial
+    .map(item => ({
+      ...item,
+      label: obtenerMesAnio(item.periodo),
+      value: Number(item.valor)
+    }))
+    .sort((a, b) => (a.fecha > b.fecha ? 1 : -1)); 
+};
+
 onMounted(async () => {
-  await Promise.all([
-    formatearIBEO(),
-    formatearICMI()
+  const [resIBEO, resICMI] = await Promise.all([
+    metricasServices.obtenerIBEO(),
+    metricasServices.obtenerICMI()
   ]);
+
+  if (resICMI?.length) {
+    crecimiento.value = procesarHistorial(resICMI[0].historial_metricas);
+    crecimientoRangos.value = {
+      min: Number(resICMI[0].peligro),
+      max: Number(resICMI[0].meta)
+    };
+  }
+
+  if (resIBEO?.length) {
+    operatividad.value = procesarHistorial(resIBEO[0].historial_metricas);
+    operatividadRangos.value = {
+      min: Number(resIBEO[0].meta),
+      max: Number(resIBEO[0].peligro)
+    };
+  }
 });
 </script>
 
@@ -125,21 +110,15 @@ onMounted(async () => {
       <Card
         label="Porcentaje de Operatividad"
         icon="fi-rr-check-circle"
-        :value="[actualIBEO?.value ? actualIBEO.value : 0] + '%'"
+        :value="actualIBEO + '%'"
         :status="operatividadStatus"
       />
     </div>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-          <span class="font-bold text-base dark:text-slate-50">Crecimiento mensual del inventario</span>
-          <Button
-            icon="fi-rr-info" 
-            severity="secondary"
-            outlined
-            class="size-8!"
-            @click="toggleCrecimientoR"
-          />
+          <span class="font-bold text-base dark:text-slate-50">Crecimiento del inventario</span>
+          <Button @click="opCrecimiento.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8!" />
           <Popover ref="opCrecimiento">
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
@@ -147,42 +126,21 @@ onMounted(async () => {
                 Rangos de alerta (Índice)
               </span>
               <div class="flex items-center gap-2 flex-wrap">
-                <Tag 
-                  :value="`< ${crecimientoRangos.min}%`" 
-                  severity="danger" 
-                  class="ring-1 ring-inset ring-current/10"
-                />
-                <Tag 
-                  :value="`Meta: ${crecimientoRangos.min}% a ${crecimientoRangos.max}%`" 
-                  severity="success" 
-                  class="ring-1 ring-inset ring-current/10"
-                />
-                <Tag 
-                  :value="`> ${crecimientoRangos.max}%`" 
-                  severity="warn" 
-                  class="ring-1 ring-inset ring-current/10"
-                />
+                <Tag :value="`< ${crecimientoRangos.min}%`" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                <Tag :value="`Meta: ${crecimientoRangos.min}% a ${crecimientoRangos.max}%`" severity="success" class="ring-1 ring-inset ring-current/10" />
+                <Tag :value="`> ${crecimientoRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10" />
               </div>
             </div>
           </Popover>
         </div>
         <div class="w-full p-5">
-          <BarChart2
-            :data="crecimiento"
-            type="Bienes"
-          />
+          <BarChart2 :data="crecimiento" type="Bienes" />
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <span class="font-bold text-base dark:text-slate-50">Bienes en estado operativo</span>
-          <Button
-            icon="fi-rr-info" 
-            severity="secondary"
-            outlined
-            class="size-8!"
-            @click="toggleRangos"
-          />
+          <Button @click="opRangos.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8!" />
           <Popover ref="opRangos" >
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
@@ -198,10 +156,7 @@ onMounted(async () => {
           </Popover>
         </div>
         <div class="w-full p-5">
-          <AreaChart 
-            :data="operatividad"
-            :ranges="operatividadRangos"
-          />
+          <AreaChart :data="operatividad" :ranges="operatividadRangos" type="Operatividad" />
         </div>
       </div>
     </div>
