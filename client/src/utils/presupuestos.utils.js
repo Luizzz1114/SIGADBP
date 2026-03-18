@@ -7,6 +7,14 @@ import presupuestosServices from '@/services/presupuestos.services.js';
 export const tiposPresupuestos = ['Compra de Muebles', 'Compra de Equipos Tecnológicos', 'Compra de Vehículos / Equipos de Elevación', 'Mantenimiento de Bienes'];
 export const semestres = ['Semestre I', 'Semestre II'];
 
+export const obtenerOpcionesSemestre = () => {
+  const mesActual = new Date().getMonth();
+  return semestres.map((s) => ({
+    label: s,
+    value: s,
+    disabled: (s === 'Semestre I' && mesActual > 5) || (s === 'Semestre II' && mesActual < 6)
+  }));
+};
 
 // --- Calcular monto en Bs.
 export const montoCalculadoBs = (montousd, tasacambio) => {

@@ -52,6 +52,16 @@ class Presupuestos {
 		return resultado.rowCount === 1;
 	}
 
+	async desactivarSemestreI() {
+		const sql = "UPDATE Presupuestos SET estatus = 'Cerrado' WHERE semestre = 'Semestre I'";
+		await pool.query(sql);
+	}
+	
+	async desactivarSemestreII() {
+		const sql = "UPDATE Presupuestos SET estatus = 'Cerrado' WHERE semestre = 'Semestre II'";
+		await pool.query(sql);
+	} 	
+
 	async eliminar(id) {
 		const sql = 'DELETE FROM presupuestos WHERE id = $1;';
 		const resultado = await pool.query(sql, [id]);

@@ -535,7 +535,7 @@ LEFT JOIN LATERAL (
   FROM Metricas 
   WHERE idIndicador = I.id 
   ORDER BY fecha DESC
-  LIMIT 6
+  --LIMIT 6
 ) AS M ON true
 GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 

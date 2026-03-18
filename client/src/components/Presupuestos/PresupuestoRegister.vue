@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import MoneyInput from '@/components/MoneyInput.vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { createPresupuestoSchema, tiposPresupuestos, semestres, montoCalculadoBs } from '@/utils/presupuestos.utils';
+import { createPresupuestoSchema, tiposPresupuestos, obtenerOpcionesSemestre, montoCalculadoBs } from '@/utils/presupuestos.utils';
 import presupuestosServices from '@/services/presupuestos.services';
 
 const visible = defineModel('visible');
@@ -10,6 +10,7 @@ const emit = defineEmits(['register']);
 const presupuestoSchema = createPresupuestoSchema();
 const resolver = ref(zodResolver(presupuestoSchema));
 const currentYear = new Date().getFullYear().toString();
+const opcionesSemestre = obtenerOpcionesSemestre();
 const formKey = ref(0);
 
 const presupuesto = ref({
@@ -102,7 +103,16 @@ watch([() => presupuesto.value.montousd, () => presupuesto.value.tasacambio], ([
         </div>
         <div class="flex flex-col gap-1">
           <span>Semestre <span class="text-red-500">*</span></span>
-          <Select name="semestre" :options="semestres" placeholder="Selecione" size="small" fluid />
+          <Select 
+            name="semestre" 
+            :options="opcionesSemestre" 
+            optionLabel="label" 
+            optionValue="value"
+            optionDisabled="disabled" 
+            placeholder="Seleccione un semestre" 
+            size="small" 
+            fluid 
+          />
           <Message v-if="$form.semestre?.invalid" severity="error" size="small" variant="simple">
             {{ $form.semestre.error?.message }}
           </Message>

@@ -28,7 +28,7 @@ defineProps({ bien: Object });
           <Tag :value="bien.estatus" :severity="{'Operativo': 'success', 'En mantenimiento': 'info', 'No asignado': 'secondary', 'Desincorporado': 'danger'}[bien.estatus]" class="ring-1 ring-inset ring-current/10" />
           <CustomTag
             :value="bien.categoria"
-            :icon="{'Mueble': 'fi-sr-archive', 'Tecnológico': 'fi-sr-computer', 'Vehículo o Equipo de Elevación': 'fi-sr-truck-moving'}[bien.categoria] || 'fi-sr-box-open-full'" 
+            :icon="{'Mueble': 'fi-sr-chair', 'Tecnológico': 'fi-sr-computer', 'Vehículo o Equipo de Elevación': 'fi-sr-truck-moving'}[bien.categoria] || 'fi-sr-box-open-full'" 
             :color="{'Mueble': 'slate', 'Tecnológico': 'indigo', 'Vehículo o Equipo de Elevación': 'emerald'}[bien.categoria] || 'blue'"
           />
         </div>

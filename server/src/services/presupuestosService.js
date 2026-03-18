@@ -37,6 +37,22 @@ class PresupuestosService {
     return await PresupuestosRepositorio.actualizar(presupuesto);
   }
 
+  async desactivarSemestreI() {
+    try {
+      await PresupuestosRepositorio.desactivarSemestreI();
+    } catch (error) {
+      console.error('Error al desactivar presupuesto', error);
+    }
+  }
+
+  async desactivarSemestreII() {
+    try {
+      await PresupuestosRepositorio.desactivarSemestreII();
+    } catch (error) {
+      console.error('Error al desactivar presupuesto', error);
+    }
+  }  
+
   async eliminar(id) {
     return await PresupuestosRepositorio.eliminar(id);
   }

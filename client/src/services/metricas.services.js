@@ -45,31 +45,6 @@ export default {
   },
 
 
-
-
-  // --- KPIs ---
-  async obtenerIBEO() {
-    try {
-      const res = await api.get('/metricas?siglas=IBEO');
-      return res.data;
-    } catch(error) {
-      console.log(error);
-      return [];
-    }
-  },
-
-  async obtenerICMI() {
-    try {
-      const res = await api.get('/metricas?siglas=ICMI');
-      return res.data;
-    } catch(error) {
-      console.log(error);
-      return [];
-    }
-  },
-
-
-
   // --- PRESUPUESTOS ---
   async presupuestosResumen() {
     try {
@@ -79,6 +54,18 @@ export default {
       console.log(error);
       return [];
     }
-  }
+  },
+
+
+  // --- KPIs ---
+  async obtenerKPI(siglas) {
+    try {
+      const res = await api.get(`/metricas?siglas=${siglas}`);
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
 
 }

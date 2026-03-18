@@ -64,8 +64,8 @@ const procesarHistorial = (historial) => {
 
 onMounted(async () => {
   const [resIBEO, resICMI] = await Promise.all([
-    metricasServices.obtenerIBEO(),
-    metricasServices.obtenerICMI()
+    metricasServices.obtenerKPI('IBEO'),
+    metricasServices.obtenerKPI('ICMI')
   ]);
 
   if (resICMI?.length) {
