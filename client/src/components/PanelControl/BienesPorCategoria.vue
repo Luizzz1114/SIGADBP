@@ -13,8 +13,8 @@ const categorias = computed(() => {
     { label: 'Vehículos', key: 'vehiculos', color: 'fill-emerald-400 text-emerald-400 bg-emerald-400' },
   ].map(cat => ({
     ...cat,
-    total: d[cat.key] ?? 0,
-    value: d[`p_${cat.key}`] ?? 0,
+    value: d[cat.key] ?? 0,
+    percentage: d[`p_${cat.key}`] ?? 0,
   }));
 });
 
@@ -28,8 +28,8 @@ onMounted(async() => {
     <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
       <span class="font-bold text-base dark:text-slate-50">Clasificación de los bienes</span>
     </div>
-    <div class="w-full overflow-x-auto px-5 pb-5">
-      <BarChart :data="categorias" />
+    <div class="w-full overflow-x-auto p-5">
+      <BarChart :data="categorias" type="Bienes" />
     </div>
   </div>
 </template>

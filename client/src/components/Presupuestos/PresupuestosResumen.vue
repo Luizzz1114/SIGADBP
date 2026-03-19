@@ -6,10 +6,10 @@ const props = defineProps({
 });
 
 const iconMap = {
-  'Compra de Equipos Tecnológicos': 'fi-sr-computer',
+  'Compra de Equipos Tecnológicos': 'fi-rr-computer',
   'Compra de Muebles': 'fi-rr-chair',
-  'Compra de Vehículos / Equipos de Elevación': 'fi-sr-truck-moving',
-  'Mantenimiento de Bienes': 'fi-sr-screw-alt'
+  'Compra de Vehículos / Equipos de Elevación': 'fi-rr-truck-moving',
+  'Mantenimiento de Bienes': 'fi-rr-screw-alt'
 };
 </script>
 

@@ -31,6 +31,8 @@ class Indicadores {
     return resultado.rows[0];
   }
 
+  
+
   async listar(denominacion) {
     const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";
     const resultado = await pool.query(sql, [denominacion]);

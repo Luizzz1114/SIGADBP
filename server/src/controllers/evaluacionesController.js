@@ -1,7 +1,16 @@
 import EvaluacionesService from "../services/evaluacionesService.js";
 
 class EvaluacionesController {
-    async crear(req, res) {
+  async listarKpiCapacitacionSatisfaccion(req, res) {
+    try {
+      const resultado = await EvaluacionesService.listarKpiCapacitacionSatisfaccion();
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al listar kpi: capacitacion y satisfaccion', erro: error.message });
+    }
+  }
+
+  async crear(req, res) {
     try {
       const evaluacion = req.body;
       const resultado = await EvaluacionesService.crear(evaluacion);

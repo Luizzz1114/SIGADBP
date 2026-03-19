@@ -211,7 +211,6 @@ CREATE TABLE Indicadores (
   denominacion VARCHAR(255) NOT NULL,
   meta NUMERIC(15, 2),
   peligro NUMERIC(15, 2),
-  precaucion NUMERIC(15, 2),
   frecuencia VARCHAR(50) NOT NULL
 );
 
@@ -614,7 +613,7 @@ vehiculos, ROUND(COALESCE((vehiculos * 100.0) / NULLIF(total, 0), 0), 2) AS p_ve
 FROM categorias;
 
 
--- (%IIET, %IIM, IIMB)
+-- %IIET, %IIM, IIMB
 CREATE OR REPLACE VIEW vistaResumenPresupuestos AS
 WITH gastos_agrupados AS (
   SELECT idPresupuesto, SUM(monto) AS total_gastado
@@ -632,6 +631,23 @@ WHERE P.estatus = 'Activo'
 AND P.aniofiscal = EXTRACT(YEAR FROM CURRENT_DATE)
 AND P.semestre = CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN 'Semestre I' ELSE 'Semestre II' END
 GROUP BY P.tipo, P.semestre, P.aniofiscal;
+
+
+-- %ICP, %IPS
+CREATE OR REPLACE VIEW vistaFormacionCrecimiento AS
+SELECT e.semestre,
+  COUNT(e.id) AS total_personal_evaluado,
+  SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END) AS personal_capacitado,
+  ROUND((SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END)::numeric / COUNT(e.id)::numeric) * 100, 2) AS porcentaje_capacitacion,
+  SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END) AS personal_satisfecho,
+  ROUND((SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END)::numeric / COUNT(e.id)::numeric) * 100, 2) AS porcentaje_satisfaccion
+FROM Evaluaciones e
+JOIN Personal p ON e.idPersonal = p.id
+GROUP BY e.semestre
+ORDER BY 
+  SPLIT_PART(e.semestre, '-', 2) DESC,
+  SPLIT_PART(e.semestre, '-', 1) DESC
+LIMIT 1;
 
 
 
@@ -935,12 +951,14 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 --- ==========================================
 --- 8. KPIs
 --- ==========================================
-INSERT INTO Indicadores (perspectiva, denominacion, meta, precaucion, peligro, frecuencia) VALUES
-('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90.00, 89.00, 70.00, 'Mensual'),
-('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15.00, -5.00, 15.01, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60.00, 59.00, 30, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60.00, 59.00, 30, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60.00, 59.00, 30, 'Mensual');
+INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) VALUES
+('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
+('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Mensual'),
+('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
+('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 ('09-2025', '01-09-2025', 79, 1),
@@ -966,17 +984,13 @@ INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 ('I-2024', '30-06-2024', 67, 3),
 ('II-2024', '30-12-2024', 50, 3),
 ('I-2025', '30-06-2025', 20, 3),
-('II-2025', '30-12-2025', 87, 3),
-('I-2026', '30-06-2026', 56, 3),
-('II-2026', '30-12-2026', 62, 3);
+('II-2025', '30-12-2025', 87, 3);
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 ('I-2024', '30-06-2024', 40, 4),
 ('II-2024', '30-12-2024', 55, 4),
 ('I-2025', '30-06-2025', 39, 4),
-('II-2025', '30-12-2025', 78, 4),
-('I-2026', '30-06-2026', 50, 4),
-('II-2026', '30-12-2026', 70, 4);
+('II-2025', '30-12-2025', 78, 4);
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 ('I-2024', '30-06-2024', 10, 5),

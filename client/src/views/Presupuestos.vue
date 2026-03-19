@@ -14,7 +14,7 @@ const { showSuccess, showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
-const items = [{ label: 'Presupuesto', route: '/presupuestos' }];
+const items = [{ label: 'Presupuestos', route: '/presupuestos' }];
 
 const columns = [
   { field: 'codigo', header: 'Partida presupuestaria', type: 'codigo' },

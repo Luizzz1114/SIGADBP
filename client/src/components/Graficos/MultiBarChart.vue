@@ -104,7 +104,7 @@
     <div 
       v-if="tooltipData"
       v-show="tooltipVisible"
-      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-md border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out min-w-38"
+      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out min-w-38"
       :style="tooltipStyle"
     >
       <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">

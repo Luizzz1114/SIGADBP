@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import AreaChart from '@/components/Graficos/AreaChart.vue';
-import BarChart2 from '@/components/Graficos/BarChart2.vue';
+import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { obtenerMesAnio } from '@/utils/formatters';
 
@@ -134,7 +134,7 @@ onMounted(async () => {
           </Popover>
         </div>
         <div class="w-full p-5">
-          <BarChart2 :data="crecimiento" type="Bienes" />
+          <BarChart :data="crecimiento" :historical="true" type="Bienes" />
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">

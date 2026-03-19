@@ -3,6 +3,10 @@ import EvaluacionesRepositorio from "../repositories/evaluacionesRepositorio.js"
 import UsuariosRepositorio from '../repositories/usuariosRepositorio.js';
 
 class EvaluacionesServices {
+  async listarKpiCapacitacionSatisfaccion() {
+    return await EvaluacionesRepositorio.listarKpiCapacitacionSatisfaccion();
+  }
+
   async crear(evaluacion) {
     const client = await pool.connect();
     try {

@@ -2,18 +2,18 @@
 import { onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
-import Prueba from '@/components/Graficos/prueba.vue';
+import MultiBarChart from '@/components/Graficos/MultiBarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 
 const items = [
-  { label: 'Presupuesto', route: '/presupuestos' },
+  { label: 'Presupuestos', route: '/presupuestos' },
   { label: 'Estadísticas', route: '/presupuestos/estadisticas' }
 ];
 
 const kpisConfig = [
-  { name: 'Inversión Equipos', color: '#818cf8', icon: 'fi-rr-computer', label: '% Inversión Equipos' },
-  { name: 'Inversión Muebles', color: '#34d399', icon: 'fi-rr-chair',    label: '% Inversión Muebles' },
-  { name: 'Mantenimiento Bienes', color: '#60a5fa', icon: 'fi-rr-tools', label: '% Mantenimiento Bienes' }
+  { name: 'Inversión Equipos Tecnológicos', color: '#818cf8', icon: 'fi-rr-computer', label: 'Inversión Equipos Tecnológicos' },
+  { name: 'Inversión Muebles', color: '#34d399', icon: 'fi-rr-chair',    label: 'Inversión Muebles' },
+  { name: 'Mantenimiento Bienes', color: '#60a5fa', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
 ];
 
 const chartLabels = ref([]);
@@ -117,7 +117,7 @@ onMounted(async () => {
           </Popover>
         </div>
         <div class="w-full p-5">
-          <Prueba
+          <MultiBarChart
             :labels="chartLabels" 
             :datasets="chartDatasets" 
             :force-max-value="100"

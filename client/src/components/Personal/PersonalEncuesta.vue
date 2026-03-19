@@ -28,7 +28,7 @@ const onFormSubmit = async ({ valid, values }) => {
   if (!valid) return;
 
   const hoy = new Date();
-  const semestre = `${hoy.getFullYear()}-${hoy.getMonth() < 6 ? 1 : 2}`;
+  const semestre = `${hoy.getMonth() < 6 ? 'I' : 'II'}-${hoy.getFullYear()}`;
   const usuario = JSON.parse(localStorage.getItem('user_session'))?.usuario;
   const payload = {
     id: usuario.id,

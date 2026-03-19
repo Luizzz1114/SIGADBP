@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import metricasServices from '@/services/metricas.services.js';
+import DistributionBar from '../Graficos/DistributionBar.vue';
 
 const cargardo = ref(false);
 const stats = ref([]);
@@ -8,7 +9,7 @@ const stats = ref([]);
 const baseStats = [
   { label:'Operativos', key:'operativos', icono:'fi-rr-check-circle', color:'#34d399' },
   { label:'En mantenimiento', key:'mantenimiento', icono:'fi-rr-tools', color:'#60a5fa' },
-  { label:'No asignados', key:'noasignados', icono:'fi-rr-minus-circle', color:'#c2c2c2' }
+  { label:'No asignados', key:'noasignados', icono:'fi-rr-minus-circle', color:'url(#stripes)' }
 ];
 
 onMounted(async() => {
@@ -16,8 +17,8 @@ onMounted(async() => {
   const data = await metricasServices.bienesPorEstatus();
   stats.value = baseStats.map(st => ({
     ...st,
-    number: Number(data[st.key] ?? 0),
-    value: Number(data[`p_${st.key}`] ?? 0)
+    value: Number(data[st.key] ?? 0),
+    percentage: Number(data[`p_${st.key}`] ?? 0)
   }));
   cargardo.value = false;
 });
@@ -39,17 +40,17 @@ onMounted(async() => {
           </span>
           <div class="flex items-baseline gap-3">
             <span class="text-2xl font-bold text-slate-700 dark:text-white">
-              {{ card.number }}
+              {{ card.value }}
             </span>
             <span class="text-sm font-medium text-slate-400">
-              {{ card.value }}%
+              {{ card.percentage }}%
             </span>
           </div>
         </div>
       </div>
     </div>
     <div class="p-4 pt-2">
-      <MeterGroup :value="stats" class="dark:text-slate-200" />
+      <DistributionBar :data="stats" />
     </div>
   </div>
 </template>

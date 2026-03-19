@@ -36,7 +36,7 @@ const statusText = computed(() => {
         v-if="status" 
         :value="statusText" 
         :severity="status" 
-        class="ring-1 ring-inset ring-current/10 mt-2"
+        class="ring-1 ring-inset ring-current/10 mt-0.5"
       />
     </div>
   </div>

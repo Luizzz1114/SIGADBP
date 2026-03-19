@@ -33,7 +33,7 @@ class UsuariosService {
     const fechaActual = new Date();
     const año = fechaActual.getFullYear();
     const mes = fechaActual.getMonth() + 1; 
-    const semestreActual = mes <= 6 ? `${año}-1` : `${año}-2`;
+    const semestreActual = mes <= 6 ? `I-${año}` : `II-${año}`;
 
     const encuesta = {
       id: validacion.id,
