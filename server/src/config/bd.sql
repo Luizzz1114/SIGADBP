@@ -635,18 +635,24 @@ GROUP BY P.tipo, P.semestre, P.aniofiscal;
 
 -- %ICP, %IPS
 CREATE OR REPLACE VIEW vistaFormacionCrecimiento AS
-SELECT e.semestre,
-  COUNT(e.id) AS total_personal_evaluado,
-  SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END) AS personal_capacitado,
-  ROUND((SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END)::numeric / COUNT(e.id)::numeric) * 100, 2) AS porcentaje_capacitacion,
-  SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END) AS personal_satisfecho,
-  ROUND((SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END)::numeric / COUNT(e.id)::numeric) * 100, 2) AS porcentaje_satisfaccion
-FROM Evaluaciones e
-JOIN Personal p ON e.idPersonal = p.id
-GROUP BY e.semestre
+WITH MetricasBase AS (
+  SELECT e.semestre,
+  COUNT(e.id) AS total_evaluados,
+  SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END) AS capacitados,
+  SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END) AS satisfechos
+  FROM Evaluaciones e
+  INNER JOIN Personal p ON e.idPersonal = p.id
+  GROUP BY e.semestre
+)
+SELECT semestre, total_evaluados,
+	capacitados AS personal_capacitado, (total_evaluados - capacitados) AS personal_no_capacitado,
+  ROUND((capacitados::numeric / NULLIF(total_evaluados, 0)) * 100, 2) AS porcentaje_capacitacion,
+  satisfechos AS personal_satisfecho, (total_evaluados - satisfechos) AS personal_no_satisfecho,
+  ROUND((satisfechos::numeric / NULLIF(total_evaluados, 0)) * 100, 2) AS porcentaje_satisfaccion
+FROM MetricasBase
 ORDER BY 
-  SPLIT_PART(e.semestre, '-', 2) DESC,
-  SPLIT_PART(e.semestre, '-', 1) DESC
+  SPLIT_PART(semestre, '-', 1) DESC, -- Ordena por Año (ej: 2026)
+  SPLIT_PART(semestre, '-', 2) DESC  -- Ordena por Semestre (ej: 2)
 LIMIT 1;
 
 
@@ -954,11 +960,13 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) VALUES
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Mensual'),
-('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Mensual'),
+('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Semestral'),
+('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
+('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');
+
+
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 ('09-2025', '01-09-2025', 79, 1),

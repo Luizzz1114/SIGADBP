@@ -78,7 +78,7 @@
             :class="[
               'fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300',
               item.hoverTextColor || 'group-hover:fill-blue-400 dark:group-hover:fill-blue-300',
-              index === processedData.length - 1 && historical ? 'font-semibold fill-slate-600 dark:fill-slate-300' : ''
+              index === processedData.length - 1 && historical ? 'font-semibold fill-slate-700 dark:fill-slate-200!' : ''
             ]"
             aria-hidden="true"
           >

@@ -12,8 +12,8 @@
       >
         <defs>
           <pattern id="stripes" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-            <rect width="8" height="8" class="fill-slate-300 dark:fill-slate-700" /> 
-            <line x1="0" y1="0" x2="0" y2="8" class="stroke-slate-400 dark:stroke-slate-600" stroke-width="3" /> 
+            <rect width="8" height="8" class="fill-slate-200 dark:fill-slate-800" /> 
+            <line x1="0" y1="0" x2="0" y2="8" class="stroke-slate-300 dark:stroke-slate-700" stroke-width="3" /> 
           </pattern>
         </defs>
 

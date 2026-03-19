@@ -31,7 +31,17 @@ class Indicadores {
     return resultado.rows[0];
   }
 
-  
+  async ICP(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Capacitación del Personal (%ICP)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
+  async IPS(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Personal Satisfecho (%IPS)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
 
   async listar(denominacion) {
     const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";

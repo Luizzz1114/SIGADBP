@@ -1,6 +1,7 @@
 import IndicadoresRepositorio from '../repositories/indicadoresRepositorio.js';
 import BienesRepositorio from '../repositories/bienesRepositorio.js';
 import PresupuestoRepositorio from '../repositories/presupuestosRepositorio.js';
+import EvaluacionesRepositorio from '../repositories/evaluacionesRepositorio.js';
 import pool from '../config/database.js';
 
 class IndicadoresServices {
@@ -22,6 +23,12 @@ class IndicadoresServices {
       case 'IIMB':
         denominacion = '% Inversión en Mantenimiento de Bienes (%IIMB)';
         break;
+      case 'ICP':
+        denominacion = '% Capacitación del Personal (%ICP)';
+        break;
+      case 'IPS':
+        denominacion = '% Personal Satisfecho (%IPS)';
+        break;    
       default:
         denominacion = null;
         break;  
@@ -157,6 +164,54 @@ async procesarKpiIIMB() {
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+  
+  async procesarKpiICP() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const ICP = await IndicadoresRepositorio.ICP(client);
+      const resultadosICP = await EvaluacionesRepositorio.listarKpiCapacitacionSatisfaccion();
+
+      const metrica = {
+        valor: resultadosICP.porcentaje_capacitacion,
+        idIndicador: ICP.id
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiIPS() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IPS = await IndicadoresRepositorio.IPS(client);
+      const resultadosIPS = await EvaluacionesRepositorio.listarKpiCapacitacionSatisfaccion();
+
+      const metrica = {
+        valor: resultadosIPS.porcentaje_satisfaccion,
+        idIndicador: IPS.id
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
 
       await client.query('COMMIT');
     } catch (error) {

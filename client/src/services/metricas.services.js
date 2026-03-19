@@ -57,6 +57,18 @@ export default {
   },
 
 
+  // --- EVALUACIONES ---
+  async evaluacionesResumen() {
+    try {
+      const res = await api.get('/evaluaciones/metricas');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+
   // --- KPIs ---
   async obtenerKPI(siglas) {
     try {
