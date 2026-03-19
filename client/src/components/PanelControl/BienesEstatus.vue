@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import metricasServices from '@/services/metricas.services.js';
-import DistributionBar from '../Graficos/DistributionBar.vue';
+import DistributionBar from '@/components/Graficos/DistributionBar.vue';
 
 const cargardo = ref(false);
 const stats = ref([]);

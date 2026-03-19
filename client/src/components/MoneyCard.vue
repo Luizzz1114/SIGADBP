@@ -10,7 +10,7 @@ defineProps({
 <template>
   <div class="flex flex-col justify-between gap-3 p-3 min-w-76 min-h-36 snap-center rounded-xl bg-slate-50/50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex items-center gap-3">
-      <div class="grid place-items-center size-8 text-lg rounded-lg bg-emerald-100 border border-emerald-200 text-emerald-500 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400">
+      <div class="grid place-items-center size-9 text-lg rounded-lg bg-emerald-100 border border-emerald-200 text-emerald-500 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400">
         <i :class="icon"></i>
       </div>
       <span class="mr-1 text-sm font-medium text-slate-500 dark:text-slate-200">

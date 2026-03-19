@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import MiniCard from '@/components/MiniCard.vue';
+import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
 import DrawerRegister from '@/components/Movimientos/MovimientoRegister.vue';
 import DrawerView from '@/components/Movimientos/MovimientoView.vue';
@@ -153,7 +153,7 @@ onMounted(async() => {
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <MiniCard label="Movimientos este mes" :value="totalMes" icon="fi-sr-priority-arrows rotate-90!" color="blue" />
+      <Card label="Movimientos este mes" :value="totalMes" icon="fi-rr-priority-arrows rotate-90!" />
     </div>
 
     <Table

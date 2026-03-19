@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import MiniCard from '@/components/MiniCard.vue';
+import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
 import DrawerRegister from '@/components/Mantenimientos/MantenimientoRegister.vue';
 import DrawerView from '@/components/Mantenimientos/MantenimientoView.vue';
@@ -157,8 +157,8 @@ const totalMes = computed(() => {
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <MiniCard label="Total este mes" :value="totalMes" icon="fi-sr-screw-alt" color="blue" />
-      <MiniCard label="Mantenimientos en proceso" :value="mantenimientos.filter(m => m.estatus === 'En proceso').length" icon="fi-sr-clock" color="sky" />
+      <Card label="Total este mes" :value="totalMes" icon="fi-rr-screw-alt" color="blue" />
+      <Card label="Mantenimientos en proceso" :value="mantenimientos.filter(m => m.estatus === 'En proceso').length" icon="fi-rr-clock" color="sky" />
     </div>
 
     <Table

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import BarChart from '../Graficos/BarChart.vue';
+import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 
 const data = ref([]);

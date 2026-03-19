@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
+import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
 import DrawerRegister from '@/components/Incorporaciones/IncorporacionRegister.vue';
 import DrawerView from '@/components/Incorporaciones/IncorporacionView.vue';
@@ -142,7 +143,7 @@ onMounted(async () => {
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <MiniCard label="Incorporaciones este mes" :value="incorporacionesMesActual" icon="fi-sr-apps-add" color="blue" />
+      <Card label="Incorporaciones este mes" :value="incorporacionesMesActual" icon="fi-rr-apps-add" color="blue" />
     </div>
 
     <Table
