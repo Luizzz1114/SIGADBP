@@ -635,24 +635,17 @@ GROUP BY P.tipo, P.semestre, P.aniofiscal;
 
 -- %ICP, %IPS
 CREATE OR REPLACE VIEW vistaFormacionCrecimiento AS
-WITH MetricasBase AS (
-  SELECT e.semestre,
-  COUNT(e.id) AS total_evaluados,
-  SUM(CASE WHEN e.capacitacion = 1 THEN 1 ELSE 0 END) AS capacitados,
-  SUM(CASE WHEN e.satisfaccion >= 4 THEN 1 ELSE 0 END) AS satisfechos
-  FROM Evaluaciones e
-  INNER JOIN Personal p ON e.idPersonal = p.id
-  GROUP BY e.semestre
-)
-SELECT semestre, total_evaluados,
-	capacitados AS personal_capacitado, (total_evaluados - capacitados) AS personal_no_capacitado,
-  ROUND((capacitados::numeric / NULLIF(total_evaluados, 0)) * 100, 2) AS porcentaje_capacitacion,
-  satisfechos AS personal_satisfecho, (total_evaluados - satisfechos) AS personal_no_satisfecho,
-  ROUND((satisfechos::numeric / NULLIF(total_evaluados, 0)) * 100, 2) AS porcentaje_satisfaccion
-FROM MetricasBase
+SELECT E.semestre, COUNT(E.id) AS total_evaluados,
+  SUM(CASE WHEN E.capacitacion = 1 THEN 1 ELSE 0 END) AS personal_capacitado,
+  ROUND((SUM(CASE WHEN E.capacitacion = 1 THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(E.id), 0)) * 100, 2) AS porcentaje_capacitacion,
+  SUM(CASE WHEN E.satisfaccion >= 4 THEN 1 ELSE 0 END) AS personal_satisfecho,
+  ROUND((SUM(CASE WHEN E.satisfaccion >= 4 THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(E.id), 0)) * 100, 2) AS porcentaje_satisfaccion
+FROM Evaluaciones E
+INNER JOIN Personal P ON E.idPersonal = P.id
+GROUP BY E.semestre
 ORDER BY 
-  SPLIT_PART(semestre, '-', 1) DESC, -- Ordena por Año (ej: 2026)
-  SPLIT_PART(semestre, '-', 2) DESC  -- Ordena por Semestre (ej: 2)
+  SPLIT_PART(E.semestre, '-', 1) DESC, -- Ordena por Año (ej: 2026)
+  SPLIT_PART(E.semestre, '-', 2) DESC  -- Ordena por Semestre (ej: 2)
 LIMIT 1;
 
 

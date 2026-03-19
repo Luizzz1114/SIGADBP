@@ -62,11 +62,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue';
 const props = defineProps({
   data: { 
     type: Array, 
-    default: () => [
-      { label: 'Operativos', value: 14, percentage: 87.5, color: '#34d399' }, 
-      { label: 'En mantenimiento', value: 1, percentage: 6.25, color: '#60a5fa' },
-      { label: 'No asignados', value: 1, percentage: 6.25, color: 'url(#stripes)' }
-    ]
+    default: () => []
   }
 });
 
