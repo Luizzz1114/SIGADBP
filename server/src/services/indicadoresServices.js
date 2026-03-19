@@ -187,7 +187,7 @@ async procesarKpiIIMB() {
         idIndicador: ICP.id
       };
 
-      await IndicadoresRepositorio.crearMetrica(client, metrica);
+      await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
 
       await client.query('COMMIT');
     } catch (error) {
@@ -211,7 +211,7 @@ async procesarKpiIIMB() {
         idIndicador: IPS.id
       };
 
-      await IndicadoresRepositorio.crearMetrica(client, metrica);
+      await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
 
       await client.query('COMMIT');
     } catch (error) {
