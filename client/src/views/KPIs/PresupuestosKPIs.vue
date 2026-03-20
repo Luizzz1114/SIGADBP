@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import MultiBarChart from '@/components/Graficos/MultiBarChart.vue';
@@ -16,12 +16,63 @@ const kpisConfig = [
   { name: 'Mantenimiento Bienes', color: '#60a5fa', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
 ];
 
-const chartLabels = ref([]);
-const chartDatasets = ref([]);
-const cardsData = ref([]);
+// --- Estados base ---
+const respuestasAPI = ref([]);
 const opPresupuesto = ref();
 const presupuestoRangos = ref({ min: 0, max: 0 });
 
+// --- Computadas (Lógica de presentación) ---
+const cardsData = computed(() => {
+  if (!respuestasAPI.value.length) {
+    return kpisConfig.map(config => ({
+      ...config,
+      value: '0%',
+      status: 'warn',
+      message: 'Cargando...'
+    }));
+  }
+
+  return respuestasAPI.value.map((res, index) => {
+    const kpiData = res?.[0] || {};
+    const historial = kpiData.historial_metricas || [];
+    const lastItem = historial.at(-1);
+
+    const lastValue = lastItem?.valor ?? 0;
+    const meta = Number(kpiData.meta || 0);
+    const peligro = Number(kpiData.peligro || 0);
+
+    let status = 'warn';
+    if (lastValue >= meta) status = 'success';
+    else if (lastValue <= peligro) status = 'danger';
+
+    const message = lastItem ? lastItem.periodo : 'Sin datos';
+
+    return {
+      ...kpisConfig[index],
+      value: `${lastValue}%`,
+      status,
+      message
+    };
+  });
+});
+
+const chartLabels = computed(() => {
+  const primerHistorial = respuestasAPI.value[0]?.[0]?.historial_metricas || [];
+  return primerHistorial.map(m => m.periodo); 
+});
+
+const chartDatasets = computed(() => {
+  if (!respuestasAPI.value.length) return [];
+  
+  return respuestasAPI.value.map((res, index) => ({
+    name: kpisConfig[index].name,
+    color: kpisConfig[index].color,
+    values: (res?.[0]?.historial_metricas || []).map(m => m.valor)
+  }));
+});
+
+
+// --- Operaciones con la API ---
 onMounted(async () => {
   try {
     const [resEquipos, resMuebles, resMantenimiento] = await Promise.all([
@@ -30,39 +81,13 @@ onMounted(async () => {
       metricasServices.obtenerKPI('IIMB')
     ]);
 
-    const respuestas = [resEquipos, resMuebles, resMantenimiento];
-
-    const primerHistorial = resEquipos?.[0]?.historial_metricas || [];
-    chartLabels.value = primerHistorial.map(m => m.periodo);
+    respuestasAPI.value = [resEquipos, resMuebles, resMantenimiento];
 
     const kpiBase = resEquipos?.[0] || {};
     presupuestoRangos.value = {
       min: Number(kpiBase.peligro || 0),
       max: Number(kpiBase.meta || 0)
     };
-
-    chartDatasets.value = respuestas.map((res, index) => ({
-      name: kpisConfig[index].name,
-      color: kpisConfig[index].color,
-      values: (res?.[0]?.historial_metricas || []).map(m => m.valor)
-    }));
-
-    cardsData.value = respuestas.map((res, index) => {
-      const kpiData = res?.[0] || {};
-      const lastValue = kpiData.historial_metricas?.at(-1)?.valor ?? 0;
-      const meta = Number(kpiData.meta || 0);
-      const peligro = Number(kpiData.peligro || 0);
-
-      let status = 'warn';
-      if (lastValue >= meta) status = 'success';
-      else if (lastValue <= peligro) status = 'danger';
-
-      return {
-        ...kpisConfig[index],
-        value: `${lastValue}%`,
-        status
-      };
-    });
 
   } catch (error) {
     console.error("Error cargando los KPIs:", error);
@@ -94,6 +119,7 @@ onMounted(async () => {
         :icon="card.icon" 
         :value="card.value"
         :status="card.status"
+        :message="card.message" 
       />
     </div>
 

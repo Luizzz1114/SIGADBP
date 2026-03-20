@@ -4,8 +4,8 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import AreaChart from '@/components/Graficos/AreaChart.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
-import metricasServices from '@/services/metricas.services';
-import { obtenerMesAnio } from '@/utils/formatters';
+import metricasServices from '@/services/metricas.services.js';
+import { obtenerMesAnio } from '@/utils/formatters.js';
 
 
 // --- Configuración de la vista ---
@@ -24,30 +24,27 @@ const operatividad = ref([]);
 const crecimientoRangos = ref({ min: 0, max: 0 });
 const operatividadRangos = ref({ min: 0, max: 0 });
 
-const actualIBEO = computed(() => {
+const actualOperatividad = computed(() => {
   const len = operatividad.value.length;
-  return len > 0 ? operatividad.value[len - 1].value : 0;
+  if (len === 0) return { value: '0%', status: 'warn', message: 'Cargando...' };
+  const val = operatividad.value[len - 1].value;
+  const { min, max } = operatividadRangos.value;
+  const status = val >= min ? 'success' : val <= max ? 'danger' : 'warn';
+  const message = operatividad.value[len - 1]?.label || 'Sin datos';
+  return { value: `${val}%`, status, message };
 });
 
-const variacionCrecimiento = computed(() => {
+const actualCrecimiento = computed(() => {
   const len = crecimiento.value.length;
-  if (len < 2) return 0;
+  if (len < 2) return { value: '0%', status: 'info', message: 'Cargando...' };
   const actual = crecimiento.value[len - 1].value;
   const anterior = crecimiento.value[len - 2].value;
-  if (anterior === 0) return 0;
-  return (((actual - anterior) / anterior) * 100).toFixed(2);
-});
-
-const crecimientoStatus = computed(() => {
-  const val = Number(variacionCrecimiento.value);
+  const variacion = anterior === 0 ? 0 : (((actual - anterior) / anterior) * 100).toFixed(2);
+  const val = Number(variacion);
   const { min, max } = crecimientoRangos.value;
-  return val < min ? 'danger' : val > max ? 'warn' : 'success';
-});
-
-const operatividadStatus = computed(() => {
-  const val = actualIBEO.value;
-  const { min, max } = operatividadRangos.value;
-  return val >= min ? 'success' : val <= max ? 'danger' : 'warn';
+  const status = val < min ? 'danger' : val > max ? 'warn' : 'success';
+  const message = crecimiento.value[len - 1]?.label || 'Sin datos';
+  return { value: `${variacion}%`, status, message };
 });
 
 
@@ -104,14 +101,16 @@ onMounted(async () => {
       <Card
         label="Indice de Crecimiento"
         icon="fi-rr-arrow-trend-up"
-        :value="variacionCrecimiento + '%'"
-        :status="crecimientoStatus"
+        :value="actualCrecimiento.value"
+        :status="actualCrecimiento.status"
+        :message="actualCrecimiento.message"
       />
       <Card
         label="Porcentaje de Operatividad"
         icon="fi-rr-check-circle"
-        :value="actualIBEO + '%'"
-        :status="operatividadStatus"
+        :value="actualOperatividad.value"
+        :status="actualOperatividad.status"
+        :message="actualOperatividad.message"
       />
     </div>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">

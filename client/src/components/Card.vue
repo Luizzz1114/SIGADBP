@@ -32,6 +32,12 @@ const iconClasses = computed(() => {
       <div :class="iconClasses" class="grid place-items-center size-9 text-lg rounded-lg border">
         <i :class="icon"></i>
       </div>
+      <Tag 
+        v-if="status" 
+        :value="statusText" 
+        :severity="status" 
+        class="ring-1 ring-inset ring-current/10 mt-0.5"
+      />
     </div>
     <div class="flex flex-col items-start">
       <span class="text-sm font-medium text-slate-500 dark:text-slate-200">
@@ -41,12 +47,6 @@ const iconClasses = computed(() => {
         {{ value }}
       </span>
       <span v-if="message" class="text-xs text-slate-400">{{ message }}</span>
-      <Tag 
-        v-if="status" 
-        :value="statusText" 
-        :severity="status" 
-        class="ring-1 ring-inset ring-current/10 mt-0.5"
-      />
     </div>
   </div>
 </template>
