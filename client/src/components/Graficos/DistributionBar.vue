@@ -6,7 +6,7 @@
         :viewBox="`0 0 ${containerWidth} ${svgHeight}`"
         :width="containerWidth"
         :height="svgHeight"
-        class="overflow-visible transition-all duration-1100 ease-out"
+        class="overflow-visible transition-all duration-1000 ease-out"
         :style="{ clipPath: isMounted ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)' }"
         role="img"
       >
@@ -37,18 +37,20 @@
     </div>
 
     <div 
-      class="flex flex-wrap items-center justify-start gap-4 mt-4 transition-opacity duration-700 delay-300"
-      :class="isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'"
+      class="flex flex-wrap items-center justify-start gap-6 mt-4 transition-opacity duration-1000"
+      :class="isMounted ? 'opacity-100' : 'opacity-0'"
       aria-label="Leyenda del gráfico"
     >
-      <div v-for="(item, index) in processedSegments" :key="'legend-' + index" class="flex items-center gap-3">
+      <div v-for="(item, index) in processedSegments" :key="'legend-' + index" class="flex items-center gap-2">
         <svg width="12" height="12" class="shrink-0">
           <rect width="12" height="12" rx="3" :fill="item.color" />
         </svg>
-        <span class="text-sm text-slate-700 dark:text-slate-300">
+        <span class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
           <span class="font-medium">{{ item.label }}</span>
-          <span class="ml-1 text-slate-600 dark:text-slate-400">
-            {{ item.value }} ({{ item.percentage }}%)
+          <span v-if="showValues" class="flex items-center gap-1.5 *:text-sm text-slate-600 dark:text-slate-400">
+            <span>{{ item.percentage }}%</span>
+            <span>•</span>
+            <span>{{ formatNumber(item.value) }} {{ unit }}</span>
           </span>
         </span>
       </div>
@@ -63,6 +65,10 @@ const props = defineProps({
   data: { 
     type: Array, 
     default: () => []
+  },
+  showValues: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -73,6 +79,11 @@ const containerWidth = ref(0);
 
 const svgHeight = 28; 
 const gapSizePx = 8; 
+
+// --- UTILIDADES ---
+const formatNumber = (num) => {
+  return new Intl.NumberFormat('en-US').format(num);
+};
 
 // --- LÓGICA RESPONSIVE Y ANIMACIÓN ---
 let resizeObserver = null;

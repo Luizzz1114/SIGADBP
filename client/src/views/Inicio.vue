@@ -34,7 +34,7 @@ onMounted(async() => {
       <Card label="Mantenimientos" :value="metricas.mantenimientos_mes || 0" icon="fi-rr-screw-alt" message="Este mes" />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
       <BienesEstatus />
       <BienesPorCategoria />
     </div>

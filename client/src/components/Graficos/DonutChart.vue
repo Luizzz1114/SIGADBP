@@ -1,15 +1,7 @@
 <template>
-  <div class="w-full mx-auto p-4">
-    <div 
-      class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12"
-      role="region" 
-      aria-label="Gráfico de distribución"
-    >
-      
-      <div 
-        ref="chartWrapper" 
-        class="relative w-64 h-64 shrink-0 flex items-center justify-center"
-      >
+  <div class="w-full mx-auto">
+    <div class="flex flex-col md:flex-row items-center justify-center gap-8" role="region" aria-label="Gráfico de distribución">
+      <div ref="chartWrapper" class="relative size-48 shrink-0 flex items-center justify-center">
         <svg
           viewBox="0 0 200 200"
           class="w-full h-full transform -rotate-90 overflow-visible"
@@ -48,35 +40,20 @@
         </svg>
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="w-24 h-24 bg-white dark:bg-slate-900 rounded-full"></div>
+          <div class="size-24 bg-white dark:bg-slate-900 rounded-full"></div>
         </div>
       </div>
 
-      <div class="flex flex-col w-full md:w-auto gap-4">
-        <div 
-          v-for="(item, index) in processedData" 
-          :key="'legend-' + index"
-          class="flex items-start gap-3 group cursor-pointer"
-          @mouseenter="onMouseEnter($event, item)"
-          @mouseleave="onMouseLeave"
-        >
-          <div 
-            class="w-3 h-3 rounded-full mt-1.5 shrink-0 shadow-sm transition-transform group-hover:scale-125"
-            :style="{ backgroundColor: item.color || defaultColors[index % defaultColors.length] }"
-          ></div>
-          
-          <div class="flex flex-col">
-            <span class="text-[15px] font-medium text-slate-700 dark:text-slate-200">
+      <div class="flex flex-col md:w-auto gap-3 transition-opacity duration-1000" :class="isMounted ? 'opacity-100' : 'opacity-0'">
+        <div v-for="(item, index) in processedData" :key="'legend-' + index" class="flex items-center gap-3 ">
+          <div class="size-2.5 rounded-full shrink-0" :style="{ backgroundColor: item.color || defaultColors[index % defaultColors.length] }"></div>
+          <div class="flex items-center justify-between gap-4 w-full">
+            <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
               {{ item.label }}
             </span>
-            <span class="text-sm text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
-              <span 
-                class="font-semibold" 
-                :style="{ color: item.color || defaultColors[index % defaultColors.length] }"
-              >
-                {{ item.percentage }}%
-              </span>
-              <span class="text-slate-300 dark:text-slate-600">•</span>
+            <span class="flex items-center gap-1.5 *:text-sm text-slate-600 dark:text-slate-400">
+              <span>{{ item.percentage }}%</span>
+              <span>•</span>
               <span>{{ formatNumber(item.value) }} {{ unit }}</span>
             </span>
           </div>
@@ -89,10 +66,10 @@
       <div
         v-if="tooltipData"
         v-show="tooltipVisible"
-        class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-md border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 transition-all duration-100 ease-out"
+        class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out"
         :style="tooltipStyle"
       >
-        <div class="px-3 pt-2 pb-1.5 border-b border-slate-200 bg-slate-50 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-900 font-medium">
+        <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
           {{ tooltipData.label }}
         </div>
         <div class="flex items-center gap-2 px-3 pb-2 pt-2">
@@ -140,15 +117,19 @@ const strokeWidth = 45; // Grosor de la dona
 const circumference = 2 * Math.PI * radius;
 const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; // Paleta por defecto
 
+
 // --- CÁLCULOS MATEMÁTICOS PARA LOS SEGMENTOS ---
 const processedData = computed(() => {
   if (!props.data || props.data.length === 0) return [];
 
-  const totalValue = props.data.reduce((acc, curr) => acc + curr.value, 0);
+  // CORRECCIÓN: Usar Number() para evitar concatenación de strings
+  const totalValue = props.data.reduce((acc, curr) => acc + Number(curr.value), 0);
   let currentOffsetAcc = 0;
 
   return props.data.map((item, index) => {
-    const ratio = item.value / totalValue;
+    // CORRECCIÓN: Asegurar que el valor individual sea tratado como número
+    const numericValue = Number(item.value); 
+    const ratio = numericValue / totalValue;
     const sliceLength = ratio * circumference;
     const percentage = Math.round(ratio * 100);
     

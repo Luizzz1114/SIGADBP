@@ -40,7 +40,7 @@ const capacitados = computed(() => construirChartData(
 ));
 
 const satisfechos = computed(() => construirChartData(
-  'Satisfechos', 'Insatisfechos', '#50a2ff',
+  'Satisfechos', 'Insatisfechos', '#60a5fa',
   data.value.total_evaluados,
   data.value.personal_satisfecho,
   data.value.porcentaje_satisfaccion
@@ -145,14 +145,14 @@ onMounted(async () => {
             </div>
           </div>
           <div class="w-full p-5">
-            <DistributionBar :data="metric.data" />
+            <DistributionBar :data="metric.data" :showValues="true" />
           </div>
         </div>
       </div>
       
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 px-4 pt-4 pb-1">
-          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-book-alt"></i>
           </div>
           <span class="font-bold text-base dark:text-slate-50">Historial de capacitación</span>
@@ -164,7 +164,7 @@ onMounted(async () => {
 
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 px-4 pt-4 pb-1">
-          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-smile-beam"></i>
           </div>
           <span class="font-bold text-base dark:text-slate-50">Historial de satisfacción</span>
