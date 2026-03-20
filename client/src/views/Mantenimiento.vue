@@ -150,7 +150,7 @@ const totalMes = computed(() => {
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Mantenimiento</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Gestión de traslados de bienes entre dependencias</span>
+          <span class="-mt-0.5 text-xs text-slate-400">Gestión del mantenimiento de los bienes</span>
         </div>
       </div>
       <Button @click="isDrawerRegisterOpen = true" type="button" label="Programar Mantenimiento" icon="fi-rr-clock-three"  />
