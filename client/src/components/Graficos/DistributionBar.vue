@@ -50,7 +50,7 @@
           <span v-if="showValues" class="flex items-center gap-1.5 *:text-sm text-slate-600 dark:text-slate-400">
             <span>{{ item.percentage }}%</span>
             <span>•</span>
-            <span>{{ formatNumber(item.value) }} {{ unit }}</span>
+            <span>{{ formatNumber(item.value) }}</span>
           </span>
         </span>
       </div>

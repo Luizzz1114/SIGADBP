@@ -8,6 +8,9 @@ MantenimientosRouter.route('/')
   .post(MantenimientosController.crear)
   .put(MantenimientosController.actualizar);
 
+MantenimientosRouter.route('/conteo-mantenimiento')
+  .get(MantenimientosController.conteoMantenimiento);
+
 MantenimientosRouter.route('/:id')
   .get(MantenimientosController.obtenerPorId)
   .delete(MantenimientosController.eliminar);  

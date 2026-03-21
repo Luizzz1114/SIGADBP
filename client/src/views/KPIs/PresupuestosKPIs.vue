@@ -27,8 +27,8 @@ const cardsData = computed(() => {
     return kpisConfig.map(config => ({
       ...config,
       value: '0%',
-      status: 'warn',
-      message: 'Cargando...'
+      status: '',
+      message: ''
     }));
   }
 
@@ -67,7 +67,8 @@ const chartDatasets = computed(() => {
   return respuestasAPI.value.map((res, index) => ({
     name: kpisConfig[index].name,
     color: kpisConfig[index].color,
-    values: (res?.[0]?.historial_metricas || []).map(m => m.valor)
+    values: (res?.[0]?.historial_metricas || []).map(m => m.valor),
+    detalles: (res?.[0]?.historial_metricas || []).map(m => m.detalles)
   }));
 });
 

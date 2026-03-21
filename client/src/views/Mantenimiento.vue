@@ -153,7 +153,10 @@ const totalMes = computed(() => {
           <span class="-mt-0.5 text-xs text-slate-400">Gestión del mantenimiento de los bienes</span>
         </div>
       </div>
-      <Button @click="isDrawerRegisterOpen = true" type="button" label="Programar Mantenimiento" icon="fi-rr-clock-three"  />
+      <div class="flex items-center flex-wrap gap-4">
+        <Button as="router-link" to="/mantenimiento/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
+        <Button @click="isDrawerRegisterOpen = true" type="button" label="Programar Mantenimiento" icon="fi-rr-clock-three"  />
+      </div>
     </div>
 
     <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">

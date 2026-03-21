@@ -143,13 +143,22 @@
         <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
           {{ tooltipData.label }}
         </div>
-        <div class="flex items-center gap-2 px-2 pb-2 pt-1.5">
-          <svg viewBox="0 0 10 10" class="w-2.5 h-2.5 rounded-full shrink-0">
-            <circle cx="5" cy="5" r="5" class="fill-blue-400" />
-          </svg>
-          <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-            {{ type }}: {{ tooltipData.value }}%
-          </span>
+        <div class="px-2 pb-2 pt-1.5 flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <div class="w-2.5 h-2.5 rounded-full shrink-0 bg-blue-400"></div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+              {{ unit }}: {{ tooltipData.value }}%
+            </span>
+          </div>
+          <div v-if="tooltipData.detalles && details === 'bienes'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} bienes operativos de {{ tooltipData.detalles.total }} en inventario</span>
+          </div>
+          <div v-if="tooltipData.detalles && details === 'mantenimiento_operatividad'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} bienes en estado óptimo de {{ tooltipData.detalles.total }} mantenimientos realizados</span>
+          </div>
+          <div v-if="tooltipData.detalles && details === 'personal'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} de {{ tooltipData.detalles.total }} miembros del personal</span>
+          </div>
         </div>
       </div>
     </Teleport>
@@ -161,7 +170,8 @@ import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   data: { type: Array, required: true },
-  type: { type: String, default: 'Valor'}
+  unit: { type: String, default: 'Valor'},
+  details: { type: String, default: '' }
 });
 
 const isMounted = ref(false);

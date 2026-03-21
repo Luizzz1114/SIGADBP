@@ -10,6 +10,15 @@ class MantenimientosController {
     }
   }
   
+  async conteoMantenimiento(req, res) {
+     try {
+      const conteo = await MantenimientosServices.conteoMantenimiento();
+      res.status(200).json(conteo);
+     } catch (error) {
+      res.status(500).json({ message: 'Error al listar el conteo de mantenimiento', error: error.message });
+     }
+  }
+
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params;

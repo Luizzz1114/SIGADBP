@@ -17,6 +17,7 @@ import Usuarios from '@/views/Usuarios.vue';
 import InventarioBienesKPIs from '@/views/KPIs/InventarioBienesKPIs.vue';
 import PresupuestosKPIs from '@/views/KPIs/PresupuestosKPIs.vue';
 import PersonalKPIs from '@/views/KPIs/PersonalKPIs.vue';
+import MantenimientoKPIs from '@/views/KPIs/MantenimientoKPIs.vue';
 
 const routes = [
   {
@@ -86,8 +87,18 @@ const routes = [
       },
       {
         path: 'mantenimiento',
-        name: 'Mantenimiento',
-        component: Mantenimiento
+        children: [
+          {
+            path: '',
+            name: 'Mantenimiento',
+            component: Mantenimiento
+          },
+          {
+            path: 'estadisticas',
+            name: 'MantenimientoKPIs',
+            component: MantenimientoKPIs
+          }
+        ]
       },
       {
         path: 'presupuestos',

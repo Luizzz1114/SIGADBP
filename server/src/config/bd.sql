@@ -219,6 +219,7 @@ CREATE TABLE Metricas (
   periodo VARCHAR(50) NOT NULL,
   valor NUMERIC(15, 2) NOT NULL,
   fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+  detalles JSONB,
   idIndicador INT NOT NULL REFERENCES Indicadores(id) ON DELETE CASCADE
 );
 
@@ -520,21 +521,24 @@ WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración';
 -- 11. VISTA GENERAL PARA LOS KPI
 CREATE OR REPLACE VIEW vistaIndicadores AS 
 SELECT I.id AS id_indicador, I.denominacion, I.frecuencia, I.meta, I.peligro,
-    COALESCE(json_agg(json_build_object(
+  COALESCE(
+    json_agg(
+      json_build_object(
         'valor', M.valor,
         'periodo', M.periodo,
-        'fecha', M.fecha
+        'fecha', M.fecha,
+        'detalles', M.detalles
       ) ORDER BY M.fecha ASC
-		) FILTER (WHERE M.fecha IS NOT NULL), 
-		'[]'::json
-	) AS historial_metricas
+    ) FILTER (WHERE M.fecha IS NOT NULL), 
+    '[]'::json
+  ) AS historial_metricas
 FROM Indicadores I
 LEFT JOIN LATERAL (
-  SELECT valor, periodo, fecha 
-  FROM Metricas 
-  WHERE idIndicador = I.id 
-  ORDER BY fecha DESC
-  --LIMIT 6
+    SELECT valor, periodo, fecha, detalles
+    FROM Metricas 
+    WHERE idIndicador = I.id 
+    ORDER BY fecha DESC
+    --LIMIT 6
 ) AS M ON true
 GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 
@@ -648,6 +652,18 @@ ORDER BY
   SPLIT_PART(E.semestre, '-', 2) DESC  -- Ordena por Semestre (ej: 2)
 LIMIT 1;
 
+CREATE OR REPLACE VIEW vistaMantenimientoEfectivo AS
+WITH conteo_mantenimiento AS (
+  SELECT COUNT(*) AS total_mantenimiento,
+	COUNT(*) FILTER (WHERE estadoPosterior IN ('Óptimo', 'Bueno') AND estatus = 'Finalizado') AS total_buen_estado,
+	TO_CHAR(CURRENT_DATE, 'MM-YYYY') AS periodo
+  FROM Mantenimientos
+  WHERE EXTRACT(MONTH FROM fechaFin) = EXTRACT(MONTH FROM CURRENT_DATE)
+  AND EXTRACT(YEAR FROM fechaFin) = EXTRACT(YEAR FROM CURRENT_DATE)
+)
+SELECT total_mantenimiento, total_buen_estado, periodo,
+  ROUND(COALESCE((total_buen_estado * 100.0) / NULLIF(total_mantenimiento, 0), 0), 2) AS porcentaje_buen_estado
+FROM conteo_mantenimiento;
 
 
 
@@ -953,6 +969,7 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) VALUES
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
+('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
@@ -982,19 +999,19 @@ INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
 
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 67, 3),
-('II-2024', '30-12-2024', 50, 3),
-('I-2025', '30-06-2025', 20, 3),
-('II-2025', '30-12-2025', 87, 3);
+('I-2024', '30-06-2024', 67, 4),
+('II-2024', '30-12-2024', 50, 4),
+('I-2025', '30-06-2025', 20, 4),
+('II-2025', '30-12-2025', 87, 4);
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 40, 4),
-('II-2024', '30-12-2024', 55, 4),
-('I-2025', '30-06-2025', 39, 4),
-('II-2025', '30-12-2025', 78, 4);
+('I-2024', '30-06-2024', 40, 5),
+('II-2024', '30-12-2024', 55, 5),
+('I-2025', '30-06-2025', 39, 5),
+('II-2025', '30-12-2025', 78, 5);
 
 INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 10, 5),
-('II-2024', '30-12-2024', 45, 5),
-('I-2025', '30-06-2025', 87, 5),
-('II-2025', '30-12-2025', 90, 5);
+('I-2024', '30-06-2024', 10, 6),
+('II-2024', '30-12-2024', 45, 6),
+('I-2025', '30-06-2025', 87, 6),
+('II-2025', '30-12-2025', 90, 6);

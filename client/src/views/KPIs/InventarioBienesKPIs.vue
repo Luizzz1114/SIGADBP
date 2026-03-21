@@ -26,7 +26,7 @@ const operatividadRangos = ref({ min: 0, max: 0 });
 
 const actualOperatividad = computed(() => {
   const len = operatividad.value.length;
-  if (len === 0) return { value: '0%', status: 'warn', message: 'Cargando...' };
+  if (len === 0) return { value: '0%', status: '', message: '' };
   const val = operatividad.value[len - 1].value;
   const { min, max } = operatividadRangos.value;
   const status = val >= min ? 'success' : val <= max ? 'danger' : 'warn';
@@ -36,7 +36,7 @@ const actualOperatividad = computed(() => {
 
 const actualCrecimiento = computed(() => {
   const len = crecimiento.value.length;
-  if (len < 2) return { value: '0%', status: 'info', message: 'Cargando...' };
+  if (len < 2) return { value: '0%', status: '', message: '' };
   const actual = crecimiento.value[len - 1].value;
   const anterior = crecimiento.value[len - 2].value;
   const variacion = anterior === 0 ? 0 : (((actual - anterior) / anterior) * 100).toFixed(2);
@@ -54,7 +54,8 @@ const procesarHistorial = (historial) => {
     .map(item => ({
       ...item,
       label: obtenerMesAnio(item.periodo),
-      value: Number(item.valor)
+      value: Number(item.valor),
+      detalles: item?.detalles || {}
     }))
     .sort((a, b) => (a.fecha > b.fecha ? 1 : -1)); 
 };
@@ -155,7 +156,7 @@ onMounted(async () => {
           </Popover>
         </div>
         <div class="w-full p-5">
-          <AreaChart :data="operatividad" :ranges="operatividadRangos" type="Operatividad" />
+          <AreaChart :data="operatividad" unit="Operatividad" details="bienes" />
         </div>
       </div>
     </div>

@@ -39,6 +39,12 @@ class Indicadores {
 
   async IPS(client) {
     const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Personal Satisfecho (%IPS)';";
+    const resultado = await client.query(sql); 
+    return resultado.rows[0];
+  }
+
+  async IBODP(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Bienes Operativos Después del Mantenimiento (%IBODP)';";
     const resultado = await client.query(sql);
     return resultado.rows[0];
   }
@@ -50,20 +56,20 @@ class Indicadores {
   }
 
   async crearMetrica(client, metrica) {
-    const { valor, idIndicador } = metrica;
-    const sql = "INSERT INTO Metricas (periodo, valor, idIndicador) VALUES (TO_CHAR(CURRENT_DATE, 'MM-YYYY'), $1, $2)";
-    await client.query(sql, [valor, idIndicador]);
+    const { valor, detalles, idIndicador } = metrica;
+    const sql = "INSERT INTO Metricas (periodo, valor, detalles, idIndicador) VALUES (TO_CHAR(CURRENT_DATE, 'MM-YYYY'), $1, $2, $3)";
+    await client.query(sql, [valor, detalles, idIndicador]);
   }
 
   async crearMetricaSemestrales(client, metrica) {
-    const { valor, idIndicador } = metrica;
-    const sql = `INSERT INTO Metricas (periodo, valor, idIndicador) 
+    const { valor, detalles, idIndicador } = metrica;
+    const sql = `INSERT INTO Metricas (periodo, valor, detalles, idIndicador) 
     VALUES (
       CASE 
         WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN 'I-' || TO_CHAR(CURRENT_DATE, 'YYYY')
         ELSE 'II-' || TO_CHAR(CURRENT_DATE, 'YYYY')
-      END, $1, $2)`;
-    await client.query(sql, [valor, idIndicador]);
+      END, $1, $2, $3)`;
+    await client.query(sql, [valor, detalles, idIndicador]);
   }
 }
 

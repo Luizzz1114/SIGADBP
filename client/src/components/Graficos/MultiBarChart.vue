@@ -104,7 +104,7 @@
     <div 
       v-if="tooltipData"
       v-show="tooltipVisible"
-      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out min-w-38"
+      class="fixed z-9999 pointer-events-none overflow-hidden rounded-lg shadow-xs border border-slate-200 bg-white dark:bg-slate-850 dark:border-slate-700 transition-all duration-100 ease-out min-w-40"
       :style="tooltipStyle"
     >
       <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
@@ -120,9 +120,17 @@
               {{ bar.name }}:
             </span>
           </div>
-          <span class="text-[13px] font-bold text-slate-800 dark:text-slate-100">
-            {{ bar.value }}{{ isPercentage ? '%' : '' }}
-          </span>
+          <div>
+            <span class="text-[13px] font-bold text-slate-800 dark:text-slate-100">
+              {{ bar.value }}{{ isPercentage ? '%' : '' }}
+            </span>
+            <template v-if="bar.detalles">
+              <span class="mx-1 text-slate-400">•</span>
+              <span class="text-[12px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                {{ bar.detalles.cantidad }}$ / {{ bar.detalles.total }}$
+              </span>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -140,7 +148,7 @@ const props = defineProps({
   datasets: { 
     type: Array, 
     required: true,
-    // Formato esperado: [{ name: 'KPI 1', color: '#3b82f6', values: [10, 20, 30] }]
+    // Formato esperado: [{ name: 'KPI 1', color: '#3b82f6', values: [10, 20, 30], detalles: [{cantidad, total}, null, {cantidad, total}] }]
   },
   isPercentage: {
     type: Boolean,
@@ -234,14 +242,12 @@ const svgHeight = 280;
 const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
-// Como ahora hay varias barras por grupo, necesitamos más espacio mínimo por grupo
 const minSpacePerGroup = 80; 
 
 // --- CÁLCULO DEL MÁXIMO ---
 const computedMaxValue = computed(() => {
   if (props.forceMaxValue !== null) return props.forceMaxValue;
   
-  // Buscar el valor máximo entre todos los datasets
   let maxInData = 0;
   props.datasets.forEach(ds => {
     const dsMax = Math.max(...(ds.values || [0]));
@@ -261,22 +267,18 @@ const svgWidth = computed(() => {
 });
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
-// El espacio total que ocupa un "grupo" (ej: todo el espacio asignado a 2023-I)
 const spacePerGroup = computed(() => chartWidth.value / (props.labels.length || 1));
 
-// Cálculo del ancho de las barras y espaciado entre ellas
 const numDatasets = computed(() => props.datasets.length);
-const barGap = 4; // Espacio en píxeles entre las barras del mismo grupo
-const maxBarWidth = 24; // Ancho máximo de una barra para que no se vea gigante
+const barGap = 4;
+const maxBarWidth = 24; 
 
 const barWidth = computed(() => {
-  // Calculamos cuánto espacio le tocaría a cada barra si usáramos el 70% del espacio del grupo
   const availableSpaceForBars = spacePerGroup.value * 0.7;
   const rawWidth = (availableSpaceForBars - (barGap * (numDatasets.value - 1))) / numDatasets.value;
-  return Math.max(Math.min(rawWidth, maxBarWidth), 4); // Mínimo 4px, máximo 24px
+  return Math.max(Math.min(rawWidth, maxBarWidth), 4);
 });
 
-// Ancho total de las barras juntas (para centrarlas en el grupo)
 const totalBarsWidth = computed(() => (barWidth.value * numDatasets.value) + (barGap * (numDatasets.value - 1)));
 
 // --- EJE Y ---
@@ -297,11 +299,13 @@ const processedGroups = computed(() => {
 
   return props.labels.map((label, groupIndex) => {
     const groupX = margins.left + (groupIndex * spacePerGroup.value);
-    // Para centrar las barras en el espacio del grupo
     const startX = groupX + (spacePerGroup.value / 2) - (totalBarsWidth.value / 2);
 
     const bars = props.datasets.map((ds, dsIndex) => {
       const value = ds.values[groupIndex] || 0;
+      
+      const detallesObj = (ds.detalles && ds.detalles[groupIndex]) ? ds.detalles[groupIndex] : null;
+
       const heightRatio = value / maxVal;
       const height = heightRatio * chartHeight;
       const yStatic = margins.top + chartHeight;
@@ -310,6 +314,7 @@ const processedGroups = computed(() => {
         name: ds.name,
         color: ds.color,
         value: value,
+        detalles: detallesObj,
         x: startX + (dsIndex * (barWidth.value + barGap)),
         height: height,
         yStatic: yStatic,

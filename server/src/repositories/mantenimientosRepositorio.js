@@ -7,6 +7,12 @@ class Mantenimientos {
     return resultado.rows;
   }
 
+  async conteoMantenimiento() {
+    const sql = 'SELECT * FROM vistaMantenimientoEfectivo';
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
   async obtenerPorId(id) {
     const sql = 'SELECT * FROM vistaMantenimiento WHERE id = $1;';
     const resultado = await pool.query(sql, [id]);

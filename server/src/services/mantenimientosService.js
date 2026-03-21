@@ -7,6 +7,10 @@ class MantenimientosServices {
     return await MantenimientosRepositorio.listar();
   }
   
+  async conteoMantenimiento() {
+    return await MantenimientosRepositorio.conteoMantenimiento();
+  }
+
   async obtenerPorId(id) {
     return await MantenimientosRepositorio.obtenerPorId(id);
   }

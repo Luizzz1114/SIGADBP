@@ -2,6 +2,7 @@ import IndicadoresRepositorio from '../repositories/indicadoresRepositorio.js';
 import BienesRepositorio from '../repositories/bienesRepositorio.js';
 import PresupuestoRepositorio from '../repositories/presupuestosRepositorio.js';
 import EvaluacionesRepositorio from '../repositories/evaluacionesRepositorio.js';
+import MantenimientosRepositorio from '../repositories/mantenimientosRepositorio.js';
 import pool from '../config/database.js';
 
 class IndicadoresServices {
@@ -28,6 +29,9 @@ class IndicadoresServices {
         break;
       case 'IPS':
         denominacion = '% Personal Satisfecho (%IPS)';
+        break;
+      case 'IBODP':
+        denominacion = '% Bienes Operativos Después del Mantenimiento (%IBODP)';
         break;    
       default:
         denominacion = null;
@@ -46,7 +50,11 @@ class IndicadoresServices {
 
       const metrica = {
         valor: resultadosIBEO.p_operativos,
-        idIndicador: IBEO.id
+        idIndicador: IBEO.id,
+        detalles: {
+          cantidad: resultadosIBEO.operativos,
+          total: resultadosIBEO.activos
+        }
       };
 
       await IndicadoresRepositorio.crearMetrica(client, metrica);
@@ -70,7 +78,8 @@ async procesarICMI() {
 
       const metrica = {
         valor: resultadosICMI.total_bienes,
-        idIndicador: ICMI.id
+        idIndicador: ICMI.id,
+        detalles: null
       };
 
       await IndicadoresRepositorio.crearMetrica(client, metrica);
@@ -96,11 +105,13 @@ async procesarKpiIIET() {
         item => item.tipo === "Compra de Equipos Tecnológicos"
       );
 
-      const porcentaje = itemTecnologico ? itemTecnologico.porcentaje_uso : "0.00";
-
       const metrica = {
-        valor: porcentaje,
-        idIndicador: IIET.id
+        valor: itemTecnologico.porcentaje_uso,
+        idIndicador: IIET.id,
+        detalles: {
+          cantidad: itemTecnologico.gasto_total,
+          total: itemTecnologico.presupuesto_total_usd
+        }
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
@@ -126,11 +137,13 @@ async procesarKpiIIM() {
         item => item.tipo === "Compra de Muebles"
       );
 
-      const porcentaje = itemMueble ? itemMueble.porcentaje_uso : "0.00";
-
       const metrica = {
-        valor: porcentaje,
-        idIndicador: IIM.id
+        valor: itemMueble.porcentaje_uso,
+        idIndicador: IIM.id,
+        detalles: {
+          cantidad: itemMueble.gasto_total,
+          total: itemMueble.presupuesto_total_usd
+        }
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
@@ -156,11 +169,13 @@ async procesarKpiIIMB() {
         item => item.tipo === "Mantenimiento de Bienes"
       );
 
-      const porcentaje = itemMantenimiento ? itemMantenimiento.porcentaje_uso : "0.00";
-
       const metrica = {
-        valor: porcentaje,
-        idIndicador: IIMB.id
+        valor: itemMantenimiento.porcentaje_uso,
+        idIndicador: IIMB.id,
+        detalles: {
+          cantidad: itemMantenimiento.gasto_total,
+          total: itemMantenimiento.presupuesto_total_usd
+        }
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
@@ -184,7 +199,11 @@ async procesarKpiIIMB() {
 
       const metrica = {
         valor: resultadosICP.porcentaje_capacitacion,
-        idIndicador: ICP.id
+        idIndicador: ICP.id,
+        detalles: {
+          cantidad: resultadosICP.personal_capacitado,
+          total: resultadosICP.total_evaluados
+        }
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
@@ -208,10 +227,42 @@ async procesarKpiIIMB() {
 
       const metrica = {
         valor: resultadosIPS.porcentaje_satisfaccion,
-        idIndicador: IPS.id
+        idIndicador: IPS.id,
+        detalles: {
+          cantidad: resultadosIPS.personal_satisfecho,
+          total: resultadosIPS.total_evaluados
+        }
       };
 
       await IndicadoresRepositorio.crearMetricaSemestrales(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiIBODP() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IBODP = await IndicadoresRepositorio.IBODP(client);
+      const resultadosIBODP = await MantenimientosRepositorio.conteoMantenimiento();
+      
+      const metrica = {
+        valor: resultadosIBODP.porcentaje_buen_estado,
+        idIndicador: IBODP.id,
+        detalles: {
+          total: resultadosIBODP.total_mantenimiento,
+          cantidad: resultadosIBODP.total_buen_estado 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
 
       await client.query('COMMIT');
     } catch (error) {
