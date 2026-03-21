@@ -7,7 +7,7 @@ const cargardo = ref(false);
 const stats = ref([]);
 
 const baseStats = [
-  { label:'Operativos', key:'operativos', icono:'fi-rr-check-circle', color:'#34d399' },
+  { label:'Operativos', key:'operativos', icono:'fi-rr-check-circle', color:'#00d492' },
   { label:'En mantenimiento', key:'mantenimiento', icono:'fi-rr-tools', color:'#60a5fa' },
   { label:'No asignados', key:'noasignados', icono:'fi-rr-minus-circle', color:'url(#stripes)' }
 ];

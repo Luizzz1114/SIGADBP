@@ -156,7 +156,7 @@ const props = defineProps({
   },
   forceMaxValue: {
     type: Number,
-    default: null // Si pasas 100, el gráfico siempre irá de 0 a 100
+    default: 100 // Si pasas 100, el gráfico siempre irá de 0 a 100
   }
 });
 

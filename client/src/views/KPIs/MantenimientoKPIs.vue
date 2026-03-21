@@ -78,7 +78,7 @@ onMounted(async () => {
           <span class="font-bold text-base dark:text-slate-50">Historial de operatividad post-mantenimiento</span>
         </div>
         <div class="flex items-center gap-3">
-          <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8!" />
+          <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opOperatividad">
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">

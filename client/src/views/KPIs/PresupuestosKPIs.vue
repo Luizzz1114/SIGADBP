@@ -11,9 +11,9 @@ const items = [
 ];
 
 const kpisConfig = [
-  { name: 'Inversión Equipos Tecnológicos', color: '#818cf8', icon: 'fi-rr-computer', label: 'Inversión Equipos Tecnológicos' },
-  { name: 'Inversión Muebles', color: '#34d399', icon: 'fi-rr-chair',    label: 'Inversión Muebles' },
-  { name: 'Mantenimiento Bienes', color: '#60a5fa', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
+  { name: 'Inversión Equipos Tecnológicos', color: '#2563eb', icon: 'fi-rr-computer', label: 'Inversión Equipos Tecnológicos' },
+  { name: 'Inversión Muebles', color: '#60a5fa', icon: 'fi-rr-chair',    label: 'Inversión Muebles' },
+  { name: 'Mantenimiento Bienes', color: '#93c5fd', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
 ];
 
 // --- Estados base ---
@@ -128,7 +128,7 @@ onMounted(async () => {
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <span class="font-bold text-base dark:text-slate-50">Distribución porcentual de la inversión</span>
-          <Button @click="opPresupuesto.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8!" />
+          <Button @click="opPresupuesto.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opPresupuesto">
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
@@ -146,8 +146,7 @@ onMounted(async () => {
         <div class="w-full p-5">
           <MultiBarChart
             :labels="chartLabels" 
-            :datasets="chartDatasets" 
-            :force-max-value="100"
+            :datasets="chartDatasets"
           />
         </div>
       </div>

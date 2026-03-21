@@ -8,9 +8,9 @@ const data = ref([]);
 const categorias = computed(() => {
   const d = data.value;
   return [
-    { label: 'Muebles', key: 'muebles', color: '#8fa0b8' },
-    { label: 'Tecnológicos', key: 'tecnologicos', color: '#7c86ff' },
-    { label: 'Vehículos', key: 'vehiculos', color: '#00d492' }
+    { label: 'Muebles', key: 'muebles', color: '#00d492' },
+    { label: 'Tecnológicos', key: 'tecnologicos', color: '#60a5fa' },
+    { label: 'Vehículos', key: 'vehiculos', color: '#667791' }
   ].map(cat => ({
     ...cat,
     value: d[cat.key] ?? 0,

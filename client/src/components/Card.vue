@@ -36,7 +36,7 @@ const iconClasses = computed(() => {
         v-if="status" 
         :value="statusText" 
         :severity="status" 
-        class="ring-1 ring-inset ring-current/10 mt-0.5"
+        class="ring-1 ring-inset ring-current/10 mt-0.5 text-[10px]!"
       />
     </div>
     <div class="flex flex-col items-start">

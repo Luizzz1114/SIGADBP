@@ -29,7 +29,7 @@ defineProps({ bien: Object });
           <CustomTag
             :value="bien.categoria"
             :icon="{'Mueble': 'fi-sr-chair', 'Tecnológico': 'fi-sr-computer', 'Vehículo o Equipo de Elevación': 'fi-sr-truck-moving'}[bien.categoria] || 'fi-sr-box-open-full'" 
-            :color="{'Mueble': 'slate', 'Tecnológico': 'indigo', 'Vehículo o Equipo de Elevación': 'emerald'}[bien.categoria] || 'blue'"
+            :color="{'Mueble': 'emerald', 'Tecnológico': 'blue', 'Vehículo o Equipo de Elevación': 'slate'}[bien.categoria] || 'blue'"
           />
         </div>
       </div>

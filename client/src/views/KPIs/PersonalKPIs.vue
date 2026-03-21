@@ -129,7 +129,7 @@ onMounted(async () => {
             />
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="togglePopover($event, index)" severity="secondary" outlined icon="fi-rr-info" class="size-8!" />
+            <Button @click="togglePopover($event, index)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
             <Popover :ref="el => popovers[index] = el">
               <div class="flex flex-col gap-3 p-1">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
@@ -153,7 +153,7 @@ onMounted(async () => {
     
     <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
       <div class="flex items-center gap-3 px-4 pt-4 pb-1">
-        <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+        <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
           <i class="fi-rr-book-alt"></i>
         </div>
         <span class="font-bold text-base dark:text-slate-50">Historial de capacitación</span>
@@ -165,7 +165,7 @@ onMounted(async () => {
 
     <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
       <div class="flex items-center gap-3 px-4 pt-4 pb-1">
-        <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+        <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
           <i class="fi-rr-smile-beam"></i>
         </div>
         <span class="font-bold text-base dark:text-slate-50">Historial de satisfacción</span>
