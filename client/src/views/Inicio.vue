@@ -41,5 +41,18 @@ onMounted(async() => {
 
     <BienesPorDependencia />
 
+<!--
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+      <div class="flex flex-col rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
+        <div class="flex items-center gap-3 p-4">
+          <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <i class="fi-rr-bolt"></i>
+          </div>
+          <span class="font-bold text-base dark:text-slate-50">Acceso rápido</span>
+        </div>
+      </div>
+    </div>
+-->
+
   </div>
 </template>
