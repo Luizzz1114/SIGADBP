@@ -8,6 +8,10 @@ class DesincorporacionesServices {
     return await DesincorporacionesRepositorio.listar();
   }
   
+  async desincorporacionPorDeterioro() {
+    return await DesincorporacionesRepositorio.desincorporacionPorDeterioro();
+  }
+
   async obtenerPorId(id) {
     const client = await pool.connect();
     try {

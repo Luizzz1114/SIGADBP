@@ -22,12 +22,13 @@ export const iniciarTareasProgramadas = () => {
   });
   
   cron.schedule('59 23 30 5,11 *', async () => {
-    console.log('Ejecutando tarea programada: IIET, IIM, IIMB, ICP, IPS');
+    console.log('Ejecutando tarea programada: IIET, IIM, IIMB, ICP, IPS, IDD');
     await IndicadoresServices.procesarKpiIIET();
     await IndicadoresServices.procesarKpiIIM();
     await IndicadoresServices.procesarKpiIIMB();
     await IndicadoresServices.procesarKpiICP();
     await IndicadoresServices.procesarKpiIPS();
+    await IndicadoresServices.procesarKpiIDD();
     
     const mes = new Date();
 

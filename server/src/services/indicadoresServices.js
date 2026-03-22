@@ -3,6 +3,7 @@ import BienesRepositorio from '../repositories/bienesRepositorio.js';
 import PresupuestoRepositorio from '../repositories/presupuestosRepositorio.js';
 import EvaluacionesRepositorio from '../repositories/evaluacionesRepositorio.js';
 import MantenimientosRepositorio from '../repositories/mantenimientosRepositorio.js';
+import DesincorporacionesRepositorio from '../repositories/desincorporacionesRepositorio.js';
 import pool from '../config/database.js';
 
 class IndicadoresServices {
@@ -35,6 +36,9 @@ class IndicadoresServices {
         break;
       case 'ITPMB':
         denominacion = 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)';
+        break;
+      case 'IDD':
+        denominacion = '% Desincorporaciones por Deterioro (%IDD)';
         break;      
       default:
         denominacion = null;
@@ -301,7 +305,35 @@ async procesarKpiIIMB() {
     } finally {
       client.release();
     }
-  } 
+  }
+  
+  async procesarKpiIDD() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IDD = await IndicadoresRepositorio.IDD(client);
+      const resultadosIDD = await DesincorporacionesRepositorio.desincorporacionPorDeterioro();
+      
+      const metrica = {
+        valor: resultadosIDD.porcentaje_deterioro,
+        idIndicador: IDD.id,
+        detalles: {
+          total: resultadosIDD.total,
+          cantidad: resultadosIDD.total_deterioro 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 }
 
 export default new IndicadoresServices();

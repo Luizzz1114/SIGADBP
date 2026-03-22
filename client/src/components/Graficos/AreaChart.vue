@@ -159,6 +159,9 @@
           <div v-if="tooltipData.detalles && details === 'personal'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
             <span>{{ tooltipData.detalles.cantidad }} de {{ tooltipData.detalles.total }} miembros del personal</span>
           </div>
+          <div v-if="tooltipData.detalles && details === 'd_deterioro'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} desincorporaciones por deterioro de {{ tooltipData.detalles.total }} totales</span>
+          </div>
         </div>
       </div>
     </Teleport>

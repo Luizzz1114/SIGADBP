@@ -7,6 +7,12 @@ class Desincorporaciones {
     return resultado.rows;
   }
   
+  async desincorporacionPorDeterioro() {
+    const sql = 'SELECT * FROM vistaDesincorporacionPorDeterioro;';
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
   async obtenerPorId(client, id) {
     const sql = 'SELECT * FROM vistaDesincorporaciones WHERE id = $1;';
     const resultado = await client.query(sql, [id]);

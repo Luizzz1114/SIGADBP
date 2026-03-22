@@ -18,6 +18,7 @@ import InventarioBienesKPIs from '@/views/KPIs/InventarioBienesKPIs.vue';
 import PresupuestosKPIs from '@/views/KPIs/PresupuestosKPIs.vue';
 import PersonalKPIs from '@/views/KPIs/PersonalKPIs.vue';
 import MantenimientoKPIs from '@/views/KPIs/MantenimientoKPIs.vue';
+import DesincorporacionesKPIs from '@/views/KPIs/DesincorporacionesKPIs.vue';
 
 const routes = [
   {
@@ -75,15 +76,26 @@ const routes = [
       },
       {
         path: 'desincorporaciones',
-        name: 'Desincorporaciones',
-        component: Desincorporaciones,
-        meta: { roles: ['Administrador', 'Supervisor'] }
+        meta: { roles: ['Administrador', 'Supervisor'] },
+        children: [
+          {
+            path: '',
+            name: 'Desincorporaciones',
+            component: Desincorporaciones
+          },
+          {
+            path: 'estadisticas',
+            name: 'DesincorporacionesKPIs',
+            component: DesincorporacionesKPIs
+          }
+        ]
       },
       {
         path: 'movimientos',
         name: 'Movimientos',
         component: Movimientos,
         meta: { roles: ['Administrador', 'Supervisor'] }
+        
       },
       {
         path: 'mantenimiento',
