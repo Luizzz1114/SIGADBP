@@ -19,6 +19,15 @@ class MantenimientosController {
      }
   }
 
+  async promedioMantenimiento(req, res) {
+    try {
+      const promedio = await MantenimientosServices.promedioMantenimiento();
+      res.status(200).json(promedio);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al listar el promedio de mantenimientos', error: error.message });
+    }
+  }
+
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params;

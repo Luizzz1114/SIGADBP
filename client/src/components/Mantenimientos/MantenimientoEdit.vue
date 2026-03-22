@@ -59,6 +59,14 @@ watch(visible, async(isOpen) => {
     presupuestos.value = await presupuestosServices.listarActivosMantenimiento();
   }
 });
+
+const estatusDisponibles = computed(() => {
+  const estatusActual = props.mantenimiento?.estatus;
+  if (estatusActual === 'Finalizado' || estatusActual === 'Cancelado') {
+    return estatusMantenimiento.filter(estatus => estatus !== 'En proceso');
+  }
+  return estatusMantenimiento;
+})
 </script>
 
 <template>
@@ -131,7 +139,7 @@ watch(visible, async(isOpen) => {
 
         <div class="flex flex-col gap-1">
           <span>Estatus <span class="text-red-500">*</span></span>
-          <Select name="estatus" :options="estatusMantenimiento" placeholder="Selecione" size="small" fluid @change="(e) => onEstatusChange(e, $form)" />
+          <Select name="estatus" :options="estatusDisponibles" placeholder="Seleccione" size="small" fluid @change="(e) => onEstatusChange(e, $form)" />
           <Message v-if="$form.estatus?.invalid" severity="error" size="small" variant="simple">
             {{ $form.estatus.error?.message }}
           </Message>

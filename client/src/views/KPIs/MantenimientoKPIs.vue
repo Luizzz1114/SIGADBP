@@ -1,6 +1,7 @@
 <script setup>
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
+import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { computed, onMounted, ref } from 'vue';
 
@@ -11,8 +12,21 @@ const items = [
   { label: 'Estadísticas', route: '/mantenimiento/estadisticas' }
 ];
 
+const opDiasPromedio = ref(null);
 const opOperatividad = ref(null);
+
+const diasPromedio = ref([]);
 const operatividad = ref([]);
+
+
+const actualDiasPromedio = computed(() => {
+  const len = diasPromedio.value.length;
+  if (len === 0) return { value: '0 días', status: '', message: '' };
+  const val = diasPromedio.value[len - 1].value;
+  const status = val <= 5 ? 'success' : val > 15 ? 'danger' : 'warn';
+  const message = diasPromedio.value[len - 1]?.label || 'Sin datos';
+  return { value: `${val} días`, status, message };
+});
 
 const actualOperatividad = computed(() => {
   const len = operatividad.value.length;
@@ -35,15 +49,18 @@ const procesarHistorial = (historial) => {
 };
 
 onMounted(async () => {
-  const [resOperatividad] = await Promise.all([
+  const [resDiasPromedio, resOperatividad] = await Promise.all([
+    metricasServices.obtenerKPI('ITPMB'),
     metricasServices.obtenerKPI('IBODP'),
   ]);
 
-  if (resOperatividad?.length) {
-    operatividad.value = procesarHistorial(resOperatividad[0].historial_metricas);
-    console.log(operatividad.value);
+  if (resDiasPromedio?.length) {
+    diasPromedio.value = procesarHistorial(resDiasPromedio[0].historial_metricas);
   }
 
+  if (resOperatividad?.length) {
+    operatividad.value = procesarHistorial(resOperatividad[0].historial_metricas);
+  }
 
 });
 </script>
@@ -64,12 +81,51 @@ onMounted(async () => {
     </div>
     <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card
+        label="Tiempo Medio de Mantenimiento"
+        icon="fi-rr-time-fast"
+        :value="actualDiasPromedio.value"
+        :status="actualDiasPromedio.status"
+        :message="actualDiasPromedio.message"
+      />
+      <Card
         label="Tasa de Operatividad"
         icon="fi-rr-check-circle"
         :value="actualOperatividad.value"
         :status="actualOperatividad.status"
         :message="actualOperatividad.message"
       />
+    </div>
+
+    <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+      <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center gap-3">
+          <span class="font-bold text-base dark:text-slate-50">Promedio mensual de días de mantenimiento</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <Button @click="opDiasPromedio.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+          <Popover ref="opDiasPromedio">
+            <div class="flex flex-col gap-3 p-1">
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <i class="fi-br-info text-blue-500"></i>
+                Rangos de alerta
+              </span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <Tag :value="'Meta: < 6 días'" severity="success" class="ring-1 ring-inset ring-current/10" />
+                <Tag :value="'6 a 15 días'" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                <Tag :value="'> 15 días'" severity="danger" class="ring-1 ring-inset ring-current/10" />
+              </div>
+            </div>
+          </Popover>
+        </div>
+      </div>
+      <div class="w-full p-5">
+        <BarChart
+          :data="diasPromedio"
+          type="Promedio"
+          unit="días"
+          details="dias_promedio"
+        />
+      </div>
     </div>
 
     <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">

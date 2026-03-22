@@ -652,6 +652,7 @@ ORDER BY
   SPLIT_PART(E.semestre, '-', 2) DESC  -- Ordena por Semestre (ej: 2)
 LIMIT 1;
 
+
 CREATE OR REPLACE VIEW vistaMantenimientoEfectivo AS
 WITH conteo_mantenimiento AS (
   SELECT COUNT(*) AS total_mantenimiento,
@@ -664,6 +665,18 @@ WITH conteo_mantenimiento AS (
 SELECT total_mantenimiento, total_buen_estado, periodo,
   ROUND(COALESCE((total_buen_estado * 100.0) / NULLIF(total_mantenimiento, 0), 0), 2) AS porcentaje_buen_estado
 FROM conteo_mantenimiento;
+
+
+CREATE OR REPLACE VIEW vistaPromedioMantenimiento AS
+WITH dias_por_mantenimiento AS (
+	SELECT (M.fechaFin - M.fechaInicio) + 1 AS dias_duracion
+  FROM Mantenimientos M
+  WHERE M.fechaFin IS NOT NULL
+	AND EXTRACT(MONTH FROM M.fechaFin) = EXTRACT(MONTH FROM CURRENT_DATE)
+	AND EXTRACT(YEAR FROM M.fechaFin) = EXTRACT(YEAR FROM CURRENT_DATE)
+)
+SELECT ROUND(COALESCE(AVG(dias_duracion), 0)) AS promedio_dias, COUNT(*) AS mantenimientos_realizados
+FROM dias_por_mantenimiento;
 
 
 
@@ -967,51 +980,12 @@ SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(i
 --- 8. KPIs
 --- ==========================================
 INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) VALUES
-('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
-('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
-('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
+('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
+('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
+('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Mensual'),
+('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'), --- <--
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');
-
-
-
-INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('09-2025', '01-09-2025', 79, 1),
-('10-2025', '01-10-2025', 85, 1),
-('11-2025', '01-11-2025', 87, 1),
-('12-2025', '01-12-2025', 95, 1),
-('01-2026', '01-01-2026', 92, 1),
-('02-2026', '01-02-2026', 95, 1),
-('03-2026', '01-03-2026', 92, 1);
-
-
-INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('09-2025', '01-09-2025', 13, 2),
-('10-2025', '01-10-2025', 9, 2),
-('11-2025', '01-11-2025', 14, 2),
-('12-2025', '01-12-2025', 13, 2),
-('01-2026', '01-01-2026', 12, 2),
-('02-2026', '01-02-2026', 11, 2),
-('03-2026', '01-03-2026', 14, 2);
-
-
-INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 67, 4),
-('II-2024', '30-12-2024', 50, 4),
-('I-2025', '30-06-2025', 20, 4),
-('II-2025', '30-12-2025', 87, 4);
-
-INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 40, 5),
-('II-2024', '30-12-2024', 55, 5),
-('I-2025', '30-06-2025', 39, 5),
-('II-2025', '30-12-2025', 78, 5);
-
-INSERT INTO Metricas (periodo, fecha, valor, idIndicador) VALUES
-('I-2024', '30-06-2024', 10, 6),
-('II-2024', '30-12-2024', 45, 6),
-('I-2025', '30-06-2025', 87, 6),
-('II-2025', '30-12-2025', 90, 6);

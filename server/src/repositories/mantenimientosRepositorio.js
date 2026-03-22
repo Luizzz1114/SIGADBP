@@ -8,7 +8,13 @@ class Mantenimientos {
   }
 
   async conteoMantenimiento() {
-    const sql = 'SELECT * FROM vistaMantenimientoEfectivo';
+    const sql = 'SELECT * FROM vistaMantenimientoEfectivo;';
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
+  async promedioMantenimiento() {
+    const sql = 'SELECT * FROM vistaPromedioMantenimiento;';
     const resultado = await pool.query(sql);
     return resultado.rows[0];
   }

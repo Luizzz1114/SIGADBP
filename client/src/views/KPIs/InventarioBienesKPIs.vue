@@ -114,50 +114,49 @@ onMounted(async () => {
         :message="actualOperatividad.message"
       />
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-          <span class="font-bold text-base dark:text-slate-50">Crecimiento del inventario</span>
-          <Button @click="opCrecimiento.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
-          <Popover ref="opCrecimiento">
-            <div class="flex flex-col gap-3 p-1">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
-                Rangos de alerta (Índice)
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag :value="`< ${crecimientoRangos.min}%`" severity="danger" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="`Meta: ${crecimientoRangos.min}% a ${crecimientoRangos.max}%`" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="`> ${crecimientoRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10" />
-              </div>
+    
+    <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+      <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <span class="font-bold text-base dark:text-slate-50">Crecimiento del inventario</span>
+        <Button @click="opCrecimiento.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+        <Popover ref="opCrecimiento">
+          <div class="flex flex-col gap-3 p-1">
+            <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+              <i class="fi-br-info text-blue-500"></i>
+              Rangos de alerta (Índice)
+            </span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <Tag :value="`< ${crecimientoRangos.min}%`" severity="danger" class="ring-1 ring-inset ring-current/10" />
+              <Tag :value="`Meta: ${crecimientoRangos.min}% a ${crecimientoRangos.max}%`" severity="success" class="ring-1 ring-inset ring-current/10" />
+              <Tag :value="`> ${crecimientoRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10" />
             </div>
-          </Popover>
-        </div>
-        <div class="w-full p-5">
-          <BarChart :data="crecimiento" :historical="true" type="Bienes" />
-        </div>
+          </div>
+        </Popover>
       </div>
-      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-          <span class="font-bold text-base dark:text-slate-50">Bienes en estado operativo</span>
-          <Button @click="opRangos.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
-          <Popover ref="opRangos" >
-            <div class="flex flex-col gap-3 p-1">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
-                Rangos de alerta
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag :value="`Meta: > ${operatividadRangos.min - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10"/>
-                <Tag :value="`${operatividadRangos.min - 1}% - ${operatividadRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10"/>
-                <Tag :value="`< ${operatividadRangos.max}%`" severity="danger" class="ring-1 ring-inset ring-current/10"/>
-              </div>
+      <div class="w-full p-5">
+        <BarChart :data="crecimiento" :historical="true" type="Bienes" />
+      </div>
+    </div>
+    <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+      <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <span class="font-bold text-base dark:text-slate-50">Bienes en estado operativo</span>
+        <Button @click="opRangos.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+        <Popover ref="opRangos" >
+          <div class="flex flex-col gap-3 p-1">
+            <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+              <i class="fi-br-info text-blue-500"></i>
+              Rangos de alerta
+            </span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <Tag :value="`Meta: > ${operatividadRangos.min - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10"/>
+              <Tag :value="`${operatividadRangos.min - 1}% - ${operatividadRangos.max}%`" severity="warn" class="ring-1 ring-inset ring-current/10"/>
+              <Tag :value="`< ${operatividadRangos.max}%`" severity="danger" class="ring-1 ring-inset ring-current/10"/>
             </div>
-          </Popover>
-        </div>
-        <div class="w-full p-5">
-          <AreaChart :data="operatividad" unit="Operatividad" details="bienes" />
-        </div>
+          </div>
+        </Popover>
+      </div>
+      <div class="w-full p-5">
+        <AreaChart :data="operatividad" unit="Operatividad" details="bienes" />
       </div>
     </div>
   </div>

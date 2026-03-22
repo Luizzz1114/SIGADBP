@@ -11,6 +11,10 @@ class MantenimientosServices {
     return await MantenimientosRepositorio.conteoMantenimiento();
   }
 
+  async promedioMantenimiento() {
+    return await MantenimientosRepositorio.promedioMantenimiento();
+  }
+
   async obtenerPorId(id) {
     return await MantenimientosRepositorio.obtenerPorId(id);
   }

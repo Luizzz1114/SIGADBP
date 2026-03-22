@@ -11,6 +11,9 @@ MantenimientosRouter.route('/')
 MantenimientosRouter.route('/conteo-mantenimiento')
   .get(MantenimientosController.conteoMantenimiento);
 
+MantenimientosRouter.route('/promedio-mantenimiento')
+  .get(MantenimientosController.promedioMantenimiento);
+
 MantenimientosRouter.route('/:id')
   .get(MantenimientosController.obtenerPorId)
   .delete(MantenimientosController.eliminar);  

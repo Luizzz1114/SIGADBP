@@ -32,7 +32,10 @@ class IndicadoresServices {
         break;
       case 'IBODP':
         denominacion = '% Bienes Operativos Después del Mantenimiento (%IBODP)';
-        break;    
+        break;
+      case 'ITPMB':
+        denominacion = 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)';
+        break;      
       default:
         denominacion = null;
         break;  
@@ -271,7 +274,34 @@ async procesarKpiIIMB() {
     } finally {
       client.release();
     }
-  }  
+  }
+  
+  async procesarKpiITPMB() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const ITPMB = await IndicadoresRepositorio.ITPMB(client);
+      const resultadosITPMB = await MantenimientosRepositorio.promedioMantenimiento();
+      
+      const metrica = {
+        valor: resultadosITPMB.promedio_dias,
+        idIndicador: ITPMB.id,
+        detalles: {
+          cantidad: resultadosITPMB.mantenimientos_realizados 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  } 
 }
 
 export default new IndicadoresServices();

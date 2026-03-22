@@ -63,7 +63,15 @@ watch(visible, async(isOpen) => {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-4">
         <div class="flex flex-col gap-1">
           <span>Bien <span class="text-red-500">*</span></span>
-          <Select name="bien" :options="bienes" optionLabel="descripcion" optionValue="id" placeholder="Seleccione" size="small" fluid filter>
+          <Select
+            name="bien"
+            :options="bienes"
+            optionLabel="descripcion"
+            optionValue="id"
+            placeholder="Seleccione"
+            size="small" fluid
+            filter :filterFields="['descripcion', 'numero']"
+          >
             <template #chip="slotProps">
               <div class="flex items-center px-2 rounded-sm bg-slate-100 dark:bg-slate-700">
                 <span>{{ slotProps.value.descripcion }}</span>
