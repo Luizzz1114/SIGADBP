@@ -679,6 +679,19 @@ SELECT ROUND(COALESCE(AVG(dias_duracion), 0)) AS promedio_dias, COUNT(*) AS mant
 FROM dias_por_mantenimiento;
 
 
+CREATE OR REPLACE VIEW vistaDesincorporacionPorDeterioro AS
+WITH count_desincorporacion AS (
+	SELECT COUNT(*) AS total,
+	COUNT(*) FILTER(WHERE DD.tipo = 'Deterioro') AS total_deterioro
+	FROM DetallesDesincorporacion AS DD
+	INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
+	WHERE D.fechaSalida >= DATE_TRUNC('month', CURRENT_DATE)
+  AND D.fechaSalida < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+)
+SELECT total, total_deterioro,
+ROUND(COALESCE((total_deterioro * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_deterioro
+FROM count_desincorporacion;
+
 
 -- INSERTS
 INSERT INTO Estados (nombre)
@@ -986,6 +999,7 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
 ('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Mensual'),
-('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'), --- <--
+('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'),
+('Planificación y Presupuesto', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Semestral'), -- <--
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');

@@ -6,17 +6,26 @@ class DesincorporacionesController {
       const desincorporaciones = await DesincorporacionesServices.listar();
       res.status(200).json(desincorporaciones);
     } catch (error) {
-      res.status(400).json({ message: 'Error al listar las desincorporaciones', error: error.message });
+      res.status(500).json({ message: 'Error al listar las desincorporaciones', error: error.message });
     }
   }
   
+  async desincorporacionPorDeterioro(req, res) {
+    try {
+      const desincorporacionesDeterioro = await DesincorporacionesServices.desincorporacionPorDeterioro();
+      res.status(200).json(desincorporacionesDeterioro);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al listar las desincorporaciones por deterioro', error: error.message });
+    }
+  }
+
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params;
       const desincorporacion = await DesincorporacionesServices.obtenerPorId(id);
       res.status(200).json(desincorporacion);
     } catch (error) {
-      res.status(400).json({ message: 'Error al obtener la desincorporacion por ID.', error: error.message })
+      res.status(500).json({ message: 'Error al obtener la desincorporacion por ID.', error: error.message })
     }
   }
 
