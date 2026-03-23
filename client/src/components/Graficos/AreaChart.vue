@@ -19,13 +19,13 @@
             />
           </clipPath>
 
-          <pattern id="diagonalHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <pattern id="diagonalHatch" width="12" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
             <line x1="0" y1="0" x2="0" y2="8" class="stroke-blue-400" stroke-width="1.5" stroke-opacity="0.15" />
           </pattern>
 
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" class="stop-color-blue-400" stop-opacity="0.25" stop-color="#60a5fa" />
-            <stop offset="100%" class="stop-color-blue-400" stop-opacity="0.05" stop-color="#60a5fa" />
+            <stop offset="0%" class="stop-color-blue-400" stop-opacity="0.2" stop-color="#60a5fa" />
+            <stop offset="100%" class="stop-color-blue-400" stop-opacity="0.00" stop-color="#60a5fa" />
           </linearGradient>
         </defs>
 
@@ -114,7 +114,7 @@
           <circle 
             :cx="item.x" 
             :cy="item.y" 
-            r="4" 
+            r="3.5" 
             class="fill-blue-400 transition-all duration-200"
             clip-path="url(#chart-reveal-clip)"
           />
@@ -123,7 +123,7 @@
             :x="item.x"
             :y="margins.top + chartHeight + 25"
             text-anchor="middle"
-            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-blue-500 dark:group-hover:fill-blue-400!"
+            class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-slate-700 dark:group-hover:fill-slate-200!"
             :class="{ 'font-semibold fill-slate-700 dark:fill-slate-200!': index === processedData.length - 1 }"
             aria-hidden="true"
           >
@@ -271,10 +271,11 @@ const minSpacePerBar = 90;
 // --- CÁLCULO DE LÍMITE DINÁMICO ---
 const maxValue = computed(() => {
   if (!props.data || props.data.length === 0) return 100;
-  const maxInData = Math.max(...props.data.map(item => item.value));
+  const maxInData = Math.max(...props.data.map(item => Number(item.value) || 0));
   if (maxInData <= 0) return 100;
-  const targetMax = maxInData > 100 ? maxInData * 1.15 : 100;
-  return Math.ceil(targetMax / ticksCount) * ticksCount;
+  const dynamicMax = maxInData * 1.2;
+  const roundedMax = Math.ceil(dynamicMax / ticksCount) * ticksCount;
+  return Math.min(roundedMax, 100);
 });
 
 // --- DIMENSIONES Y CÁLCULOS ---
@@ -292,7 +293,7 @@ const computedYTicks = computed(() => {
   return Array.from({ length: ticksCount + 1 }, (_, i) => {
     const val = (max / ticksCount) * (ticksCount - i);
     return {
-      value: Math.round(val),
+      value: Number.isInteger(val) ? val : Number(val.toFixed(1)),
       y: margins.top + (chartHeight / ticksCount) * i
     };
   });

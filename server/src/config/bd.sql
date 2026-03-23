@@ -538,7 +538,7 @@ LEFT JOIN LATERAL (
     FROM Metricas 
     WHERE idIndicador = I.id 
     ORDER BY fecha DESC
-    --LIMIT 6
+    LIMIT 6
 ) AS M ON true
 GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 
@@ -702,9 +702,9 @@ CROSS JOIN count_bienes;
 
 CREATE OR REPLACE VIEW vistaBienesSinNumero AS
 WITH count_bienes AS (
-    SELECT COUNT(*) AS total_bienes,
-	COUNT(*) FILTER(WHERE numeroBien = 'S/N') AS total_sin_numero
-    FROM Bienes
+  SELECT COUNT(*) AS total_bienes,
+  COUNT(*) FILTER(WHERE numeroBien = 'S/N') AS total_sin_numero
+  FROM Bienes
 	WHERE estatus != 'Desincorporado'
 )
 SELECT total_bienes, total_sin_numero,
@@ -1026,3 +1026,75 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Mensual'),
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');
+
+
+
+-- ==============================================================================
+-- INSERCIÓN DE METRICAS CON FORMATOS MM-AAAA (Mensual) e I/II-AAAA (Semestral)
+-- ==============================================================================
+
+INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
+-- ==============================================================================
+-- 1. % Bienes No Identificados (%IBNI) - ID: 5 (Mensual)
+-- ==============================================================================
+(5, '10-2025', 18.00, '2025-10-31', '{"total": 250, "cantidad": 45}'),
+(5, '11-2025', 15.50, '2025-11-30', '{"total": 264, "cantidad": 41}'),
+(5, '12-2025', 12.00, '2025-12-31', '{"total": 266, "cantidad": 32}'),
+(5, '01-2026', 9.50,  '2026-01-31', '{"total": 284, "cantidad": 27}'),
+(5, '02-2026', 7.50,  '2026-02-28', '{"total": 293, "cantidad": 22}'),
+(5, '03-2026', 6.20,  '2026-03-23', '{"total": 306, "cantidad": 19}'),
+-- ==============================================================================
+-- 2. % Bienes en Estado Operativo (%IBEO) - ID: 4 (Mensual)
+-- ==============================================================================
+(4, '10-2025', 95.00, '2025-10-31', '{"total": 250, "cantidad": 237}'),
+(4, '11-2025', 92.50, '2025-11-30', '{"total": 264, "cantidad": 244}'),
+(4, '12-2025', 85.00, '2025-12-31', '{"total": 266, "cantidad": 226}'),
+(4, '01-2026', 89.00, '2026-01-31', '{"total": 284, "cantidad": 252}'),
+(4, '02-2026', 94.00, '2026-02-28', '{"total": 293, "cantidad": 275}'),
+(4, '03-2026', 96.50, '2026-03-23', '{"total": 306, "cantidad": 295}'),
+-- ==============================================================================
+-- 3. Índice de Crecimiento Mensual (ICMI) - ID: 6 (Mensual)
+-- ==============================================================================
+(6, '10-2025', 250, '2025-10-31', null),
+(6, '11-2025', 264, '2025-11-30', null),
+(6, '12-2025', 266, '2025-12-31', null),
+(6, '01-2026', 284, '2026-01-31', null),
+(6, '02-2026', 293, '2026-02-28', null),
+(6, '03-2026', 306, '2026-03-23', null),
+-- ==============================================================================
+-- 4. Otros Indicadores Mensuales (Últimos 3 meses)
+-- ==============================================================================
+-- IBODP (ID 7)
+(7, '01-2026', 85.00, '2026-01-31', '{"total": 20, "cantidad": 17}'),
+(7, '02-2026', 90.00, '2026-02-28', '{"total": 10, "cantidad": 9}'),
+(7, '03-2026', 95.00, '2026-03-23', '{"total": 40, "cantidad": 38}'),
+-- ITPMB (ID 8)
+(8, '01-2026', 4.50,  '2026-01-31', '{"cantidad": 20}'),
+(8, '02-2026', 5.20,  '2026-02-28', '{"cantidad": 10}'),
+(8, '03-2026', 3.80,  '2026-03-23', '{"cantidad": 40}'),
+-- %ITDB (ID 9)
+(9, '01-2026', 1.50,  '2026-01-31', '{"total": 284, "cantidad": 4}'),
+(9, '02-2026', 0.50,  '2026-02-28', '{"total": 293, "cantidad": 1}'),
+(9, '03-2026', 2.10,  '2026-03-23', '{"total": 306, "cantidad": 6}'),
+-- %IDD (ID 10)
+(10, '01-2026', 15.00, '2026-01-31', '{"total": 4, "cantidad": 1}'),
+(10, '02-2026', 12.00, '2026-02-28', '{"total": 1, "cantidad": 0}'),
+(10, '03-2026', 18.00, '2026-03-23', '{"total": 6, "cantidad": 1}'),
+-- ==============================================================================
+-- 5. INDICADORES SEMESTRALES (Formato I-AAAA / II-AAAA)
+-- ==============================================================================
+-- IIET (ID 1)
+(1, 'II-2025', 45.50, '2025-12-31', '{"cantidad": 15000, "total": 33000}'),
+(1, 'I-2026', 52.00, '2026-03-23', '{"cantidad": 18500, "total": 35500}'),
+-- IIM (ID 2)
+(2, 'II-2025', 30.00, '2025-12-31', '{"cantidad": 5000, "total": 16600}'),
+(2, 'I-2026', 15.00, '2026-03-23', '{"cantidad": 2500, "total": 16600}'),
+-- IIMB (ID 3)
+(3, 'II-2025', 24.50, '2025-12-31', '{"cantidad": 8000, "total": 32600}'),
+(3, 'I-2026', 33.00, '2026-03-23', '{"cantidad": 11000, "total": 33300}'),
+-- ICP (ID 11)
+(11, 'II-2025', 75.00, '2025-12-31', '{"cantidad": 15, "total": 20}'),
+(11, 'I-2026', 82.00, '2026-03-23', '{"cantidad": 18, "total": 22}'),
+-- IPS (ID 12)
+(12, 'II-2025', 85.00, '2025-12-31', '{"cantidad": 42, "total": 49}'),
+(12, 'I-2026', 88.00, '2026-03-23', '{"cantidad": 45, "total": 51}');

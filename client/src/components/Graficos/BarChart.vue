@@ -12,6 +12,10 @@
           <clipPath id="bars-base-clip">
             <rect x="0" y="0" width="100%" :height="margins.top + chartHeight" />
           </clipPath>
+          
+          <pattern id="stripes_bar" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="2" height="8" class="fill-slate-200/60 dark:fill-slate-700/30" />
+          </pattern>
         </defs>
 
         <g class="y-axis" aria-hidden="true">
@@ -56,6 +60,24 @@
 
           <rect
             :x="item.x - (barWidth / 2)"
+            :y="margins.top"
+            :width="barWidth"
+            :height="chartHeight"
+            rx="10"
+            class="fill-slate-100/50 dark:fill-slate-800/50"
+          />
+          
+          <rect
+            :x="item.x - (barWidth / 2)"
+            :y="margins.top"
+            :width="barWidth"
+            :height="chartHeight"
+            rx="10"
+            fill="url(#stripes_bar)"
+          />
+
+          <rect
+            :x="item.x - (barWidth / 2)"
             :y="isMounted ? item.yAnimated : item.yStatic"
             :width="barWidth"
             :height="isMounted ? item.height + 15 : 15"
@@ -77,7 +99,7 @@
             text-anchor="middle"
             :class="[
               'fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300',
-              item.hoverTextColor || 'group-hover:fill-blue-400 dark:group-hover:fill-blue-300',
+              item.hoverTextColor || 'group-hover:fill-slate-700 dark:group-hover:fill-slate-200!',
               index === processedData.length - 1 && historical ? 'font-semibold fill-slate-700 dark:fill-slate-200!' : ''
             ]"
             aria-hidden="true"

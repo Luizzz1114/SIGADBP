@@ -81,6 +81,18 @@ export default {
   },
 
 
+  // --- DESINCORPORACIONES ---
+  async desincorporacionesResumen() {
+    try {
+      const res = await api.get('/desincorporaciones/metricas');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+
   // --- KPIs ---
   async obtenerKPI(siglas) {
     try {

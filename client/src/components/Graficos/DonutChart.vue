@@ -4,28 +4,31 @@
       <div ref="chartWrapper" class="relative size-48 shrink-0 flex items-center justify-center">
         <svg
           viewBox="0 0 200 200"
-          class="w-full h-full transform -rotate-90 overflow-visible"
+          class="w-full h-full overflow-visible"
           preserveAspectRatio="xMidYMid meet"
           role="img"
         >
+          <defs>
+            <pattern id="stripes_donut" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+              <rect width="8" height="8" class="fill-slate-200 dark:fill-slate-700" /> 
+              <line x1="0" y1="0" x2="0" y2="8" class="stroke-slate-300 dark:stroke-slate-600" stroke-width="3" /> 
+            </pattern>
+          </defs>
+
           <g aria-hidden="true">
-            <circle
-              cx="100"
-              cy="100"
-              :r="radius"
+            <path
+              :d="`M 100, ${100 - radius} A ${radius},${radius} 0 0,1 100,${100 + radius} A ${radius},${radius} 0 0,1 100,${100 - radius}`"
               fill="none"
               class="stroke-slate-100 dark:stroke-slate-800"
               :stroke-width="strokeWidth"
             />
             
-            <circle
+            <path
               v-for="(item, index) in processedData"
               :key="'slice-' + index"
-              cx="100"
-              cy="100"
-              :r="radius"
+              :d="`M 100, ${100 - radius} A ${radius},${radius} 0 0,1 100,${100 + radius} A ${radius},${radius} 0 0,1 100,${100 - radius}`"
               fill="none"
-              :stroke="item.color || defaultColors[index % defaultColors.length]"
+              :stroke="item.color"
               :stroke-width="strokeWidth"
               :stroke-dasharray="isMounted ? `${item.sliceLength} ${circumference}` : `0 ${circumference}`"
               :stroke-dashoffset="item.dashOffset"
@@ -45,8 +48,12 @@
       </div>
 
       <div class="flex flex-col md:w-auto gap-3 transition-opacity duration-1000" :class="isMounted ? 'opacity-100' : 'opacity-0'">
-        <div v-for="(item, index) in processedData" :key="'legend-' + index" class="flex items-center gap-3 ">
-          <div class="size-2.5 rounded-full shrink-0" :style="{ backgroundColor: item.color || defaultColors[index % defaultColors.length] }"></div>
+        <div v-for="(item, index) in processedData" :key="'legend-' + index" class="flex items-center gap-3">
+          
+          <svg width="10" height="10" class="shrink-0 overflow-visible">
+            <rect width="10" height="10" rx="5" :fill="item.color" />
+          </svg>
+
           <div class="flex items-center justify-between gap-4 w-full">
             <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
               {{ item.label }}
@@ -73,10 +80,11 @@
           {{ tooltipData.label }}
         </div>
         <div class="flex items-center gap-2 px-3 pb-2 pt-2">
-          <div 
-            class="w-2.5 h-2.5 rounded-full shrink-0"
-            :style="{ backgroundColor: tooltipData.color || defaultColors[0] }"
-          ></div>
+          
+          <svg width="10" height="10" class="shrink-0 overflow-visible">
+            <rect width="10" height="10" rx="5" :fill="tooltipData.color" />
+          </svg>
+
           <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
              {{ tooltipData.percentage }}% ({{ formatNumber(tooltipData.value) }})
           </span>
@@ -100,42 +108,34 @@ const props = defineProps({
   }
 });
 
-// --- ESTADO Y ANIMACIÓN ---
 const isMounted = ref(false);
 const chartWrapper = ref(null);
 
 onMounted(() => {
-  // Retraso ligero para permitir que la transición CSS se ejecute al montar
   setTimeout(() => { 
     isMounted.value = true; 
   }, 100);
 });
 
-// --- CONFIGURACIÓN DEL SVG DONA ---
-const radius = 70; // Radio del círculo
-const strokeWidth = 45; // Grosor de la dona
+const radius = 70; 
+const strokeWidth = 45; 
 const circumference = 2 * Math.PI * radius;
-const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; // Paleta por defecto
+const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; 
 
-
-// --- CÁLCULOS MATEMÁTICOS PARA LOS SEGMENTOS ---
 const processedData = computed(() => {
   if (!props.data || props.data.length === 0) return [];
 
-  // CORRECCIÓN: Usar Number() para evitar concatenación de strings
   const totalValue = props.data.reduce((acc, curr) => acc + Number(curr.value), 0);
   let currentOffsetAcc = 0;
 
   return props.data.map((item, index) => {
-    // CORRECCIÓN: Asegurar que el valor individual sea tratado como número
     const numericValue = Number(item.value); 
     const ratio = numericValue / totalValue;
     const sliceLength = ratio * circumference;
     const percentage = Math.round(ratio * 100);
     
-    // El dashoffset debe ser negativo para que el trazo avance en sentido horario
     const dashOffset = -currentOffsetAcc;
-    currentOffsetAcc += sliceLength; // Acumulamos el inicio para el siguiente segmento
+    currentOffsetAcc += sliceLength; 
 
     return {
       ...item,
@@ -147,12 +147,10 @@ const processedData = computed(() => {
   });
 });
 
-// --- UTILIDADES ---
 const formatNumber = (num) => {
   return new Intl.NumberFormat('en-US').format(num);
 };
 
-// --- LÓGICA DEL TOOLTIP (Exactamente como tu código) ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({
