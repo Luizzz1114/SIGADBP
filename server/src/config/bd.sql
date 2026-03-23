@@ -1018,14 +1018,14 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
-('Procesos Internos', '% Bienes No Identificados (%IBNI)', 5, 15, 'Mensual'), -- <--
+('Procesos Internos', '% Bienes No Identificados (%IBNI)', 5, 15, 'Mensual'),
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
-('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Mensual'),
+('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 90, 60, 'Mensual'),
 ('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'),
 ('Procesos Internos', '% Tasa de Desincorporación de Bienes (%ITDB)', 5, 10, 'Mensual'),
 ('Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Mensual'),
-('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
-('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');
+('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 75, 60, 'Semestral'),
+('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 75, 60, 'Semestral');
 
 
 
@@ -1069,9 +1069,9 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 (7, '02-2026', 90.00, '2026-02-28', '{"total": 10, "cantidad": 9}'),
 (7, '03-2026', 95.00, '2026-03-23', '{"total": 40, "cantidad": 38}'),
 -- ITPMB (ID 8)
-(8, '01-2026', 4.50,  '2026-01-31', '{"cantidad": 20}'),
-(8, '02-2026', 5.20,  '2026-02-28', '{"cantidad": 10}'),
-(8, '03-2026', 3.80,  '2026-03-23', '{"cantidad": 40}'),
+(8, '01-2026', 5,  '2026-01-31', '{"cantidad": 20}'),
+(8, '02-2026', 5,  '2026-02-28', '{"cantidad": 10}'),
+(8, '03-2026', 4,  '2026-03-23', '{"cantidad": 40}'),
 -- %ITDB (ID 9)
 (9, '01-2026', 1.50,  '2026-01-31', '{"total": 284, "cantidad": 4}'),
 (9, '02-2026', 0.50,  '2026-02-28', '{"total": 293, "cantidad": 1}'),

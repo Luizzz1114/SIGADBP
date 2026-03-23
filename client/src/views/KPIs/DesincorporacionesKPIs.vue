@@ -18,7 +18,6 @@ const opDeterioro = ref(null);
 
 
 // --- Estados ---
-const metricas = ref({});
 const tasaDesincorporacion = ref([]);
 const deterioro = ref([]);
 
@@ -40,6 +39,8 @@ const actualDeterioro = computed(() => {
   return { value: `${val}%`, status, message: label || 'Sin datos' };
 });
 
+
+// --- Operaciones con la API ---
 const procesarHistorial = (res) => {
   const historial = res?.[0]?.historial_metricas || [];
   return historial

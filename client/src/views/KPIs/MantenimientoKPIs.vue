@@ -1,9 +1,10 @@
 <script setup>
+import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
-import { computed, onMounted, ref } from 'vue';
+import { obtenerMesAnio } from '@/utils/formatters.js';
 
 
 // --- Configuración de la vista ---
@@ -15,33 +16,46 @@ const items = [
 const opDiasPromedio = ref(null);
 const opOperatividad = ref(null);
 
+
+// --- Estados ---
 const diasPromedio = ref([]);
 const operatividad = ref([]);
 
 
+// --- Computados ---
 const actualDiasPromedio = computed(() => {
-  const len = diasPromedio.value.length;
-  if (len === 0) return { value: '0 días', status: '', message: '' };
-  const val = diasPromedio.value[len - 1].value;
+  const actual = diasPromedio.value.at(-1);
+  if (!actual) return { value: '0 días', status: '', message: '' };
+  const { value: val, label, detalles } = actual;
   const status = val <= 5 ? 'success' : val > 15 ? 'danger' : 'warn';
-  const message = diasPromedio.value[len - 1]?.label || 'Sin datos';
-  return { value: `${val} días`, status, message };
+  return { 
+    value: `${val} días`, 
+    status,
+    total: detalles.cantidad,
+    message: label || 'Sin datos' 
+  };
 });
 
 const actualOperatividad = computed(() => {
-  const len = operatividad.value.length;
-  if (len === 0) return { value: '0%', status: '', message: '' };
-  const val = operatividad.value[len - 1].value;
-  const status = val === 100 ? 'success' : val < 60 ? 'danger' : 'warn';
-  const message = operatividad.value[len - 1]?.label || 'Sin datos';
-  return { value: `${val}%`, status, message };
+  const actual = operatividad.value.at(-1);
+  if (!actual) return { value: '0%', status: '', message: '' };
+  const { value: val, label } = actual;
+  const status = val >= 90 ? 'success' : val < 60 ? 'danger' : 'warn';
+  return { 
+    value: `${val}%`, 
+    status, 
+    message: label || 'Sin datos' 
+  };
 });
 
-const procesarHistorial = (historial) => {
+
+// --- Operaciones con la API ---
+const procesarHistorial = (res) => {
+  const historial = res?.[0]?.historial_metricas || [];
   return historial
     .map(item => ({
       ...item,
-      label: item.periodo,
+      label: obtenerMesAnio(item.periodo),
       value: Number(item.valor),
       detalles: item?.detalles || {}
     }))
@@ -49,19 +63,13 @@ const procesarHistorial = (historial) => {
 };
 
 onMounted(async () => {
-  const [resDiasPromedio, resOperatividad] = await Promise.all([
+  const [resITPMB, resIBODP] = await Promise.all([
     metricasServices.obtenerKPI('ITPMB'),
     metricasServices.obtenerKPI('IBODP'),
   ]);
 
-  if (resDiasPromedio?.length) {
-    diasPromedio.value = procesarHistorial(resDiasPromedio[0].historial_metricas);
-  }
-
-  if (resOperatividad?.length) {
-    operatividad.value = procesarHistorial(resOperatividad[0].historial_metricas);
-  }
-
+  diasPromedio.value = procesarHistorial(resITPMB);
+  operatividad.value = procesarHistorial(resIBODP);
 });
 </script>
 
@@ -81,81 +89,94 @@ onMounted(async () => {
     </div>
     <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card
-        label="Tiempo Medio de Mantenimiento"
+        label="Mantenimientos realizados"
+        icon="fi-rr-screw-alt"
+        :value="actualDiasPromedio.total"
+        :message="actualDiasPromedio.message"
+      />
+      <Card
+        label="Tiempo promedio de mantenimiento"
         icon="fi-rr-time-fast"
         :value="actualDiasPromedio.value"
         :status="actualDiasPromedio.status"
         :message="actualDiasPromedio.message"
       />
       <Card
-        label="Tasa de Operatividad"
+        label="Tasa de operatividad"
         icon="fi-rr-check-circle"
         :value="actualOperatividad.value"
         :status="actualOperatividad.status"
         :message="actualOperatividad.message"
       />
     </div>
-
-    <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-      <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-        <div class="flex items-center gap-3">
-          <span class="font-bold text-base dark:text-slate-50">Promedio mensual de días de mantenimiento</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <Button @click="opDiasPromedio.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
-          <Popover ref="opDiasPromedio">
-            <div class="flex flex-col gap-3 p-1">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
-                Rangos de alerta
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag :value="'Meta: < 6 días'" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="'6 a 15 días'" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="'> 15 días'" severity="danger" class="ring-1 ring-inset ring-current/10" />
-              </div>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+              <i class="fi-rr-time-fast"></i>
             </div>
-          </Popover>
-        </div>
-      </div>
-      <div class="w-full p-5">
-        <BarChart
-          :data="diasPromedio"
-          type="Promedio"
-          unit="días"
-          details="dias_promedio"
-        />
-      </div>
-    </div>
-
-    <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-      <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-        <div class="flex items-center gap-3">
-          <span class="font-bold text-base dark:text-slate-50">Historial de operatividad post-mantenimiento</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
-          <Popover ref="opOperatividad">
-            <div class="flex flex-col gap-3 p-1">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
-                Rangos de alerta
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag :value="'Meta: 100%'" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="'99% - 60%'" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="'< 60%'" severity="danger" class="ring-1 ring-inset ring-current/10" />
+            <span class="font-bold text-base dark:text-slate-50">Tiempo promedio de mantenimiento</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <Button @click="opDiasPromedio.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+            <Popover ref="opDiasPromedio">
+              <div class="flex flex-col gap-3 p-1">
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <i class="fi-br-info text-blue-500"></i>
+                  Rangos de alerta
+                </span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <Tag :value="'Meta: ≤ 5 días'" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'5 a 15 días'" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'> 15 días'" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                </div>
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </div>
+        </div>
+        <div class="w-full p-5">
+          <BarChart
+            :data="diasPromedio"
+            type="Promedio"
+            unit="días"
+            details="dias_promedio"
+          />
         </div>
       </div>
-      <div class="w-full p-5">
-        <AreaChart
-          :data="operatividad"
-          unit="Operatividad"
-          details="mantenimiento_operatividad"
-        />
+
+      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+              <i class="fi-rr-check-circle"></i>
+            </div>
+            <span class="font-bold text-base dark:text-slate-50">Tendencia de operatividad post-mantenimiento</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+            <Popover ref="opOperatividad">
+              <div class="flex flex-col gap-3 p-1">
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <i class="fi-br-info text-blue-500"></i>
+                  Rangos de alerta
+                </span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <Tag value="Meta: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="90% a 60%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="< 60%" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                </div>
+              </div>
+            </Popover>
+          </div>
+        </div>
+        <div class="w-full p-5">
+          <AreaChart
+            :data="operatividad"
+            unit="Operatividad"
+            details="mantenimiento_operatividad"
+          />
+        </div>
       </div>
     </div>
 

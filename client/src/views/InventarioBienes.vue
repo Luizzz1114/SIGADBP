@@ -142,7 +142,7 @@ onMounted(async () => {
           <span class="-mt-0.5 text-xs text-slate-400">Gestión completa del inventario de bienes</span>
         </div>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center flex-wrap gap-4">
         <Button as="router-link" to="/inventario/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" label="Agregar Bien" icon="fi-sr-plus-small" class="h-9" />
       </div>
