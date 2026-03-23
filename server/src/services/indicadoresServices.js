@@ -39,6 +39,9 @@ class IndicadoresServices {
         break;
       case 'IDD':
         denominacion = '% Desincorporaciones por Deterioro (%IDD)';
+        break;
+      case 'ITDB':
+        denominacion = '% Tasa de Desincorporación de Bienes (%ITDB)';
         break;      
       default:
         denominacion = null;
@@ -313,7 +316,7 @@ async procesarKpiIIMB() {
       await client.query('BEGIN');
 
       const IDD = await IndicadoresRepositorio.IDD(client);
-      const resultadosIDD = await DesincorporacionesRepositorio.desincorporacionPorDeterioro();
+      const resultadosIDD = await DesincorporacionesRepositorio.desincorporacionMetricas();
       
       const metrica = {
         valor: resultadosIDD.porcentaje_deterioro,
@@ -321,6 +324,34 @@ async procesarKpiIIMB() {
         detalles: {
           total: resultadosIDD.total,
           cantidad: resultadosIDD.total_deterioro 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiITDB() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const ITDB = await IndicadoresRepositorio.ITDB(client);
+      const resultadosITDB = await DesincorporacionesRepositorio.desincorporacionMetricas();
+      
+      const metrica = {
+        valor: resultadosITDB.tasa_desincorporacion,
+        idIndicador: ITDB.id,
+        detalles: {
+          total: resultadosITDB.bienes_inventario,
+          cantidad: resultadosITDB.total 
         }
       };
 

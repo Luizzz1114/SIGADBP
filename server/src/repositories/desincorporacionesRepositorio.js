@@ -7,8 +7,8 @@ class Desincorporaciones {
     return resultado.rows;
   }
   
-  async desincorporacionPorDeterioro() {
-    const sql = 'SELECT * FROM vistaDesincorporacionPorDeterioro;';
+  async desincorporacionMetricas() {
+    const sql = 'SELECT * FROM vistaMetricasDesincorporacion;';
     const resultado = await pool.query(sql);
     return resultado.rows[0];
   }

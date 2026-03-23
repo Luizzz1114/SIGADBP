@@ -8,8 +8,8 @@ DesincorporacionesRouter.route('/')
   .post(DesincorporacionesController.crear)
   .put(DesincorporacionesController.actualizar);
 
-DesincorporacionesRouter.route('/deterioro')
-  .get(DesincorporacionesController.desincorporacionPorDeterioro);
+DesincorporacionesRouter.route('/metricas')
+  .get(DesincorporacionesController.desincorporacionMetricas);
 
 DesincorporacionesRouter.route('/:id')
   .get(DesincorporacionesController.obtenerPorId)

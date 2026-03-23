@@ -8,8 +8,8 @@ class DesincorporacionesServices {
     return await DesincorporacionesRepositorio.listar();
   }
   
-  async desincorporacionPorDeterioro() {
-    return await DesincorporacionesRepositorio.desincorporacionPorDeterioro();
+  async desincorporacionMetricas() {
+    return await DesincorporacionesRepositorio.desincorporacionMetricas();
   }
 
   async obtenerPorId(id) {

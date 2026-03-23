@@ -10,10 +10,10 @@ class DesincorporacionesController {
     }
   }
   
-  async desincorporacionPorDeterioro(req, res) {
+  async desincorporacionMetricas(req, res) {
     try {
-      const desincorporacionesDeterioro = await DesincorporacionesServices.desincorporacionPorDeterioro();
-      res.status(200).json(desincorporacionesDeterioro);
+      const desincorporacionesMetricas = await DesincorporacionesServices.desincorporacionMetricas();
+      res.status(200).json(desincorporacionesMetricas);
     } catch (error) {
       res.status(500).json({ message: 'Error al listar las desincorporaciones por deterioro', error: error.message });
     }

@@ -678,19 +678,26 @@ WITH dias_por_mantenimiento AS (
 SELECT ROUND(COALESCE(AVG(dias_duracion), 0)) AS promedio_dias, COUNT(*) AS mantenimientos_realizados
 FROM dias_por_mantenimiento;
 
-
-CREATE OR REPLACE VIEW vistaDesincorporacionPorDeterioro AS
+CREATE OR REPLACE VIEW vistaMetricasDesincorporacion AS
 WITH count_desincorporacion AS (
-	SELECT COUNT(*) AS total,
+  SELECT COUNT(*) AS total,
 	COUNT(*) FILTER(WHERE DD.tipo = 'Deterioro') AS total_deterioro
-	FROM DetallesDesincorporacion AS DD
-	INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
-	WHERE D.fechaSalida >= DATE_TRUNC('month', CURRENT_DATE)
+  FROM DetallesDesincorporacion AS DD
+  INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
+  WHERE D.fechaSalida >= DATE_TRUNC('month', CURRENT_DATE)
   AND D.fechaSalida < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+),
+count_bienes AS (
+  SELECT COUNT(*) FILTER(WHERE estatus <> 'Desincorporado') AS bienes_activos
+  FROM Bienes 
 )
 SELECT total, total_deterioro,
-ROUND(COALESCE((total_deterioro * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_deterioro
-FROM count_desincorporacion;
+ROUND(COALESCE((total_deterioro * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_deterioro,
+(bienes_activos + total) AS bienes_inventario,
+ROUND(COALESCE((total * 100.00) / NULLIF(bienes_activos + total, 0), 0), 2) AS tasa_desincorporacion
+FROM count_desincorporacion
+CROSS JOIN count_bienes;
+
 
 
 -- INSERTS
@@ -1000,6 +1007,7 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
 ('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Mensual'),
 ('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'),
-('Planificación y Presupuesto', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Semestral'), -- <--
+('Procesos Internos', '% Tasa de Desincorporación de Bienes (%ITDB)', 5, 10, 'Mensual'), -- <--
+('Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Semestral'),
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');

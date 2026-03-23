@@ -115,7 +115,7 @@
             :cx="item.x" 
             :cy="item.y" 
             r="4" 
-            class="fill-blue-400 group-hover:r-[6px] transition-all duration-200"
+            class="fill-blue-400 transition-all duration-200"
             clip-path="url(#chart-reveal-clip)"
           />
 
@@ -161,6 +161,9 @@
           </div>
           <div v-if="tooltipData.detalles && details === 'd_deterioro'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
             <span>{{ tooltipData.detalles.cantidad }} desincorporaciones por deterioro de {{ tooltipData.detalles.total }} totales</span>
+          </div>
+          <div v-if="tooltipData.detalles && details === 'd_tasa'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} bienes desincorporados de {{ tooltipData.detalles.total }} en inventario</span>
           </div>
         </div>
       </div>

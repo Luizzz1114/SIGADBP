@@ -9,11 +9,13 @@ export const iniciarTareasProgramadas = () => {
     manana.setDate(manana.getDate() + 1);
     
     if (manana.getDate() === 1) {
-      console.log('Ejecutando tarea programada: IBEO, ICMI, IBODP, ITPMB');
+      console.log('Ejecutando tarea programada: IBEO, ICMI, IBODP, ITPMB, IDD, ITDB');
       await IndicadoresServices.procesarKpiIBEO();
       await IndicadoresServices.procesarICMI();
       await IndicadoresServices.procesarKpiIBODP();
       await IndicadoresServices.procesarKpiITPMB();
+      await IndicadoresServices.procesarKpiIDD();
+      await IndicadoresServices.procesarKpiITDB();
     } else {
     }
   }, {
@@ -22,13 +24,12 @@ export const iniciarTareasProgramadas = () => {
   });
   
   cron.schedule('59 23 30 5,11 *', async () => {
-    console.log('Ejecutando tarea programada: IIET, IIM, IIMB, ICP, IPS, IDD');
+    console.log('Ejecutando tarea programada: IIET, IIM, IIMB, ICP, IPS');
     await IndicadoresServices.procesarKpiIIET();
     await IndicadoresServices.procesarKpiIIM();
     await IndicadoresServices.procesarKpiIIMB();
     await IndicadoresServices.procesarKpiICP();
     await IndicadoresServices.procesarKpiIPS();
-    await IndicadoresServices.procesarKpiIDD();
     
     const mes = new Date();
 
