@@ -69,6 +69,18 @@ export default {
   },
 
 
+  // --- BIENES SIN NUMERO ---
+  async sinNumeroResumen() {
+    try {
+      const res = await api.get('/bienes/metricas/no-identificados');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+
   // --- KPIs ---
   async obtenerKPI(siglas) {
     try {

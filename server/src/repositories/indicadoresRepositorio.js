@@ -67,6 +67,12 @@ class Indicadores {
     return resultado.rows[0];
   }
 
+  async IBNI(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Bienes No Identificados (%IBNI)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
   async listar(denominacion) {
     const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";
     const resultado = await pool.query(sql, [denominacion]);

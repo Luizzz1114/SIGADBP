@@ -28,6 +28,15 @@ class BienesController {
 		}
 	}
 
+ async bienesNoIdentificados(req, res) {
+	try {
+		const noIdentificados = await BienesServices.bienesNoIdentificados();
+		res.status(200).json(noIdentificados);
+	} catch (error) {
+		res.status(500).json({ message: 'Error al listar bienes no identificados.', error: error.message });
+	}
+ }
+
 	async validarNumeroBienUnico(req, res) {
 		try {
 			const validar = req.body;

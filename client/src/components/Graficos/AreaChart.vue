@@ -165,6 +165,9 @@
           <div v-if="tooltipData.detalles && details === 'd_tasa'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
             <span>{{ tooltipData.detalles.cantidad }} bienes desincorporados de {{ tooltipData.detalles.total }} en inventario</span>
           </div>
+          <div v-if="tooltipData.detalles && details === 'b_sin_numero'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{{ tooltipData.detalles.cantidad }} bien(es) de {{ tooltipData.detalles.total }} en inventario</span>
+          </div>
         </div>
       </div>
     </Teleport>

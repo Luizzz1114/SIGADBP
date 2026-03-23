@@ -40,7 +40,7 @@
         </svg>
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="size-24 bg-white dark:bg-slate-900 rounded-full"></div>
+          <div class="size-24 bg-white dark:bg-slate-850 rounded-full"></div>
         </div>
       </div>
 

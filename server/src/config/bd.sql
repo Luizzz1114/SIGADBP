@@ -700,6 +700,20 @@ CROSS JOIN count_bienes;
 
 
 
+CREATE OR REPLACE VIEW vistaBienesSinNumero AS
+WITH count_bienes AS (
+    SELECT COUNT(*) AS total_bienes,
+	COUNT(*) FILTER(WHERE numeroBien = 'S/N') AS total_sin_numero
+    FROM Bienes
+	WHERE estatus != 'Desincorporado'
+)
+SELECT total_bienes, total_sin_numero,
+ROUND(COALESCE((total_sin_numero * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_sin_numero
+FROM count_bienes;
+
+
+
+
 -- INSERTS
 INSERT INTO Estados (nombre)
 VALUES ('Sucre');
@@ -1004,10 +1018,11 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
+('Procesos Internos', '% Bienes No Identificados (%IBNI)', 5, 15, 'Mensual'), -- <--
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),
 ('Procesos Internos', '% Bienes Operativos Después del Mantenimiento (%IBODP)', 100, 60, 'Mensual'),
 ('Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'),
-('Procesos Internos', '% Tasa de Desincorporación de Bienes (%ITDB)', 5, 10, 'Mensual'), -- <--
-('Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Semestral'),
+('Procesos Internos', '% Tasa de Desincorporación de Bienes (%ITDB)', 5, 10, 'Mensual'),
+('Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Mensual'),
 ('Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 80, 70, 'Semestral'),
 ('Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 80, 70, 'Semestral');

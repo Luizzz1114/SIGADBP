@@ -42,6 +42,9 @@ class IndicadoresServices {
         break;
       case 'ITDB':
         denominacion = '% Tasa de Desincorporación de Bienes (%ITDB)';
+        break;
+      case 'IBNI':
+        denominacion = '% Bienes No Identificados (%IBNI)';
         break;      
       default:
         denominacion = null;
@@ -352,6 +355,34 @@ async procesarKpiIIMB() {
         detalles: {
           total: resultadosITDB.bienes_inventario,
           cantidad: resultadosITDB.total 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiIBNI() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IBNI = await IndicadoresRepositorio.IBNI(client);
+      const resultadosIBNI = await BienesRepositorio.bienesNoIdentificados();
+      
+      const metrica = {
+        valor: resultadosIBNI.porcentaje_sin_numero,
+        idIndicador: IBNI.id,
+        detalles: {
+          total: resultadosIBNI.total_bienes,
+          cantidad: resultadosIBNI.total_sin_numero
         }
       };
 

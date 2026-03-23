@@ -17,6 +17,10 @@ class BienesServices {
     return await BienesRepositorio.listarNoAsignados();
   }
 
+  async bienesNoIdentificados() {
+    return await BienesRepositorio.bienesNoIdentificados();
+  }
+
   async validarNumeroBienUnico(validar) {
     const resultado = await BienesRepositorio.validarNumeroBienUnico(validar);
     if (resultado > 0) {

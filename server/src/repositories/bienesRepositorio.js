@@ -25,6 +25,12 @@ class Bienes {
     return resultado.rows;
   }
 
+  async bienesNoIdentificados() {
+    const sql = 'SELECT * FROM vistaBienesSinNumero';
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
   async validarNumeroBienUnico(validar) {
     const { numero, id = null } = validar;
     if (numero === 'S/N') return 0;

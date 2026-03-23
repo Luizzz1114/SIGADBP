@@ -7,6 +7,7 @@ BienesRouter.get('/metricas/resumen', BienesController.obtenerResumenMetricas);
 BienesRouter.get('/metricas/categorias', BienesController.obtenerMetricasPorCategoria);
 BienesRouter.get('/metricas/estatus', BienesController.obtenerMetricasPorEstatus);
 BienesRouter.get('/metricas/dependencias', BienesController.obtenerMetricasPorDependencia);
+BienesRouter.get('/metricas/no-identificados', BienesController.bienesNoIdentificados);
 
 BienesRouter.get('/operativos', BienesController.listarOperativos);
 BienesRouter.get('/no-asignados', BienesController.listarNoAsignados);
