@@ -1,20 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import metricasServices from '@/services/metricas.services.js';
-import HorizontalBarChart from '../Graficos/HorizontalBarChart.vue';
-
 
 const data = ref([]);
-const sub = ref([])
 
 onMounted(async() => {
   const res = await metricasServices.bienesPorDependencia();
   data.value = res;
-  sub.value = res.map(r => ({
-    label: r.dependencia,
-    value: r.total,
-    percentage: r.p_bienes
-  }))
 });
 </script>
 
@@ -26,86 +18,135 @@ onMounted(async() => {
       </div>
       <span class="font-bold text-base dark:text-slate-50">Distribución de bienes por dependencia</span>
     </div>
-  <!--
-    <div class="p-4 flex flex-col gap-5">
-      <HorizontalBarChart :data="sub" />
+
+    <div class="px-4 pb-4">
+      <Tabs value="resumen">
+        <TabList>
+          <Tab value="resumen">
+            <div class="flex items-center gap-2 font-medium">
+              <i class="fi-rr-chart-pie-alt"></i>
+              Resumen General
+            </div>
+          </Tab>
+          <Tab value="desglose">
+            <div class="flex items-center gap-2 font-medium">
+              <i class="fi-rr-table-list"></i>
+              Desglose por Categorías
+            </div>
+          </Tab>
+        </TabList>
+
+        <TabPanels class="p-0 pt-4 bg-transparent!">
+          
+          <TabPanel value="resumen">
+            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-4!">
+              <template #paginatorcontainer="{ first, last, page, pageCount, prevPageCallback, nextPageCallback, totalRecords }">
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex items-center gap-4">
+                    <div class="flex gap-2">
+                      <Button @click="prevPageCallback" :disabled="page === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-left text-lg!" class="size-8! shadow-xs" />
+                      <Button @click="nextPageCallback" :disabled="page === pageCount - 1 || totalRecords === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-right text-lg!" class="size-8! shadow-xs" />
+                    </div>
+                    <span class="text-sm text-slate-600 dark:text-slate-400">
+                      {{ totalRecords > 0 ? first : 0 }} - {{ last }} de {{ totalRecords }}
+                    </span>
+                  </div>
+                </div>
+              </template>
+              <Column field="dependencia" header="Dependencia" style="width: 400px; min-width: 400px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
+              <Column header="Total de bienes asignados">
+                <template #body="{ data }">
+                  <div v-if="Number(data.total) > 0" class="flex flex-col gap-1 w-full max-w-50">
+                    <div class="flex items-baseline justify-between">
+                      <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.total }}</span>
+                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_bienes }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full rounded-full transition-all duration-700"
+                        :class="parseFloat(data.p_bienes) <= 5 ? 'bg-emerald-400' : parseFloat(data.p_bienes) > 10 ? 'bg-red-400' : 'bg-amber-400'"
+                        :style="{ width: `${Math.min(parseFloat(data.p_bienes), 100)}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <span v-else class="text-slate-300 dark:text-slate-600">—</span>
+                </template>
+              </Column>
+            </DataTable>
+          </TabPanel>
+
+          <TabPanel value="desglose">
+            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-4!">
+              <template #paginatorcontainer="{ first, last, page, pageCount, prevPageCallback, nextPageCallback, totalRecords }">
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex items-center gap-4">
+                    <div class="flex gap-2">
+                      <Button @click="prevPageCallback" :disabled="page === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-left text-lg!" class="size-8! shadow-xs" />
+                      <Button @click="nextPageCallback" :disabled="page === pageCount - 1 || totalRecords === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-right text-lg!" class="size-8! shadow-xs" />
+                    </div>
+                    <span class="text-sm text-slate-600 dark:text-slate-400">
+                      {{ totalRecords > 0 ? first : 0 }} - {{ last }} de {{ totalRecords }}
+                    </span>
+                  </div>
+                </div>
+              </template>
+              <template #empty><div class="p-4 text-center text-slate-500">No se encontraron registros.</div></template>
+              <Column field="dependencia" header="Dependencia" style="width: 350px; min-width: 350px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
+              <Column header="Muebles" style="width: 175px; min-width: 150px;">
+                <template #body="{ data }">
+                  <div v-if="Number(data.muebles) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                    <div class="flex items-baseline justify-between">
+                      <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.muebles }}</span>
+                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_muebles }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        class="h-full rounded-full"
+                        :class="parseFloat(data.p_muebles) >= 60 ? 'bg-emerald-400' : parseFloat(data.p_muebles) < 30 ? 'bg-red-400' : 'bg-amber-400'"
+                        :style="{ width: `${Math.min(parseFloat(data.p_muebles), 100)}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <span v-else class="text-slate-300 dark:text-slate-600">—</span>
+                </template>
+              </Column>
+              <Column header="Tecnológicos" style="width: 175px; min-width: 150px;">
+                <template #body="{ data }">
+                  <div v-if="Number(data.tecnologicos) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                    <div class="flex items-baseline justify-between">
+                      <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.tecnologicos }}</span>
+                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_tecnologicos }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        class="h-full rounded-full"
+                        :class="parseFloat(data.p_tecnologicos) >= 40 ? 'bg-emerald-400' : parseFloat(data.p_tecnologicos) < 20 ? 'bg-red-400' : 'bg-amber-400'"
+                        :style="{ width: `${Math.min(parseFloat(data.p_tecnologicos), 100)}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <span v-else class="text-slate-300 dark:text-slate-600">—</span>
+                </template>
+              </Column>
+              <Column header="Vehículos" style="width: 175px; min-width: 150px;">
+                <template #body="{ data }">
+                  <div v-if="Number(data.vehiculos) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                    <div class="flex items-baseline justify-between">
+                      <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.vehiculos }}</span>
+                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_vehiculos }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full bg-slate-400" :style="{ width: `${Math.min(parseFloat(data.p_vehiculos), 100)}%` }"></div>
+                    </div>
+                  </div>
+                  <span v-else class="text-slate-300 dark:text-slate-600">—</span>
+                </template>
+              </Column>
+            </DataTable>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
-  -->
-    <div class="p-4 flex flex-col gap-5">
-       <DataTable
-        :value="data"
-        paginator :rows="5"
-        size="small" tableStyle="min-width: 100%" stripedRows
-      >
-        <template #paginatorcontainer="{ first, last, page, pageCount, prevPageCallback, nextPageCallback, totalRecords }">
-          <div class="flex items-center justify-between w-full">
-            <div class="flex items-center gap-4">
-              <div class="flex gap-2">
-                <Button @click="prevPageCallback" :disabled="page === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-left text-lg!" class="size-8! shadow-xs" />
-                <Button @click="nextPageCallback" :disabled="page === pageCount - 1 || totalRecords === 0" variant="outlined" severity="secondary" icon="fi-rr-angle-small-right text-lg!" class="size-8! shadow-xs" />
-              </div>
-              <span class="text-sm text-slate-600 dark:text-slate-400">
-                {{ totalRecords > 0 ? first : 0 }} - {{ last }} de {{ totalRecords }}
-              </span>
-            </div>
-          </div>
-        </template>
-        <template #empty>No se encontraron registros.</template>
-        <Column field="dependencia" header="Dependencia" class="whitespace-nowrap" />
-        <Column header="Total de bienes (% / Neto)">
-          <template #body="{ data }">
-            <div class="flex items-baseline gap-2">
-              <div 
-                class="size-2 rounded-full"
-                :class="parseFloat(data.p_bienes) >= 15 ? 'bg-emerald-500' : parseFloat(data.p_bienes) > 10 ? 'bg-amber-500' : 'bg-red-400'"
-              ></div>
-              <div class="flex flex-col whitespace-nowrap">
-                <span class="font-medium">{{ data.p_bienes }}%</span>
-                <span class="text-xs! text-slate-500">{{ data.total }}</span>
-              </div>
-            </div>
-          </template>
-        </Column>
-        <Column header="Muebles (% / Neto)">
-          <template #body="{ data }">
-            <div class="flex items-baseline gap-2">
-              <div 
-                class="size-2 rounded-full"
-                :class="parseFloat(data.p_muebles) >= 60 ? 'bg-emerald-500' : parseFloat(data.p_muebles) > 30 ? 'bg-amber-500' : 'bg-red-400'"
-              ></div>
-              <div class="flex flex-col whitespace-nowrap">
-                <span class="font-medium">{{ data.p_muebles }}%</span>
-                <span class="text-xs! text-slate-500">{{ data.muebles }}</span>
-              </div>
-            </div>
-          </template>
-        </Column>
-        <Column header="Tecnológicos (% / Neto)">
-          <template #body="{ data }">
-            <div class="flex items-baseline gap-2">
-              <div 
-                class="size-2 rounded-full"
-                :class="parseFloat(data.p_tecnologicos) >= 40 ? 'bg-emerald-500' : parseFloat(data.p_tecnologicos) > 20 ? 'bg-amber-500' : 'bg-red-400'"
-              ></div>
-              <div class="flex flex-col whitespace-nowrap">
-                <span class="font-medium">{{ data.p_tecnologicos }}%</span>
-                <span class="text-xs! text-slate-500">{{ data.tecnologicos }}</span>
-              </div>
-            </div>
-          </template>
-        </Column>
-        <Column header="Vehículos (% / Neto)">
-          <template #body="{ data }">
-            <div v-if="data.vehiculos !== '0'" class="flex items-baseline gap-2">
-              <div class="flex flex-col whitespace-nowrap">
-                <span class="font-medium">{{ data.p_vehiculos }}%</span>
-                <span class="text-xs! text-slate-500">{{ data.vehiculos }}</span>
-              </div>
-            </div>
-            <span v-else>-</span>
-          </template>
-        </Column>
-      </DataTable>
-    </div>
+
   </div>
 </template>
