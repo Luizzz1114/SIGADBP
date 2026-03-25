@@ -293,7 +293,7 @@ BEGIN
   END IF;
 
   IF v_estatus IS DISTINCT FROM v_bien.estatus THEN
-    UPDATE Bienes SET estatus = v_estatus WHERE id = v_bien.id;-
+    UPDATE Bienes SET estatus = v_estatus WHERE id = v_bien.id;
   END IF;
 
   RETURN OLD;

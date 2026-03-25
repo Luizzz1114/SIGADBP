@@ -46,5 +46,5 @@ export const iniciarTareasProgramadas = () => {
     timezone: "America/Caracas"
   });
 
-  console.log('📅 Tareas programadas (Cron jobs) inicializadas correctamente.');
+  console.log('➜ Tareas programadas (cron jobs) inicializadas correctamente');
 };

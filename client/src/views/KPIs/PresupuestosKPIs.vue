@@ -36,14 +36,11 @@ const cardsData = computed(() => {
     const kpiData = res?.[0] || {};
     const historial = kpiData.historial_metricas || [];
     const lastItem = historial.at(-1);
-
     const lastValue = lastItem?.valor ?? 0;
-    const meta = Number(kpiData.meta || 0);
-    const peligro = Number(kpiData.peligro || 0);
 
     let status = 'warn';
-    if (lastValue >= meta) status = 'success';
-    else if (lastValue <= peligro) status = 'danger';
+    if (lastValue >= 60) status = 'success';
+    else if (lastValue < 30) status = 'danger';
 
     const message = lastItem ? lastItem.periodo : 'Sin datos';
 
@@ -83,12 +80,6 @@ onMounted(async () => {
     ]);
 
     respuestasAPI.value = [resEquipos, resMuebles, resMantenimiento];
-
-    const kpiBase = resEquipos?.[0] || {};
-    presupuestoRangos.value = {
-      min: Number(kpiBase.peligro || 0),
-      max: Number(kpiBase.meta || 0)
-    };
 
   } catch (error) {
     console.error("Error cargando los KPIs:", error);
@@ -136,9 +127,9 @@ onMounted(async () => {
                 Rangos de alerta
               </span>
               <div class="flex items-center gap-2 flex-wrap">
-                <Tag :value="`Meta:  > ${presupuestoRangos.max - 1}%`" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="`${presupuestoRangos.max}% a ${presupuestoRangos.min}%`" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag :value="`< ${presupuestoRangos.min}%`" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Meta: ≥ 60%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="60% a 30" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="< 30" severity="danger" class="ring-1 ring-inset ring-current/10" />
               </div>
             </div>
           </Popover>
