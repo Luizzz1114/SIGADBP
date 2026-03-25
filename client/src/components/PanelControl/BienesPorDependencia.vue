@@ -24,7 +24,7 @@ onMounted(async() => {
         <TabList>
           <Tab value="resumen">
             <div class="flex items-center gap-2 font-medium">
-              <i class="fi-rr-chart-pie-alt"></i>
+              <i class="fi-rr-bars-progress"></i>
               Resumen General
             </div>
           </Tab>
@@ -59,12 +59,11 @@ onMounted(async() => {
                   <div v-if="Number(data.total) > 0" class="flex flex-col gap-1 w-full max-w-50">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.total }}</span>
-                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_bienes }}%</span>
+                      <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_bienes }}%</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-750 rounded-full overflow-hidden">
                       <div 
-                        class="h-full rounded-full transition-all duration-700"
-                        :class="parseFloat(data.p_bienes) <= 5 ? 'bg-emerald-400' : parseFloat(data.p_bienes) > 10 ? 'bg-red-400' : 'bg-amber-400'"
+                        class="h-full rounded-full transition-all duration-700 bg-blue-400"
                         :style="{ width: `${Math.min(parseFloat(data.p_bienes), 100)}%` }"
                       ></div>
                     </div>
@@ -97,12 +96,11 @@ onMounted(async() => {
                   <div v-if="Number(data.muebles) > 0" class="flex flex-col gap-1 w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.muebles }}</span>
-                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_muebles }}%</span>
+                      <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_muebles }}%</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-750 rounded-full overflow-hidden">
                       <div
-                        class="h-full rounded-full"
-                        :class="parseFloat(data.p_muebles) >= 60 ? 'bg-emerald-400' : parseFloat(data.p_muebles) < 30 ? 'bg-red-400' : 'bg-amber-400'"
+                        class="h-full rounded-full bg-emerald-400"
                         :style="{ width: `${Math.min(parseFloat(data.p_muebles), 100)}%` }"
                       ></div>
                     </div>
@@ -115,12 +113,11 @@ onMounted(async() => {
                   <div v-if="Number(data.tecnologicos) > 0" class="flex flex-col gap-1 w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.tecnologicos }}</span>
-                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_tecnologicos }}%</span>
+                      <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_tecnologicos }}%</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-750 rounded-full overflow-hidden">
                       <div
-                        class="h-full rounded-full"
-                        :class="parseFloat(data.p_tecnologicos) >= 40 ? 'bg-emerald-400' : parseFloat(data.p_tecnologicos) < 20 ? 'bg-red-400' : 'bg-amber-400'"
+                        class="h-full rounded-full bg-blue-400"
                         :style="{ width: `${Math.min(parseFloat(data.p_tecnologicos), 100)}%` }"
                       ></div>
                     </div>
@@ -133,9 +130,9 @@ onMounted(async() => {
                   <div v-if="Number(data.vehiculos) > 0" class="flex flex-col gap-1 w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.vehiculos }}</span>
-                      <span class="text-[11px] font-medium text-slate-500">{{ data.p_vehiculos }}%</span>
+                      <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_vehiculos }}%</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-750 rounded-full overflow-hidden">
                       <div class="h-full rounded-full bg-slate-400" :style="{ width: `${Math.min(parseFloat(data.p_vehiculos), 100)}%` }"></div>
                     </div>
                   </div>

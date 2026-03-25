@@ -81,8 +81,18 @@ const onFormSubmit = async ({ valid, values, reset }) => {
       <div class="mt-2">
         <Tabs value="0">
           <TabList>
-            <Tab value="0" lazy>Información</Tab>
-            <Tab value="1" lazy>Editar usuario</Tab>
+            <Tab value="0" lazy>
+              <div class="flex items-center gap-2 font-medium">
+                <i class="fi-rr-user"></i>
+                Información
+              </div>  
+            </Tab>
+            <Tab value="1" lazy>
+              <div class="flex items-center gap-2 font-medium">
+                <i class="fi-rr-pencil"></i>
+                Editar usuario
+              </div>
+            </Tab>
           </TabList>
           <TabPanels>
             <TabPanel value="0">
@@ -137,10 +147,21 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   <span class="text-slate-500 dark:text-slate-400">Fecha de salida</span>
                   <span class="font-medium! text-right">{{ usuario.fechasalida || 'N/A' }}</span>
                 </div>
-                <div class="flex justify-between gap-3">
-                  <span class="text-slate-500 dark:text-slate-400">Años de servicio</span>
-                  <span class="font-medium! text-right">{{ usuario.antiguedad + ' años' || 'N/A' }}</span>
-                </div>
+              </div>
+              <div class="grid grid-cols-1 gap-4 mt-4">
+                <MiniCard
+                  label="Años de servicio" 
+                  :value="usuario.antiguedad"
+                  icon="fi-sr-calendar-clock" 
+                  color="indigo" 
+                />
+                <MiniCard
+                  label="Último acceso" 
+                  :value="usuario.ultimo_acceso || 'Sin registros de acceso'" 
+                  icon="fi-sr-time-watch-calendar" 
+                  color="blue"
+                  size="sm"
+                />
               </div>
             </TabPanel>
             <TabPanel value="1">

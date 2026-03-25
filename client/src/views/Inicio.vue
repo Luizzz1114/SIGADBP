@@ -1,21 +1,27 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Card from '@/components/Card.vue';
 import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
 import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
 import BienesPorCategoria from '@/components/PanelControl/BienesPorCategoria.vue';
 import metricasServices from '@/services/metricas.services.js';
 
+const metricas = ref([]);
+const userRole = JSON.parse(localStorage.getItem('user_session'))?.usuario?.rol;
 
-const accesoRapido = ref([
+const enlaces = [
   { name: 'Inventario de bienes', path: '/inventario/estadisticas', icon: 'fi-rr-boxes' },
   { name: 'Desincorporaciones', path: '/desincorporaciones/estadisticas', icon: 'fi-rr-apps-delete', roles: ['Administrador', 'Supervisor'] },
   { name: 'Mantenimiento', path: '/mantenimiento/estadisticas', icon: 'fi-rr-screw-alt' },
   { name: 'Presupuestos', path: '/presupuestos/estadisticas', icon: 'fi-rr-piggy-bank', roles: ['Administrador'] },
   { name: 'Personal', path: '/personal/estadisticas', icon: 'fi-rr-employee-man', roles: ['Administrador'] },
-])
+];
 
-const metricas = ref([]);
+const accesoRapido = computed(() => {
+  return enlaces.filter(enlace => {
+    return !enlace.roles || enlace.roles.includes(userRole);
+  });
+});
 
 onMounted(async() => {
   metricas.value = await metricasServices.obtenerMetricas();
@@ -51,7 +57,7 @@ onMounted(async() => {
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
       <BienesPorDependencia class="xl:col-span-2" />
       
-      <div class="flex flex-col rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
+      <div class="flex flex-col shrink-0 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 p-4">
           <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-bolt"></i>
