@@ -127,7 +127,7 @@
             <template v-if="bar.detalles">
               <span class="mx-1 text-slate-400">•</span>
               <span class="text-[12px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                {{ bar.detalles.cantidad }}$ / {{ bar.detalles.total }}$
+                {{ formatearMonto( bar.detalles.cantidad) }}$ / {{ formatearMonto(bar.detalles.total) }}$
               </span>
             </template>
           </div>
@@ -138,6 +138,7 @@
 </template>
 
 <script setup>
+import { formatearMonto } from '@/utils/formatters';
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({

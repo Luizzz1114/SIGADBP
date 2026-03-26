@@ -41,9 +41,10 @@ defineProps({
         :style="`width: ${item.porcentaje_uso}%`"
       ></div>
     </div>
-    <div class="flex items-baseline gap-1 text-xs text-slate-500 dark:text-slate-400 font-medium">
+    <div v-if="item.monto_disponible" class="flex items-baseline gap-1 text-xs text-slate-500 dark:text-slate-400 font-medium">
       <span>Disponible:</span>
       <span>${{ formatearMonto(item.monto_disponible) }}</span>
     </div>
+    <span v-if="item.message" class="text-xs text-slate-400">{{ item.message }}</span>
   </div>
 </template>

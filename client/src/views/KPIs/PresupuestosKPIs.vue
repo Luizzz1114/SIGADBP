@@ -1,10 +1,12 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import Card from '@/components/Card.vue';
+import MoneyCard from '@/components/MoneyCard.vue';
 import MultiBarChart from '@/components/Graficos/MultiBarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 
+
+// --- Configuración de la vista ---
 const items = [
   { label: 'Presupuestos', route: '/presupuestos' },
   { label: 'Estadísticas', route: '/presupuestos/estadisticas' }
@@ -16,12 +18,13 @@ const kpisConfig = [
   { name: 'Mantenimiento Bienes', color: '#93c5fd', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
 ];
 
-// --- Estados base ---
+
+// --- Estados ---
 const respuestasAPI = ref([]);
 const opPresupuesto = ref();
-const presupuestoRangos = ref({ min: 0, max: 0 });
 
-// --- Computadas (Lógica de presentación) ---
+
+// --- Computados ---
 const cardsData = computed(() => {
   if (!respuestasAPI.value.length) {
     return kpisConfig.map(config => ({
@@ -33,21 +36,19 @@ const cardsData = computed(() => {
   }
 
   return respuestasAPI.value.map((res, index) => {
+    const config = kpisConfig[index] || {};
     const kpiData = res?.[0] || {};
     const historial = kpiData.historial_metricas || [];
     const lastItem = historial.at(-1);
     const lastValue = lastItem?.valor ?? 0;
-
-    let status = 'warn';
-    if (lastValue >= 60) status = 'success';
-    else if (lastValue < 30) status = 'danger';
-
     const message = lastItem ? lastItem.periodo : 'Sin datos';
 
     return {
-      ...kpisConfig[index],
-      value: `${lastValue}%`,
-      status,
+      icon: config.icon, 
+      tipo: config.name, 
+      gasto_total: lastItem?.detalles?.cantidad ?? 0,
+      presupuesto_total_usd: lastItem?.detalles?.total ?? 0,
+      porcentaje_uso: lastValue,
       message
     };
   });
@@ -104,21 +105,23 @@ onMounted(async () => {
     </div>
 
     <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
-      <Card
+      <MoneyCard
         v-for="(card, index) in cardsData"
         :key="index"
-        :label="card.label"
-        :icon="card.icon" 
-        :value="card.value"
-        :status="card.status"
-        :message="card.message" 
+        :icon="card.icon"
+        :item="card"
       />
     </div>
 
     <div class="w-full">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-          <span class="font-bold text-base dark:text-slate-50">Distribución porcentual de la inversión</span>
+        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+              <i class="fi-rr-percentage"></i>
+            </div>
+            <span class="font-bold text-base dark:text-slate-50">Distribución porcentual de la inversión</span>
+          </div>
           <Button @click="opPresupuesto.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opPresupuesto">
             <div class="flex flex-col gap-3 p-1">
