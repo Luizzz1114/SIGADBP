@@ -45,6 +45,12 @@ class IndicadoresServices {
         break;
       case 'IBNI':
         denominacion = '% Bienes No Identificados (%IBNI)';
+        break;
+      case 'TDRB':
+        denominacion = '% Tasa de Disponibilidad Real de Bienes (%TDRB)';
+        break;
+      case 'IAOM':
+        denominacion = 'Índice de Afectación Operativa por Mantenimiento (IAOM)';
         break;      
       default:
         denominacion = null;
@@ -386,6 +392,58 @@ async procesarKpiIIMB() {
         }
       };
 
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiTDRB() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const TDRB = await IndicadoresRepositorio.TDRB(client);
+      const resultadosTDRB = await BienesRepositorio.metricaDisponibilidadPorDependencia();
+      
+      const metrica = {
+        valor: 0,
+        idIndicador: TDRB.id,
+        detalles: {
+          ...resultadosTDRB
+        }
+      };
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiIAOM() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IAOM = await IndicadoresRepositorio.IAOM(client);
+      const resultadosIAOM = await BienesRepositorio.metricaDisponibilidadPorDependencia();
+      
+      const metrica = {
+        valor: 0,
+        idIndicador: IAOM.id,
+        detalles: {
+          ...resultadosIAOM
+        }
+      };
       await IndicadoresRepositorio.crearMetrica(client, metrica);
 
       await client.query('COMMIT');

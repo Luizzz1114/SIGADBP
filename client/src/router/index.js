@@ -19,6 +19,7 @@ import PresupuestosKPIs from '@/views/KPIs/PresupuestosKPIs.vue';
 import PersonalKPIs from '@/views/KPIs/PersonalKPIs.vue';
 import MantenimientoKPIs from '@/views/KPIs/MantenimientoKPIs.vue';
 import DesincorporacionesKPIs from '@/views/KPIs/DesincorporacionesKPIs.vue';
+import DependenciasKPIs from '@/views/KPIs/DependenciasKPIs.vue';
 
 const routes = [
   {
@@ -66,6 +67,11 @@ const routes = [
             path: 'estadisticas',
             name: 'InventarioBienesKPIs',
             component: InventarioBienesKPIs
+          },
+          {
+            path: 'estadisticas2',
+            name: 'DependenciasKPIs',
+            component: DependenciasKPIs
           }
         ]
       },

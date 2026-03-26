@@ -81,6 +81,12 @@ class Bienes {
     return resultado.rows;
   }
 
+  async metricaDisponibilidadPorDependencia() {
+    const sql = 'SELECT * FROM vistaDisponibilidadPorDependencia';
+    const resultado = await pool.query(sql);
+    return resultado.rows;
+  }
+
   async crear(bien, client) {
     const { numero, descripcion, marca, modelo, categoria } = bien;
     const sql = 'INSERT INTO Bienes (numeroBien, descripcion, marca, modelo, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING id;';

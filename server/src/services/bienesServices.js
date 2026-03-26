@@ -49,6 +49,10 @@ class BienesServices {
     return await BienesRepositorio.obtenerMetricasPorDependencia();
   }
 
+  async metricaDisponibilidadPorDependencia() {
+    return await BienesRepositorio.metricaDisponibilidadPorDependencia();
+  }
+
   async crear(bien) {
     const client = await pool.connect();
     try {

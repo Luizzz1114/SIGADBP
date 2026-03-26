@@ -699,7 +699,6 @@ FROM count_desincorporacion
 CROSS JOIN count_bienes;
 
 
-
 CREATE OR REPLACE VIEW vistaBienesSinNumero AS
 WITH count_bienes AS (
   SELECT COUNT(*) AS total_bienes,
@@ -710,6 +709,29 @@ WITH count_bienes AS (
 SELECT total_bienes, total_sin_numero,
 ROUND(COALESCE((total_sin_numero * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_sin_numero
 FROM count_bienes;
+
+
+CREATE OR REPLACE VIEW vistaDisponibilidadPorDependencia AS
+WITH mantenimiento_actual AS (
+  SELECT idBien 
+  FROM Mantenimientos 
+  WHERE estatus = 'En proceso'
+  GROUP BY idBien
+),
+conteo_bienes AS (
+  SELECT d.id AS id_dependencia, d.nombre AS nombre_dependencia,
+    COUNT(b.id) AS total_bienes,
+    COUNT(m.idBien) AS bienes_mantenimiento,
+    (COUNT(b.id) - COUNT(m.idBien)) AS bienes_operativos
+  FROM Dependencias d
+  LEFT JOIN Bienes b ON d.id = b.idDependencia
+  LEFT JOIN mantenimiento_actual m ON b.id = m.idBien
+  GROUP BY d.id, d.nombre
+)
+SELECT id_dependencia, nombre_dependencia, total_bienes, bienes_operativos, bienes_mantenimiento,
+	ROUND(COALESCE((bienes_operativos * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_operativos,
+	ROUND(COALESCE((bienes_mantenimiento * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_mantenimiento
+FROM conteo_bienes;
 
 
 
@@ -1017,6 +1039,8 @@ INSERT INTO Indicadores (perspectiva, denominacion, meta, peligro, frecuencia) V
 ('Planificación y Presupuesto', '% Inversión en Equipos Tecnológicos (%IIET)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Muebles (%IIM)', 60, 30, 'Semestral'),
 ('Planificación y Presupuesto', '% Inversión en Mantenimiento de Bienes (%IIMB)', 60, 30, 'Semestral'),
+('Usuarios', '% Tasa de Disponibilidad Real de Bienes (%TDRB)', 90.00, 80.00, 'Mensual'),
+('Usuarios', 'Índice de Afectación Operativa por Mantenimiento (IAOM)', 5.00, 15.00, 'Mensual'),
 ('Procesos Internos', '% Bienes en Estado Operativo (%IBEO)', 90, 70, 'Mensual'),
 ('Procesos Internos', '% Bienes No Identificados (%IBNI)', 5, 15, 'Mensual'),
 ('Procesos Internos', 'Índice de Crecimiento Mensual de Inventario (ICMI)', 15, -5, 'Mensual'),

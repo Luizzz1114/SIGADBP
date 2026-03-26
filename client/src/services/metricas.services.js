@@ -81,6 +81,17 @@ export default {
   },
 
 
+  async disponibilidadDependencia() {
+    try {
+      const res = await api.get('/bienes/metricas/disponibilidad-dependencia');
+      return res.data;
+    } catch(error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+
   // --- DESINCORPORACIONES ---
   async desincorporacionesResumen() {
     try {

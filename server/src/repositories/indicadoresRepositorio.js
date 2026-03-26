@@ -73,6 +73,18 @@ class Indicadores {
     return resultado.rows[0];
   }
 
+  async TDRB(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Tasa de Disponibilidad Real de Bienes (%TDRB)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+  
+  async IAOM(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = 'Índice de Afectación Operativa por Mantenimiento (IAOM)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
   async listar(denominacion) {
     const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";
     const resultado = await pool.query(sql, [denominacion]);

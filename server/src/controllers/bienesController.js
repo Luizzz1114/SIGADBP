@@ -93,6 +93,15 @@ class BienesController {
 		}
 	}
 
+	async metricaDisponibilidadPorDependencia(req, res) {
+		try {
+			const resultados = await BienesServices.metricaDisponibilidadPorDependencia();
+			res.status(200).json(resultados);
+		} catch (error) {
+			res.status(500).json({ message: 'Error al listar dependencias con disponibilidad.', error: error.message });
+		}
+	}
+
   async crear(req, res) {
     try {
 			const bien = req.body;
