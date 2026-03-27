@@ -42,20 +42,20 @@
           />
 
           <rect
-            :x="item.x - (barWidth / 2)" :y="margins.top" :width="barWidth" :height="chartHeight" rx="8"
+            :x="item.x - (barWidth / 2)" :y="margins.top" :width="barWidth" :height="chartHeight" rx="6"
             class="fill-slate-100/50 dark:fill-slate-800/50"
           />
 
           <rect
             :x="item.x - (barWidth / 2)" :y="isMounted ? item.yAnimatedBottom : item.yStatic"
-            :width="barWidth" :height="isMounted ? item.heightBottom : 0" rx="8"
+            :width="barWidth" :height="isMounted ? item.heightBottom : 0" rx="6"
             :class="colorBottom" 
             :style="{ transition: 'height 700ms ease-out, y 700ms ease-out', transitionDelay: `${index * 40}ms` }"
           />
 
           <rect
             :x="item.x - (barWidth / 2)" :y="isMounted ? item.yAnimatedTop : item.yStatic"
-            :width="barWidth" :height="isMounted ? item.heightTop : 0" rx="8"
+            :width="barWidth" :height="isMounted ? item.heightTop : 0" rx="6"
             :fill="usePatternTop ? 'url(#stripes_stacked)' : undefined"
             :class="usePatternTop ? '' : colorTop" 
             :style="{ transition: 'height 700ms ease-out, y 700ms ease-out', transitionDelay: `${index * 40}ms` }"
@@ -64,6 +64,7 @@
           <text
             :x="item.x" :y="item.yStatic + 25" text-anchor="middle"
             class="fill-slate-500 dark:fill-slate-400 text-[13px] group-hover:fill-slate-700 dark:group-hover:fill-slate-200"
+            :class="{ 'font-semibold fill-slate-700 dark:fill-slate-200!': index === processedData.length - 1 }"
           >
             {{ item.label }}
           </text>
