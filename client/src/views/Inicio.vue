@@ -64,7 +64,7 @@ onMounted(async() => {
           </div>
           <div class="flex flex-col">
             <span class="font-bold text-base dark:text-slate-50">Acceso rápido</span>
-            <span class="-mt-0.5 text-xs text-slate-400">Indicadores KPI</span>
+            <span class="-mt-0.5 text-xs text-slate-400">Indicadores clave de gestión</span>
           </div>
         </div>
         <ul class="flex flex-col gap-4 px-4 pb-4 text-sm">

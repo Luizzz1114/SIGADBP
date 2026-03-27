@@ -110,7 +110,7 @@
           </div>
           
           <div class="mt-1 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
-            <span class="font-medium text-slate-500">Total Asignado</span>
+            <span class="font-medium text-slate-500">Total asignado</span>
             <span class="font-bold text-slate-700 dark:text-slate-100">{{ tooltipData.total }} bienes</span>
           </div>
 
