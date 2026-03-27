@@ -6,6 +6,8 @@ import BarChart from '@/components/Graficos/BarChart.vue';
 import DonutChart from '@/components/Graficos/DonutChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 import { obtenerMesAnio } from '@/utils/formatters.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -71,17 +73,23 @@ const procesarHistorial = (res) => {
 };
 
 onMounted(async () => {
-  const [resActual, resIBNI, resIBEO, resICMI] = await Promise.all([
-    metricasServices.sinNumeroResumen(),
-    metricasServices.obtenerKPI('IBNI'),
-    metricasServices.obtenerKPI('IBEO'),
-    metricasServices.obtenerKPI('ICMI')
-  ]);
+  try {
+    const [resActual, resIBNI, resIBEO, resICMI] = await Promise.all([
+      metricasServices.sinNumeroResumen(),
+      metricasServices.obtenerKPI('IBNI'),
+      metricasServices.obtenerKPI('IBEO'),
+      metricasServices.obtenerKPI('ICMI')
+    ]);
 
-  historialSinNumero.value = resActual || {};
-  sinNumero.value = procesarHistorial(resIBNI);
-  operatividad.value = procesarHistorial(resIBEO);
-  crecimiento.value = procesarHistorial(resICMI);
+    historialSinNumero.value = resActual || {};
+    sinNumero.value = procesarHistorial(resIBNI);
+    operatividad.value = procesarHistorial(resIBEO);
+    crecimiento.value = procesarHistorial(resICMI);
+
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando datos de estadísticas:", error);
+  }
 });
 </script>
 

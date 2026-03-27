@@ -155,13 +155,6 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   icon="fi-sr-calendar-clock" 
                   color="indigo" 
                 />
-                <MiniCard
-                  label="Último acceso" 
-                  :value="usuario.ultimo_acceso || 'Sin registros de acceso'" 
-                  icon="fi-sr-time-watch-calendar" 
-                  color="blue"
-                  size="sm"
-                />
               </div>
             </TabPanel>
             <TabPanel value="1">

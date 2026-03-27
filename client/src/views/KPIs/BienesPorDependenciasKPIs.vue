@@ -5,6 +5,8 @@ import StackedBarChart from '@/components/Graficos/StackedBarChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { listarDependencias } from '@/utils/fetch.utils';
 import { adaptarDatosStackedBar } from '@/utils/graficos.formatter.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -72,20 +74,22 @@ const barrasData = computed(() => [
 // --- Operaciones con la API ---
 onMounted(async () => {
   try {
-    const [res, resDep, res2] = await Promise.all([
+    const [res, res1, res2] = await Promise.all([
       metricasServices.obtenerKPI('TDRB'),
+      metricasServices.disponibilidadDependencia(),
       listarDependencias(),
-      metricasServices.disponibilidadDependencia(), 
     ]);
 
     dataGeneral.value = res || [];
-    dependencias.value = resDep || [];
-    datosActualesList.value = res2 || [];
+    datosActualesList.value = res1 || [];
+    dependencias.value = res2 || [];
 
     if (dependencias.value.length > 0) {
       selectedDependencia.value = dependencias.value[0].id;
     }
+
   } catch (error) {
+    showError(error.response?.data?.message);
     console.error("Error cargando datos de estadísticas:", error);
   } finally {
     setTimeout(() => { isMounted.value = true }, 50);

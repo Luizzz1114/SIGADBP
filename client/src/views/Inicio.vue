@@ -5,6 +5,8 @@ import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
 import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
 import BienesPorCategoria from '@/components/PanelControl/BienesPorCategoria.vue';
 import metricasServices from '@/services/metricas.services.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 const metricas = ref([]);
 const userRole = JSON.parse(localStorage.getItem('user_session'))?.usuario?.rol;
@@ -24,7 +26,12 @@ const accesoRapido = computed(() => {
 });
 
 onMounted(async() => {
-  metricas.value = await metricasServices.obtenerMetricas();
+  try {
+    metricas.value = await metricasServices.obtenerMetricas();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando datos de estadísticas:", error);
+  }
 });
 </script>
 

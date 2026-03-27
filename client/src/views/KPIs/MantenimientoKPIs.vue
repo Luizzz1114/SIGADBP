@@ -5,6 +5,8 @@ import Card from '@/components/Card.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { obtenerMesAnio } from '@/utils/formatters.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -63,13 +65,19 @@ const procesarHistorial = (res) => {
 };
 
 onMounted(async () => {
-  const [resITPMB, resIBODP] = await Promise.all([
-    metricasServices.obtenerKPI('ITPMB'),
-    metricasServices.obtenerKPI('IBODP'),
-  ]);
+  try {
+    const [resITPMB, resIBODP] = await Promise.all([
+      metricasServices.obtenerKPI('ITPMB'),
+      metricasServices.obtenerKPI('IBODP'),
+    ]);
 
-  diasPromedio.value = procesarHistorial(resITPMB);
-  operatividad.value = procesarHistorial(resIBODP);
+    diasPromedio.value = procesarHistorial(resITPMB);
+    operatividad.value = procesarHistorial(resIBODP);
+
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando datos de estadísticas:", error);
+  }
 });
 </script>
 
@@ -91,7 +99,7 @@ onMounted(async () => {
       <Card
         label="Mantenimientos realizados"
         icon="fi-rr-screw-alt"
-        :value="actualDiasPromedio.total"
+        :value="actualDiasPromedio.total || 0"
         :message="actualDiasPromedio.message"
       />
       <Card

@@ -86,7 +86,7 @@
           </svg>
 
           <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-             {{ tooltipData.percentage }}% ({{ formatNumber(tooltipData.value) }})
+             {{ tooltipData.percentage }}% • {{ formatNumber(tooltipData.value) }}
           </span>
         </div>
       </div>

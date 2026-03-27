@@ -5,8 +5,7 @@ import metricasServices from '@/services/metricas.services.js';
 const data = ref([]);
 
 onMounted(async() => {
-  const res = await metricasServices.bienesPorDependencia();
-  data.value = res;
+  data.value = await metricasServices.bienesPorDependencia();
 });
 </script>
 
@@ -53,6 +52,7 @@ onMounted(async() => {
                   </div>
                 </div>
               </template>
+              <template #empty><div class="p-4 text-center text-slate-500">No se encontraron registros.</div></template>
               <Column field="dependencia" header="Dependencia" style="width: 400px; min-width: 400px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
               <Column header="Total de bienes asignados">
                 <template #body="{ data }">

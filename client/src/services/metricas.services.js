@@ -10,7 +10,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 
@@ -64,7 +64,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 
@@ -76,7 +76,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 
@@ -87,7 +87,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 
@@ -99,7 +99,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 
@@ -111,7 +111,7 @@ export default {
       return res.data;
     } catch(error) {
       console.log(error);
-      return [];
+      throw error;
     }
   },
 

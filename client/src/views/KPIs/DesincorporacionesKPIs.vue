@@ -5,6 +5,8 @@ import Card from '@/components/Card.vue';
 import AreaChart from '@/components/Graficos/AreaChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { obtenerMesAnio } from '@/utils/formatters.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -54,13 +56,19 @@ const procesarHistorial = (res) => {
 };
 
 onMounted(async () => {
-  const [resITDB, resDD] = await Promise.all([
-    metricasServices.obtenerKPI('ITDB'),
-    metricasServices.obtenerKPI('IDD')
-  ]);
+  try {
+    const [resITDB, resIDD] = await Promise.all([
+      metricasServices.obtenerKPI('ITDB'),
+      metricasServices.obtenerKPI('IDD')
+    ]);
+    
+    tasaDesincorporacion.value = procesarHistorial(resITDB);
+    deterioro.value = procesarHistorial(resIDD);
 
-  tasaDesincorporacion.value = procesarHistorial(resITDB);
-  deterioro.value = procesarHistorial(resDD);
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando datos de estadísticas:", error);
+  }
 });
 </script>
 
@@ -83,7 +91,7 @@ onMounted(async () => {
         label="Bienes desincorporados"
         icon="fi-rr-apps-delete"
         color="red"
-        :value="actualTasa.total"
+        :value="actualTasa.total || 0"
         :message="actualTasa.message"
       />
       <Card

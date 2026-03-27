@@ -4,6 +4,8 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import MoneyCard from '@/components/MoneyCard.vue';
 import MultiBarChart from '@/components/Graficos/MultiBarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -83,6 +85,7 @@ onMounted(async () => {
     respuestasAPI.value = [resEquipos, resMuebles, resMantenimiento];
 
   } catch (error) {
+    showError(error.response?.data?.message);
     console.error("Error cargando los KPIs:", error);
   }
 });

@@ -4,7 +4,8 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import DistributionBar from '@/components/Graficos/DistributionBar.vue';
 import metricasServices from '@/services/metricas.services';
-import AreaChart from '@/components/Graficos/AreaChart.vue';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -79,15 +80,21 @@ const procesarHistorial = (res) => {
 };
 
 onMounted(async () => {
-  const [resActual, resCapacitacion, resSatisfaccion] = await Promise.all([
-    metricasServices.evaluacionesResumen(),
-    metricasServices.obtenerKPI('ICP'),
-    metricasServices.obtenerKPI('IPS')
-  ]);
+  try {
+    const [resActual, resCapacitacion, resSatisfaccion] = await Promise.all([
+      metricasServices.evaluacionesResumen(),
+      metricasServices.obtenerKPI('ICP'),
+      metricasServices.obtenerKPI('IPS')
+    ]);
 
-  data.value = resActual;
-  capacitacionHistorial.value = procesarHistorial(resCapacitacion);
-  satisfacionHistorial.value = procesarHistorial(resSatisfaccion);
+    data.value = resActual;
+    capacitacionHistorial.value = procesarHistorial(resCapacitacion);
+    satisfacionHistorial.value = procesarHistorial(resSatisfaccion);
+
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando datos de estadísticas:", error);
+  }
 });
 </script>
 

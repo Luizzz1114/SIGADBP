@@ -53,7 +53,7 @@ export async function listarDependencias() {
     return await dependenciasServices.listar();
   } catch (error) {
     console.error('Error al listar dependencias: ', error);
-    return [];
+    throw error;
   }
 }
 

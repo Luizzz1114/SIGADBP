@@ -179,7 +179,7 @@ const options = computed(() => [
     </template>
 
     <template #empty>
-      <span>No se encontraron registros.</span>
+      <div class="p-4 text-center text-slate-500">No se encontraron registros.</div>
     </template>
 
     <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header">
