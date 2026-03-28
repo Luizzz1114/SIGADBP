@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useConfirm } from "primevue/useconfirm";
 import { fechaFormateada } from '@/utils/formatters.js';
@@ -10,7 +10,7 @@ const router = useRouter();
 const confirm = useConfirm();
 
 const emit = defineEmits(['toggle-sidebar']);
-const usuario = JSON.parse(localStorage.getItem('user_session'))?.usuario;
+const usuario = inject('userData');
 
 const menu = ref(null);
 const toggleMenu = (event) => {

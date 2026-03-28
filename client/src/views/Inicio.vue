@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import Card from '@/components/Card.vue';
 import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
 import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
@@ -9,7 +9,7 @@ import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
 const metricas = ref([]);
-const userRole = JSON.parse(localStorage.getItem('user_session'))?.usuario?.rol;
+const userRole = inject('userData').rol;
 
 const enlaces = [
   { name: 'Inventario de bienes', path: '/inventario/estadisticas', icon: 'fi-rr-boxes' },

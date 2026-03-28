@@ -1,7 +1,11 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, provide } from 'vue';
 import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
+
+// --- Información del Usuario ---
+const usuario = JSON.parse(localStorage.getItem('user_session'))?.usuario;
+provide('userData', usuario);
 
 // --- Lógica de Modo Oscuro ---
 const isDark = ref(false);

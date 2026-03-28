@@ -29,7 +29,8 @@ const onFormSubmit = async ({ valid, values }) => {
 
   const hoy = new Date();
   const semestre = `${hoy.getMonth() < 6 ? 'I' : 'II'}-${hoy.getFullYear()}`;
-  const usuario = JSON.parse(localStorage.getItem('user_session'))?.usuario;
+  const session = JSON.parse(localStorage.getItem('user_session')) || {};
+  const usuario = session.usuario;
   const payload = {
     id: usuario.id,
     semestre,
@@ -39,15 +40,15 @@ const onFormSubmit = async ({ valid, values }) => {
   try {
     const respuesta = await evaluacionesServices.crear(payload);
     showSuccess(respuesta.message);
-    const session = JSON.parse(localStorage.getItem('user_session'));
     session.usuario.encuestaRespondida = true;
     localStorage.setItem('user_session', JSON.stringify(session));
     
   } catch (error) {
     showError(error.response?.data?.message);
     console.error('Error al enviar la encuesta: ', error);
+  } finally {
+    visible.value = false;
   }
-  visible.value = false;
   
 };
 </script>

@@ -103,7 +103,7 @@ onMounted(async () => {
         :message="actualDiasPromedio.message"
       />
       <Card
-        label="Tiempo promedio de mantenimiento"
+        label="Tiempo promedio"
         icon="fi-rr-time-fast"
         :value="actualDiasPromedio.value"
         :status="actualDiasPromedio.status"

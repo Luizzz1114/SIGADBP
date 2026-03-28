@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 
 defineProps({
   isMobileOpen: Boolean,
@@ -8,7 +8,7 @@ defineProps({
 });
 
 const emit = defineEmits(['close-mobile', 'toggle-theme']);
-const userRole = JSON.parse(localStorage.getItem('user_session'))?.usuario?.rol;
+const userRole = inject('userData')?.rol;
 
 const menuGroups = [
   {
