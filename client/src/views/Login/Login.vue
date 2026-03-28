@@ -82,5 +82,4 @@ async function login(values) {
       </div>
     </Form>
   </div>
-  <Toast position="bottom-right" />
 </template>

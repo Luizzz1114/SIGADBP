@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginLayout from '@/layout/LoginLayout.vue';
 import MainLayout from '@/layout/MainLayout.vue';
-import Login from '@/components/Login.vue';
-import RecuperarContrasena from '@/components/RecuperarContrasena.vue';
+import Login from '@/views/Login/Login.vue';
+import RecuperarContrasena from '@/views/Login/RecuperarContrasena.vue';
 import Inicio from '@/views/Inicio.vue';
 import InventarioBienes from '@/views/InventarioBienes.vue';
 import Incorporaciones from '@/views/Incorporaciones.vue';

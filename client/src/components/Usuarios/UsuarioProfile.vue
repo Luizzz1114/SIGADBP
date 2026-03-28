@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { createPerfilSchema } from '@/utils/usuarios.utils';
+import { createPerfilSchema, preguntasSeguridad } from '@/utils/usuarios.utils';
 import usuariosServices from '@/services/usuarios.services';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showSuccess, showError } = useNotificaciones();
@@ -19,7 +19,10 @@ const initialValues = computed(() => {
   const usuario = props.usuario;
   return {
     ...usuario,
-    contrasena: ''   
+    contrasena: '',
+    confirmarContrasena: '',
+    pregunta: '',
+    respuesta: '' 
   };
 });
 
@@ -207,6 +210,30 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                     </InputGroup>
                     <Message v-if="$form.contrasena?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.contrasena.error?.message }}
+                    </Message>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span>Confirmar contraseña</span>
+                    <InputGroup>
+                      <InputGroupAddon><i class="fi-rr-lock"></i></InputGroupAddon>
+                      <Password name="confirmarContrasena" toggleMask :feedback="false" size="small" fluid />
+                    </InputGroup>
+                    <Message v-if="$form.confirmarContrasena?.invalid" severity="error" size="small" variant="simple">
+                      {{ $form.confirmarContrasena.error?.message }}
+                    </Message>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span>Pregunta <span class="text-red-500">*</span></span>
+                    <Select name="pregunta" :options="preguntasSeguridad" placeholder="Seleccione" size="small" fluid />
+                    <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
+                      {{ $form.pregunta.error?.message }}
+                    </Message>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label for="respuesta">Respuesta <span class="text-red-500">*</span></label>
+                    <InputText name="respuesta" id="respuesta" autocomplete="off" size="small" fluid />
+                    <Message v-if="$form.respuesta?.invalid" severity="error" size="small" variant="simple">
+                      {{ $form.respuesta.error?.message }}
                     </Message>
                   </div>
                 </div>

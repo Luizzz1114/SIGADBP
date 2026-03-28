@@ -65,6 +65,8 @@ CREATE TABLE Usuarios (
   fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fechaActualizacion TIMESTAMP DEFAULT NULL,
   ultimoAcceso TIMESTAMP DEFAULT NULL,
+  pregunta TEXT,
+  respuesta TEXT,
   idPersonal INT REFERENCES Personal(id)
 );
 

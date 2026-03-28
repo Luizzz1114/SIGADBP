@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { createUsuarioSchema, roles } from '@/utils/usuarios.utils.js';
+import { createUsuarioSchema, roles, preguntasSeguridad } from '@/utils/usuarios.utils.js';
 import { listarPersonalSinUsuario } from '@/utils/fetch.utils.js';
 
 const visible = defineModel('visible', { type: Boolean, default: false });
@@ -16,6 +16,9 @@ const usuario = ref({
   correo: '',
   rol: '',
   contrasena: '',
+  confirmarContrasena: '',
+  pregunta: '',
+  respuesta: '',
   personal: ''
 });
 
@@ -50,7 +53,11 @@ watch(visible, async(isOpen) => {
       </div>
     </template>
     <Form v-slot="$form" :resolver="resolver" :initialValues="usuario" @submit="onFormSubmit">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-6">
+      <div class="flex items-center gap-2 mt-6">
+        <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
+        <span class="font-semibold">Credenciales</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-4">
         <div class="flex flex-col gap-1">
           <span>Personal <span class="text-red-500">*</span></span>
           <Select name="personal" :options="personal" optionLabel="nombres" placeholder="Seleccione" size="small" fluid filter>
@@ -128,7 +135,40 @@ watch(visible, async(isOpen) => {
             {{ $form.contrasena.error?.message }}
           </Message>
         </div>
+        <div class="flex flex-col gap-1">
+          <span>Confirmar contraseña</span>
+          <InputGroup>
+            <InputGroupAddon><i class="fi-rr-lock"></i></InputGroupAddon>
+            <Password name="confirmarContrasena" toggleMask :feedback="false" size="small" fluid />
+          </InputGroup>
+          <Message v-if="$form.confirmarContrasena?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.confirmarContrasena.error?.message }}
+          </Message>
+        </div>
       </div>
+
+      <Divider class="my-6!" />
+      <div class="flex items-center gap-2">
+        <i class="fi-sr-circle-2 text-xl text-blue-500"></i>
+        <span class="font-semibold">Pregunta de seguridad</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-4">
+        <div class="flex flex-col gap-1">
+          <span>Pregunta <span class="text-red-500">*</span></span>
+          <Select name="pregunta" :options="preguntasSeguridad" placeholder="Seleccione" size="small" fluid />
+          <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.pregunta.error?.message }}
+          </Message>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="respuesta">Respuesta <span class="text-red-500">*</span></label>
+          <InputText name="respuesta" id="respuesta" autocomplete="off" size="small" fluid />
+          <Message v-if="$form.respuesta?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.respuesta.error?.message }}
+          </Message>
+        </div>
+      </div>
+
       <div class="flex pt-6 justify-end gap-4 mt-0">
         <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" type="button" />
         <Button label="Registrar" type="submit" />

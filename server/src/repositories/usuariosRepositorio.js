@@ -35,9 +35,9 @@ class usuarios {
   }
 
   async crear (user) {
-    const { personal, username, correo, contrasena, rol} = user;
-    const sql = 'INSERT INTO Usuarios (idPersonal, username, correo, contrasena, rol) VALUES ($1, $2, $3, $4, $5);';
-    const resultado = await pool.query(sql, [personal, username, correo, contrasena, rol]);
+    const { personal, username, correo, contrasena, rol, pregunta, respuesta} = user;
+    const sql = 'INSERT INTO Usuarios (idPersonal, username, correo, contrasena, rol, pregunta, respuesta) VALUES ($1, $2, $3, $4, $5, $6, $7);';
+    const resultado = await pool.query(sql, [personal, username, correo, contrasena, rol, pregunta, respuesta]);
     return resultado.rowCount === 1;
   }
 
