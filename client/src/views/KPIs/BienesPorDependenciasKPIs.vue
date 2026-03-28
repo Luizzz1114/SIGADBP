@@ -203,19 +203,23 @@ onMounted(async () => {
               ></div>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1 mt-2">
             <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
               <div class="flex items-center gap-2">
-                <i class="fi-sr-check-circle text-emerald-400 text-sm"></i>
+                <div class="grid place-items-center size-7 text-sm rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 ring-1 ring-inset ring-emerald-400/20">
+                  <i class="fi-sr-check-circle text-sm"></i>
+                </div>
                 <span class="font-bold text-sm text-slate-700 dark:text-slate-200">Tasa de Disponibilidad</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-4">
-                Mide el porcentaje de bienes que están 100% operativos y listos para ser utilizados por la dependencia, garantizando la continuidad de las operaciones.
+                Mide el porcentaje de bienes que están operativos en la dependencia, garantizando la continuidad de las operaciones.
               </p>
             </div>
             <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
               <div class="flex items-center gap-2">
-                <i class="fi-sr-tools text-slate-400 text-sm"></i>
+                <div class="grid place-items-center size-7 text-sm rounded-lg bg-slate-100 dark:bg-slate-900/30 text-slate-500 dark:text-slate-400 ring-1 ring-inset ring-slate-400/20">
+                  <i class="fi-sr-tools text-sm"></i>
+                </div>
                 <span class="font-bold text-sm text-slate-700 dark:text-slate-200">Índice de Mantenimiento</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-4">
