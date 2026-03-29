@@ -66,7 +66,7 @@ CREATE TABLE Usuarios (
   fechaActualizacion TIMESTAMP DEFAULT NULL,
   ultimoAcceso TIMESTAMP DEFAULT NULL,
   pregunta TEXT,
-  respuesta TEXT,
+  respuesta VARCHAR(255),
   idPersonal INT REFERENCES Personal(id)
 );
 
@@ -363,7 +363,7 @@ LEFT JOIN count_bienes CB ON P.id = CB.idPersonal;
 
 -- 3. USUARIOS
 CREATE OR REPLACE VIEW vistaUsuarios AS
-SELECT U.id, U.username, U.correo, U.rol,
+SELECT U.id, U.username, U.correo, U.rol, U.pregunta,
   TO_CHAR(U.fechaCreacion, 'DD/MM/YYYY HH24:MI') AS creacion,
   TO_CHAR(U.fechaActualizacion, 'DD/MM/YYYY HH24:MI') AS actualizacion,
   P.id AS idp, P.cedula, P.nombres, P.apellidos, CONCAT_WS(' ', P.nombres, P.apellidos) AS empleado

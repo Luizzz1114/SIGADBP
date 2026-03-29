@@ -22,7 +22,7 @@ const initialValues = computed(() => {
     contrasena: '',
     confirmarContrasena: '',
     pregunta: '',
-    respuesta: '' 
+    respuesta: ''
   };
 });
 
@@ -188,7 +188,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                     </Message>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <span>Contraseña <span class="text-red-500">*</span></span>
+                    <span>Contraseña</span>
                     <InputGroup>
                       <InputGroupAddon>
                         <i class="fi-rr-lock"></i>
@@ -208,6 +208,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                         </template>
                       </Password>
                     </InputGroup>
+                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja este campo en blanco si desea mantener la contraseña actual</small>
                     <Message v-if="$form.contrasena?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.contrasena.error?.message }}
                     </Message>
@@ -223,14 +224,15 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                     </Message>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <span>Pregunta <span class="text-red-500">*</span></span>
+                    <span>Pregunta</span>
                     <Select name="pregunta" :options="preguntasSeguridad" placeholder="Seleccione" size="small" fluid />
+                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja estos campos en blanco si no deseas cambiar tu pregunta de seguridad</small>
                     <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.pregunta.error?.message }}
                     </Message>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <label for="respuesta">Respuesta <span class="text-red-500">*</span></label>
+                    <label for="respuesta">Respuesta</label>
                     <InputText name="respuesta" id="respuesta" autocomplete="off" size="small" fluid />
                     <Message v-if="$form.respuesta?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.respuesta.error?.message }}

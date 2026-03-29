@@ -26,7 +26,7 @@ const contrasenaBaseSchema = z.string({ required_error: 'La contraseña es oblig
 
 
 // --- Schemas de validación
-export const createUsuarioSchema = () => {
+export const createUsuarioSchema = (isEdit = false) => {
   let lastCheck = {
     username: '',
     correo: '',
@@ -34,6 +34,7 @@ export const createUsuarioSchema = () => {
     usernameValido: true,
     correoValido: true
   };
+
   return z.object({
     id: z.number().optional(),
     personal: z.any()
@@ -49,22 +50,53 @@ export const createUsuarioSchema = () => {
     correo: z.string().trim()
       .min(1, 'El correo es obligatorio')
       .email('El correo electrónico es inválido'),
-    contrasena: contrasenaBaseSchema,
-    confirmarContrasena: z.string({ required_error: 'Confirmar la contraseña es obligatorio' })
-        .min(1, 'Debes confirmar la contraseña'),
-    pregunta: z.string().trim()
-      .min(1, 'Seleccione una pregunta de seguridad'),
-    respuesta: z.string().trim()
-      .min(1, 'La respuesta a la pregunta de seguridad es obligatoria')
+    contrasena: isEdit 
+      ? contrasenaBaseSchema.optional().or(z.literal(''))
+      : contrasenaBaseSchema,
+    confirmarContrasena: isEdit 
+      ? z.string().optional().or(z.literal(''))
+      : z.string({ required_error: 'Confirmar la contraseña es obligatorio' })
+          .min(1, 'Debes confirmar la contraseña'),
+    pregunta: isEdit 
+      ? z.string().trim().optional().or(z.literal(''))
+      : z.string().trim().min(1, 'Seleccione una pregunta de seguridad'),
+    respuesta: isEdit 
+      ? z.string().trim().optional().or(z.literal(''))
+      : z.string().trim().min(1, 'La respuesta a la pregunta de seguridad es obligatoria')
   })
   .superRefine(async (data, ctx) => {
-    if (data.confirmarContrasena !== data.contrasena) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Las contraseñas no coinciden',
-        path: ['confirmarContrasena']
-      });
+    if (data.contrasena || data.confirmarContrasena) {
+      if (data.confirmarContrasena !== data.contrasena) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Las contraseñas no coinciden',
+          path: ['confirmarContrasena']
+        });
+      }
     }
+
+    if (isEdit) {
+      const tienePregunta = data.pregunta && data.pregunta.trim() !== '';
+      const tieneRespuesta = data.respuesta && data.respuesta.trim() !== '';
+
+      if (tienePregunta && !tieneRespuesta) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Si configuras una nueva pregunta, la respuesta es obligatoria',
+          path: ['respuesta']
+        });
+      }
+
+      if (tieneRespuesta && !tienePregunta) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Debes seleccionar una pregunta de seguridad para esta respuesta',
+          path: ['pregunta']
+        });
+      }
+    }
+
+
     if (data.username === lastCheck.username && data.correo === lastCheck.correo) {
       if (!lastCheck.usernameValido) {
         ctx.addIssue({ 
@@ -82,7 +114,9 @@ export const createUsuarioSchema = () => {
       }
       return;
     }
+
     const { username_exists, correo_exists } = await usuariosServices.validarUsernameCorreo(data.username, data.correo, data?.id);
+
     lastCheck = { 
       username: data.username, 
       correo: data.correo, 
@@ -90,12 +124,13 @@ export const createUsuarioSchema = () => {
       usernameValido: !username_exists,
       correoValido: !correo_exists 
     };
+
     if (username_exists) {
       ctx.addIssue({ 
         code: 'custom',
         message: 'Este nombre de usuario ya está registrado',
         path: ['username']
-      })
+      });
     }
     if (correo_exists) {
       ctx.addIssue({ 
@@ -128,20 +163,33 @@ export const createPerfilSchema = () => {
     correo: z.string().trim()
       .min(1, 'El correo es obligatorio')
       .email('El correo electrónico es inválido'),
-    contrasena: contrasenaBaseSchema,
-    confirmarContrasena: z.string({ required_error: 'Confirmar la contraseña es obligatorio' })
-        .min(1, 'Debes confirmar la contraseña'),
-    pregunta: z.string().trim()
-      .min(1, 'Seleccione una pregunta de seguridad'),
-    respuesta: z.string().trim()
-      .min(1, 'La respuesta a la pregunta de seguridad es obligatoria')
+    contrasena: contrasenaBaseSchema.optional().or(z.literal('')),
+    confirmarContrasena: z.string().optional().or(z.literal('')),
+    pregunta: z.string().trim().optional().or(z.literal('')),
+    respuesta: z.string().trim().optional().or(z.literal(''))
   })
   .superRefine(async (data, ctx) => {
-    if (data.confirmarContrasena !== data.contrasena) {
+    if (data.contrasena || data.confirmarContrasena) {
+      if (data.confirmarContrasena !== data.contrasena) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Las contraseñas no coinciden',
+          path: ['confirmarContrasena']
+        });
+      }
+    }
+    if (data.pregunta && !data.respuesta) {
       ctx.addIssue({
         code: 'custom',
-        message: 'Las contraseñas no coinciden',
-        path: ['confirmarContrasena']
+        message: 'Debes proporcionar una respuesta para la nueva pregunta de seguridad',
+        path: ['respuesta']
+      });
+    }
+    if (!data.pregunta && data.respuesta) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Debes seleccionar una pregunta si deseas actualizar la respuesta',
+        path: ['pregunta']
       });
     }
     if (data.username === lastCheck.username && data.correo === lastCheck.correo && data.id === lastCheck.id) {
@@ -174,7 +222,7 @@ export const createPerfilSchema = () => {
         code: 'custom',
         message: 'Este nombre de usuario ya está registrado',
         path: ['username']
-      })
+      });
     }
     if (correo_exists) {
       ctx.addIssue({ 

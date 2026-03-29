@@ -62,28 +62,38 @@ class UsuariosService {
   }
 
   async crear(usuario) {
-    const { personal, username, correo, contrasena, rol } = usuario;
+    const { personal, username, correo, contrasena, rol, pregunta, respuesta } = usuario;
     const contrasenaHash = await bcrypt.hash(contrasena, 10);
+    const respuestaHash = await bcrypt.hash(respuesta, 10);
     const user = {
       personal,
       username,
       correo,
       contrasena: contrasenaHash,
       rol,
+      pregunta,
+      respuesta: respuestaHash
     };
     return await UsuariosRepositorio.crear(user);
   }
 
   async actualizar(usuario) {
-    const { id, personal, username, correo, contrasena, rol } = usuario;
-    const contrasenaHash = await bcrypt.hash(contrasena, 10);
+    let { id, username, correo, contrasena, rol, pregunta, respuesta } = usuario;
+
+    if (contrasena && contrasena.trim() !== '') {
+      contrasena = await bcrypt.hash(contrasena, 10);
+    }
+    if (respuesta && respuesta.trim() !== '') {
+      respuesta = await bcrypt.hash(respuesta, 10);
+    }
     const user = {
       id,
-      personal,
       username,
       correo,
-      contrasena: contrasenaHash,
+      contrasena,
       rol,
+      pregunta,
+      respuesta,
     };
     return await UsuariosRepositorio.actualizar(user);
   }

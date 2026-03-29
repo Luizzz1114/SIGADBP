@@ -64,7 +64,7 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al actualizar usuario.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar usuario.' });
+      res.status(500).json({ error: 'Error al actualizar usuario.', error: error.message });
     }
   }
 
