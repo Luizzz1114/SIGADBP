@@ -23,6 +23,12 @@ class usuarios {
     return resultado.rows[0];
   }
 
+  async recuperarContrasena (identificador) {
+    const sql = 'SELECT id, correo, username, pregunta, respuesta FROM Usuarios WHERE username = $1 OR correo = $1 ;';
+    const resultado = await pool.query(sql, [identificador]);
+    return resultado.rows[0];
+  }
+
   async obtenerPorId (id) {
     const sql = `SELECT U.*, P.id AS id_personal, P.genero, P.fechaNacimiento,
       P.edad, P.telefono, P.nivelProfesional, P.estatus, P.cargo, P.dependencia,
@@ -43,30 +49,24 @@ class usuarios {
 
   async actualizar (user) {
     const { id, username, correo, contrasena, rol, pregunta, respuesta } = user;
-    console.log('Datos recibidos para actualización:', user);
-    // 1. Iniciamos la consulta con los campos que SIEMPRE se actualizan (obligatorios)
-    let sql = 'UPDATE Usuarios SET fechaActualizacion = CURRENT_TIMESTAMP, username = $1, correo = $2';
-    let params = [username, correo];
-    let paramIndex = 3; // Arrancamos en 4 porque ya usamos $1, $2 y $3
 
-    // 2. Agrupamos SOLO los campos que pueden venir vacíos (opcionales)
-    const camposOpcionales = { contrasena, rol, pregunta, respuesta };
+    let sql = 'UPDATE Usuarios SET fechaActualizacion = CURRENT_TIMESTAMP';
+    const params = [];
+    let paramIndex = 1;
 
-    // 3. Iteramos dinámicamente solo sobre los opcionales
+    const camposOpcionales = { username, correo, contrasena, rol, pregunta, respuesta };
+
     for (const [columna, valor] of Object.entries(camposOpcionales)) {
       if (valor !== undefined && valor !== null && valor !== '') {
         sql += `, ${columna} = $${paramIndex}`;
         params.push(valor);
-        paramIndex++; // Aumenta a $4, $5, etc., según los que existan
+        paramIndex++;
       }
     }
 
-    // 4. Cerramos la consulta agregando la condición del ID al final
     sql += ` WHERE id = $${paramIndex};`;
     params.push(id);
-    console.log(params, sql);
     
-    //const sql = 'UPDATE Usuarios SET username = $1, correo = $2, contrasena = $3, fechaActualizacion = CURRENT_TIMESTAMP, rol = $4 WHERE id = $5;';
     const resultado = await pool.query(sql, params);
     return resultado.rowCount === 1;
   }

@@ -3,11 +3,20 @@ import { ref } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { nuevaContrasenaSchema, recuperarContrasenaSchema } from '@/utils/login.utils.js';
 import { preguntasSeguridad, } from '@/utils/usuarios.utils';
+import usuariosServices from '@/services/usuarios.services';
+import { useNotificaciones } from '@/utils/useNotificaciones.js';
+const { showSuccess, showError } = useNotificaciones();
 
 const vistaActual = ref('inicio');
 const cargando = ref(false);
 const resolver = zodResolver(recuperarContrasenaSchema);
 const resolverNuevaContrasena = zodResolver(nuevaContrasenaSchema);
+
+const dataUsuario = ref({
+  id: null,
+  username: '',
+  correo: ''
+});
 
 const datos = ref({
   identificador: '',
@@ -28,26 +37,51 @@ const metodoRecuperacion = [
 
 const onFormSubmit = async ({ valid, values }) => {
   if (!valid) return;
-
   cargando.value = true;
-  setTimeout(() => {
-    cargando.value = false;
-    if (values.metodo === 'correo') {
-      vistaActual.value = 'correo_enviado';
+  try {
+    const respuesta = await usuariosServices.recuperarContrasena(values);
+    if (respuesta.encontrado) {
+      dataUsuario.value = {
+        id: respuesta.id,
+        username: respuesta.username,
+        correo: respuesta.correo
+      };
+      if (values.metodo === 'correo') {
+        vistaActual.value = 'correo_enviado';
+      } else {
+        vistaActual.value = 'nueva_contrasena';
+      }
     } else {
-      vistaActual.value = 'nueva_contrasena';
+      showError(respuesta.mensaje);
     }
-  }, 1500);
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Ocurrió un error al validar las credenciales: ', error);
+  } finally {
+    cargando.value = false;
+  }
 };
 
 const onNuevaContrasenaSubmit = async ({ valid, values }) => {
   if (!valid)  return;
-
   cargando.value = true;
-  setTimeout(() => {
+  try {
+    const respuesta = await usuariosServices.actualizarContrasena({
+      id: dataUsuario.value.id,
+      contrasena: values.contrasena
+    });
+    if (respuesta) {
+      vistaActual.value = 'exito';
+      showSuccess('Ya puedes iniciar sesión con tu nueva contraseña');
+    } else {
+      showError(respuesta.mensaje);
+    }
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Ocurrió un error al validar las credenciales: ', error);
+  } finally {
     cargando.value = false;
-    vistaActual.value = 'exito'; 
-  }, 1500);
+  }
 };
 </script>
 
@@ -78,8 +112,8 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
             <SelectButton name="metodo" :options="metodoRecuperacion" optionLabel="label" optionValue="value" fluid />
           </div>
           <div class="flex flex-col gap-1 mt-2">
-            <label for="pregunta">Pregunta de seguridad</label>
-            <Select name="pregunta" id="pregunta" :options="preguntasSeguridad" size="small" fluid :disabled="$form.metodo?.value === 'correo' || $form.metodo?.value === null" />
+            <span>Pregunta de seguridad</span>
+            <Select name="pregunta" :options="preguntasSeguridad" size="small" fluid :disabled="$form.metodo?.value === 'correo' || $form.metodo?.value === null" />
             <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
               {{ $form.pregunta.error?.message }}
             </Message>
@@ -126,10 +160,10 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
       <Form v-slot="$form" :initialValues="datosNuevaContrasena" :resolver="resolverNuevaContrasena" @submit="onNuevaContrasenaSubmit">
         <div class="grid grid-cols-1 gap-y-4 gap-x-6">
           <div class="flex flex-col gap-1">
-            <label for="contrasena">Nueva contraseña</label>
+            <span>Nueva contraseña</span>
             <InputGroup>
               <InputGroupAddon><i class="fi-rr-lock"></i></InputGroupAddon>
-              <Password name="contrasena" id="contrasena" toggleMask size="small" fluid promptLabel="Ingrese una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte">
+              <Password name="contrasena" toggleMask size="small" fluid promptLabel="Ingrese una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte">
                 <template #header>
                   <div class="font-semibold mb-3">Requisitos de seguridad</div>
                 </template>
@@ -149,10 +183,10 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
             </Message>
           </div>
           <div class="flex flex-col gap-1">
-            <label for="confirmarContrasena">Confirmar contraseña</label>
+            <span>Confirmar contraseña</span>
             <InputGroup>
               <InputGroupAddon><i class="fi-rr-lock"></i></InputGroupAddon>
-              <Password name="confirmarContrasena" id="confirmarContrasena" toggleMask :feedback="false" size="small" fluid />
+              <Password name="confirmarContrasena" toggleMask :feedback="false" size="small" fluid />
             </InputGroup>
             <Message v-if="$form.confirmarContrasena?.invalid" severity="error" size="small" variant="simple">
               {{ $form.confirmarContrasena.error?.message }}

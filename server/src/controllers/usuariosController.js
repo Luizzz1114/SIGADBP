@@ -6,7 +6,7 @@ class UsuariosController {
       const usuarios = await UsuariosService.listar();
       res.status(200).json(usuarios);
     } catch (error) {
-      res.status(500).json({ error: 'Error al listar usuarios.' });
+      res.status(500).json({ error: 'Error al listar usuarios.', error: error.message });
     }
   }
 
@@ -16,7 +16,7 @@ class UsuariosController {
       const sonUnicos = await UsuariosService.validarUsernameCorreo(validar);
       res.status(200).json(sonUnicos);
     } catch (error) {
-      res.status(500).json({ error: 'Error al validar username y correo.' });
+      res.status(500).json({ error: 'Error al validar username y correo.', error: error.message });
     } 
   }
 
@@ -26,7 +26,7 @@ class UsuariosController {
       const usuario = await UsuariosService.obtenerPorId(id);
       res.status(200).json(usuario);
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener usuario por ID.' });
+      res.status(500).json({ error: 'Error al obtener usuario por ID.', error: error.message });
     }
   }
 
@@ -36,7 +36,17 @@ class UsuariosController {
       const resultado = await UsuariosService.iniciarSesion(usuario);
       res.status(200).json(resultado);
     } catch (error) {
-      res.status(500).json({ error: 'Error al iniciar sesión.' });
+      res.status(500).json({ error: 'Error al iniciar sesión.', error: error.message });
+    }
+  }
+
+  async recuperarContrasena(req, res) {
+    try {
+      const user = req.body;
+      const resultado = await UsuariosService.recuperarContrasena(user);
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al recuperar contraseña.', error: error.message });
     }
   }
 
@@ -50,7 +60,7 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al crear usuario.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear usuario.' });
+      res.status(500).json({ error: 'Error al crear usuario.', error: error.message });
     }
   }
 
@@ -78,7 +88,7 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al eliminar usuario.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al eliminar usuario.' });
+      res.status(500).json({ error: 'Error al eliminar usuario.', error: error.message });
     }
   }
 }

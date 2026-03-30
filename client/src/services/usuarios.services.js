@@ -35,6 +35,16 @@ export default {
   async login(usuario) {
     const res = await api.post('/usuarios/login', usuario);
     return res.data;
-  }
+  },
+
+  async recuperarContrasena(data) {
+    const res = await api.post('/usuarios/recuperar-contrasena', data);
+    return res.data;
+  },
+
+  async actualizarContrasena(usuario) {
+    const res = await api.patch('/usuarios', usuario);
+    return res.data;
+  },
 
 }

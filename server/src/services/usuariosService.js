@@ -61,6 +61,22 @@ class UsuariosService {
     };
   }
 
+  async recuperarContrasena(user) {
+    const { identificador, pregunta, respuesta } = user;
+    const recuperar = await UsuariosRepositorio.recuperarContrasena(identificador);
+    if (!recuperar) {
+      return { encontrado: false, mensaje: 'Usuario no encontrado.' };
+    }
+    if (pregunta !== recuperar.pregunta) {
+      return { encontrado: false, mensaje: 'Pregunta incorrecta.' };
+    }
+    const match = await bcrypt.compare(respuesta, recuperar.respuesta);
+    if (!match) {
+      return { encontrado: false, mensaje: 'Respuesta incorrecta.' };
+    }
+    return { encontrado: true, mensaje: 'Usuario verificado.', id: recuperar.id, username: recuperar.username, correo: recuperar.correo };
+  }
+
   async crear(usuario) {
     const { personal, username, correo, contrasena, rol, pregunta, respuesta } = usuario;
     const contrasenaHash = await bcrypt.hash(contrasena, 10);
