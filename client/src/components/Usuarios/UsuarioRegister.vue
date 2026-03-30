@@ -60,7 +60,14 @@ watch(visible, async(isOpen) => {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-4">
         <div class="flex flex-col gap-1">
           <span>Personal <span class="text-red-500">*</span></span>
-          <Select name="personal" :options="personal" optionLabel="nombres" placeholder="Seleccione" size="small" fluid filter>
+          <Select
+            name="personal"
+            :options="personal" optionLabel="nombres"
+            :filterFields="['nombres', 'apellidos', 'cedula']"
+            placeholder="Seleccione"
+            size="small"
+            fluid filter
+          >
             <template #option="slotProps">
               <div class="flex flex-col leading-tight">
                 <span>{{ slotProps.option.nombres }} {{ slotProps.option.apellidos }}</span>
