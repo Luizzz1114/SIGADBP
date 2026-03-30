@@ -201,8 +201,8 @@ watch(visible, async(isOpen) => {
           <MultiSelect
             name="bienes"
             v-model="bienesSeleccionados"
-            :options="bienesDisponibles"
-            optionLabel="descripcion"
+            :options="bienesDisponibles" optionLabel="descripcion"
+            :filterFields="['descripcion', 'numero']"
             placeholder="Buscar bienes"
             display="chip" size="small"
             fluid filter
@@ -215,7 +215,7 @@ watch(visible, async(isOpen) => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs! text-slate-500">Nro: {{ slotProps.option.numero }}</span>
+                <span class="text-xs! opacity-80">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </MultiSelect>
@@ -237,7 +237,7 @@ watch(visible, async(isOpen) => {
               <template #body="{ data }">
                 <div class="flex flex-col whitespace-nowrap">
                   <span class="font-medium">{{ data.descripcion }}</span>
-                  <span class="text-xs! text-slate-500">{{ data.marca }} - {{ data.modelo }}</span>
+                  <span class="text-xs! opacity-80">{{ data.marca }} - {{ data.modelo }}</span>
                 </div>
               </template>
             </Column>
@@ -248,7 +248,7 @@ watch(visible, async(isOpen) => {
             </Column>
           </DataTable>
           <div class="flex justify-between items-center py-2 px-4 text-slate-500 rounded-b-lg border border-t-0 border-slate-200 dark:border-slate-750">
-            <span class="text-xs! text-slate-500 dark:text-slate-400">Total de bienes en movimiento</span>
+            <span class="text-xs! opacity-75 dark:text-slate-400">Total de bienes en movimiento</span>
             <span class="font-semibold! text-slate-700 dark:text-slate-200">{{ bienesSeleccionados.length }}</span>
           </div>
         </div>

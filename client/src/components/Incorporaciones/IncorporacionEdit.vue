@@ -178,7 +178,15 @@ watch(visible, async(isOpen) => {
       <div class="grid grid-cols-1 sm:grid-cols-2 mt-4 gap-4">
         <div class="sm:col-span-1 col-span-2 flex flex-col gap-1">
           <span>Seleccionar Bienes <span class="text-red-500">*</span></span>
-          <MultiSelect name="bienes" dataKey="id" v-model="bienesSeleccionados" :options="bienesDisponibles" optionLabel="descripcion" placeholder="Buscar bienes" display="chip" size="small" fluid filter>
+          <MultiSelect
+            name="bienes" dataKey="id"
+            v-model="bienesSeleccionados"
+            :options="bienesDisponibles" optionLabel="descripcion"
+            :filterFields="['descripcion', 'numero']"
+            placeholder="Buscar bienes"
+            display="chip" size="small"
+            fluid filter
+          >
             <template #chip="slotProps">
               <div class="flex items-center px-2 rounded-sm bg-slate-100 dark:bg-slate-700">
                 <span>{{ slotProps.value.descripcion }}</span>
@@ -187,7 +195,7 @@ watch(visible, async(isOpen) => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs!">{{ slotProps.option.numero }}</span>
+                <span class="text-xs! opacity-80">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </MultiSelect>
@@ -209,7 +217,7 @@ watch(visible, async(isOpen) => {
               <template #body="{ data }">
                 <div class="flex flex-col whitespace-nowrap">
                   <span class="font-medium">{{ data.descripcion }}</span>
-                  <span class="text-xs! text-slate-500">{{ data.marca }} - {{ data.modelo }}</span>
+                  <span class="text-xs! opacity-80">{{ data.marca }} - {{ data.modelo }}</span>
                 </div>
               </template>
             </Column>

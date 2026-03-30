@@ -138,7 +138,16 @@ const personalDisponible = computed(() => {
         </div>
         <div class="flex flex-col gap-1">
           <span>Dependencia (Origen / Actual) <span class="text-red-500">*</span></span>
-          <Select @change="(e) => onChangeOrigen(e, $form)" name="origen" :options="dependencias" placeholder="Seleccione" size="small" fluid filter>
+          <Select
+            @change="(e) => onChangeOrigen(e, $form)"
+            name="origen"
+            :options="dependencias"
+            optionLabel="nombre"
+            :filterFields="['nombre', 'responsable', 'cedula']"
+            placeholder="Seleccione"
+            size="small"
+            fluid filter
+          >
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.nombre }}</span>
@@ -159,7 +168,14 @@ const personalDisponible = computed(() => {
         </div>
         <div v-if="$form.tipo?.value === 'Traslado'" class="flex flex-col gap-1">
           <span>Dependencia Destino <span class="text-red-500">*</span></span>
-          <Select name="destino" :options="dependenciasDestino" placeholder="Seleccione Destino" size="small" fluid filter>
+          <Select
+            name="destino"
+            :options="dependenciasDestino" optionLabel="nombre"
+            :filterFields="['nombre', 'responsable', 'cedula']"
+            placeholder="Seleccione Destino"
+            size="small"
+            fluid filter
+          >
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.nombre }}</span>
@@ -180,7 +196,14 @@ const personalDisponible = computed(() => {
         </div>
         <div v-if="$form.tipo?.value === 'Cambio de responsable'" class="flex flex-col gap-1">
           <span>Nuevo Responsable (Receptor) <span class="text-red-500">*</span></span>
-          <Select name="nuevoResponsable" :options="personalDisponible" placeholder="Seleccione la persona" size="small" fluid filter>
+          <Select
+            name="nuevoResponsable"
+            :options="personalDisponible" optionLabel="nombres"
+            :filterFields="['nombres', 'apellidos', 'cedula']"
+            placeholder="Seleccione la persona"
+            size="small"
+            fluid filter
+          >
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.nombres }} {{ slotProps.option.apellidos }}</span>
@@ -225,8 +248,8 @@ const personalDisponible = computed(() => {
           <MultiSelect
             name="bienes"
             v-model="bienesSeleccionados"
-            :options="bienes"
-            optionLabel="descripcion"
+            :options="bienes" optionLabel="descripcion"
+            :filterFields="['descripcion', 'numero']"
             :placeholder="!$form.origen?.value ? 'Seleccione el origen primero' : (bienes.length === 0 ? 'No hay bienes disponibles' : 'Buscar bienes')"
             :disabled="!$form.origen?.value || bienes.length === 0"
             display="chip" size="small"
@@ -240,7 +263,7 @@ const personalDisponible = computed(() => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs! text-slate-500">Nro: {{ slotProps.option.numero }}</span>
+                <span class="text-xs! opacity-80">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </MultiSelect>
@@ -261,7 +284,7 @@ const personalDisponible = computed(() => {
               <template #body="{ data }">
                 <div class="flex flex-col whitespace-nowrap">
                   <span class="font-medium">{{ data.descripcion }}</span>
-                  <span class="text-xs! text-slate-500">{{ data.marca }} - {{ data.modelo }}</span>
+                  <span class="text-xs! opacity-80">{{ data.marca }} - {{ data.modelo }}</span>
                 </div>
               </template>
             </Column>

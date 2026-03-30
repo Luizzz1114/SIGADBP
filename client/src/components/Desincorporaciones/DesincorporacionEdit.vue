@@ -161,8 +161,8 @@ watch(visible, async(isOpen) => {
             name="bienes"
             dataKey="id"
             v-model="bienesSeleccionados"
-            :options="bienesDisponibles"
-            optionLabel="descripcion"
+            :options="bienesDisponibles" optionLabel="descripcion"
+            :filterFields="['descripcion', 'numero']"
             placeholder="Buscar bienes"
             display="chip" size="small"
             fluid filter
@@ -175,7 +175,7 @@ watch(visible, async(isOpen) => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs!">{{ slotProps.option.numero }}</span>
+                <span class="text-xs! text-slate-500">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </MultiSelect>

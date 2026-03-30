@@ -80,7 +80,7 @@ watch(visible, async(isOpen) => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs!">{{ slotProps.option.numero }}</span>
+                <span class="text-xs! opacity-80">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </Select>

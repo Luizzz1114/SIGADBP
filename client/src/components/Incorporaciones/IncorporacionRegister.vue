@@ -94,7 +94,15 @@ watch(visible, async(isOpen) => {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mt-4">
         <div class="flex flex-col gap-1">
           <span>Dependencia y Responsable <span class="text-red-500">*</span></span>
-          <Select name="dependencia" :options="dependencias" placeholder="Seleccione" size="small" fluid filter>
+          <Select
+            name="dependencia"
+            :options="dependencias"
+            optionLabel="nombre"
+            :filterFields="['nombre', 'responsable', 'cedula']"
+            placeholder="Seleccione"
+            size="small"
+            fluid filter
+          >
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.nombre }}</span>
@@ -171,6 +179,7 @@ watch(visible, async(isOpen) => {
             name="bienes"
             v-model="bienesSeleccionados"
             :options="bienes" optionLabel="descripcion"
+            :filterFields="['descripcion', 'numero']"
             :placeholder="bienes.length === 0 ? 'No hay bienes disponibles' : 'Buscar bienes'"
             :disabled="bienes.length === 0"
             display="chip" size="small"
@@ -184,7 +193,7 @@ watch(visible, async(isOpen) => {
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.descripcion }}</span>
-                <span class="text-xs!">{{ slotProps.option.numero }}</span>
+                <span class="text-xs! opacity-80">Nro: {{ slotProps.option.numero }}</span>
               </div>
             </template>
           </MultiSelect>
@@ -206,7 +215,7 @@ watch(visible, async(isOpen) => {
               <template #body="{ data }">
                 <div class="flex flex-col whitespace-nowrap">
                   <span class="font-medium">{{ data.descripcion }}</span>
-                  <span class="text-xs! text-slate-500">{{ data.marca }} - {{ data.modelo }}</span>
+                  <span class="text-xs! opacity-80">{{ data.marca }} - {{ data.modelo }}</span>
                 </div>
               </template>
             </Column>
