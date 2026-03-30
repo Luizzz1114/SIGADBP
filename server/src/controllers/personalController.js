@@ -80,6 +80,9 @@ class PersonalController {
         res.status(404).json({ message: "Error al eliminar personal." });
       }
     } catch (error) {
+      if (error.code === '23503') {
+        return res.status(409).json({ message: "No se puede eliminar el personal porque tiene registros asociados." });
+      }
       res.status(500).json({ message: "Error al eliminar personal.", error: error.message });
     }
   }

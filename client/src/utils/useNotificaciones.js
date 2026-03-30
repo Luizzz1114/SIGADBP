@@ -21,8 +21,18 @@ export function useNotificaciones() {
     });
   };
 
+  const showWarning = (mensaje = 'Ha ocurrido un error') => {
+    toast.add({ 
+      severity: 'warn',
+      summary: 'Advertencia', 
+      detail: mensaje, 
+      life: 5000 
+    });
+  };
+
   return {
     showSuccess,
-    showError
+    showError,
+    showWarning
   };
 }

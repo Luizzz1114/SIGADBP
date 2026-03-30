@@ -10,7 +10,7 @@ import DialogDelete from '@/components/DialogDelete.vue';
 import presupuestosServices from '@/services/presupuestos.services.js';
 import metricasServices from '@/services/metricas.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
-const { showSuccess, showError } = useNotificaciones();
+const { showSuccess, showError, showWarning } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -122,6 +122,10 @@ async function eliminarPresupuesto(id) {
     showSuccess(respuesta.message);
     await listarPresupuestos();
   } catch (error) {
+    if (error.response?.status === 409) {
+      showWarning(error.response?.data?.message);
+      return;
+    }
     showError(error.response?.data?.message);
     console.error('Error al eliminar presupuesto: ', error);
   }

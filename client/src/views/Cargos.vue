@@ -8,7 +8,7 @@ import DrawerEdit from '@/components/Cargos/CargoEdit.vue';
 import DialogDelete from '@/components/DialogDelete.vue';
 import cargosServices from '@/services/cargos.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
-const { showSuccess, showError } = useNotificaciones();
+const { showSuccess, showError, showWarning } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -81,6 +81,10 @@ async function eliminarCargo(id) {
     showSuccess(respuesta.message);
     await listarCargos();
   } catch (error) {
+    if (error.response?.status === 409) {
+      showWarning(error.response?.data?.message);
+      return;
+    }
     showError(error.response?.data?.message);
     console.error('Error al eliminar cargo: ', error);
   }

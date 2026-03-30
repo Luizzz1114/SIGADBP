@@ -77,6 +77,9 @@ class DependenciasController {
         res.status(404).json({ error: 'Dependencia no encontrada.' });
       }
     } catch (error) {
+      if (error.code === '23503') {
+        return res.status(409).json({ message: "No se puede eliminar la dependencia porque tiene registros asociados." });
+      }
       res.status(500).json({ message: 'Error al eliminar dependencia.', error: error.message });
     }
   }

@@ -9,7 +9,7 @@ import DrawerEdit from '@/components/Dependencias/DependenciaEdit.vue';
 import DialogDelete from '@/components/DialogDelete.vue';
 import dependenciasServices from '@/services/dependencias.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
-const { showSuccess, showError } = useNotificaciones();
+const { showSuccess, showError, showWarning } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
@@ -109,6 +109,10 @@ async function eliminarDependencia(id) {
     showSuccess(respuesta.message);
     await listarDependencias();
   } catch (error) {
+    if (error.response?.status === 409) {
+      showWarning(error.response?.data?.message);
+      return;
+    }
     showError(error.response?.data?.message);
     console.error('Error al eliminar dependencia: ', error);
   }

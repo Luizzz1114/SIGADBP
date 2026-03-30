@@ -95,6 +95,9 @@ class PresupuestosController {
         res.status(400).json({ error: 'Error al eliminar el presupuesto.' });
       }
     } catch (error) {
+      if (error.code === '23503') {
+        return res.status(409).json({ message: "No se puede eliminar el presupuesto porque tiene registros asociados." });
+      }
       res.status(500).json({ error: 'Error al eliminar el presupuesto.', error: error.message });
     }
   }
