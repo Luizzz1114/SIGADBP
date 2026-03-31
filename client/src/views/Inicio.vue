@@ -64,9 +64,9 @@ onMounted(async() => {
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
       <BienesPorDependencia class="xl:col-span-2" />
       
-      <div class="flex flex-col shrink-0 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
+      <div class="flex flex-col h-full rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 p-4">
-          <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-bolt"></i>
           </div>
           <div class="flex flex-col">
@@ -74,19 +74,30 @@ onMounted(async() => {
             <span class="-mt-0.5 text-xs text-slate-400">Indicadores clave de gestión</span>
           </div>
         </div>
-        <ul class="flex flex-col gap-4 px-4 pb-4 text-sm">
-          <li v-for="item in accesoRapido" :key="item.name" class="w-full">
-            <router-link :to="item.path" class="group flex items-center justify-between rounded-xl p-2.5 font-medium border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-500 dark:border-slate-750 dark:bg-slate-800/50 dark:hover:border-blue-500/20 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">
-              <div class="flex items-center gap-3">
-                <div class="flex size-7 items-center justify-center rounded-md bg-white shadow-sm ring-1 ring-slate-200 transition-colors group-hover:ring-blue-200 dark:bg-slate-850 dark:ring-slate-700 dark:group-hover:ring-blue-500/50">
-                  <i :class="item.icon" class="text-[0.95rem] transition-colors group-hover:text-blue-500 dark:text-slate-300 dark:group-hover:text-blue-400"></i>
+        <div class="flex flex-col px-4 pb-4 pt-0 gap-3 h-full text-sm">
+          <ul class="flex flex-col gap-3">
+            <li v-for="item in accesoRapido" :key="item.name" class="w-full">
+              <router-link :to="item.path" class="group flex items-center justify-between rounded-xl p-2 font-medium border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-500 dark:border-slate-750 dark:bg-slate-800/50 dark:hover:border-blue-500/20 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">
+                <div class="flex items-center gap-3">
+                  <div class="flex size-7 items-center justify-center rounded-md bg-white shadow-sm ring-1 ring-slate-200 transition-colors group-hover:ring-blue-200 dark:bg-slate-850 dark:ring-slate-700 dark:group-hover:ring-blue-500/50">
+                    <i :class="item.icon" class="text-[0.95rem] transition-colors group-hover:text-blue-500 dark:text-slate-300 dark:group-hover:text-blue-400"></i>
+                  </div>
+                  <span>{{ item.name }}</span>
                 </div>
-                <span>{{ item.name }}</span>
-              </div>
-              <i class="fi-rr-angle-small-right text-blue-500 opacity-0 transition-all duration-200 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100"></i>
-            </router-link>
-          </li>
-        </ul>
+                <i class="fi-rr-angle-small-right text-blue-500 opacity-0 transition-all duration-200 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100"></i>
+              </router-link>
+            </li>
+          </ul>
+          <div class="grow relative overflow-hidden rounded-xl bg-linear-to-br from-slate-100/65 to-slate-50 p-3 border border-slate-200 dark:from-slate-800/50 dark:to-slate-850 dark:border-slate-750">
+            <i class="fi-rr-info absolute -bottom-3 -right-3 text-7xl text-slate-200/60 dark:text-slate-700/30 pointer-events-none"></i>
+            <div class="relative z-10 flex flex-col gap-1.5">
+              <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Nivel de Acceso</span>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Los módulos mostrados están filtrados automáticamente para tu rol en el sistema.
+              </p>
+            </div>
+          </div>
+        </div>    
       </div>
     </div>
 

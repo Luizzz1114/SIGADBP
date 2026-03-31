@@ -27,7 +27,7 @@ const iconClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-1.5 p-3 min-w-64 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+  <div class="flex flex-col gap-1.5 p-3 min-w-60 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex justify-between">
       <div :class="iconClasses" class="grid place-items-center size-9 text-lg rounded-lg border">
         <i :class="icon"></i>
@@ -36,7 +36,7 @@ const iconClasses = computed(() => {
         v-if="status" 
         :value="statusText" 
         :severity="status" 
-        class="ring-1 ring-inset ring-current/10 mt-0.5 text-[10px]!"
+        class="ring-1 ring-inset ring-current/10"
       />
     </div>
     <div class="flex flex-col items-start">
