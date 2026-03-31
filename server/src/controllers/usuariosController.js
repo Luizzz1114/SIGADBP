@@ -80,7 +80,12 @@ class UsuariosController {
 
   async eliminar(req, res) {
     try {
-      const { id } = req.params; 
+      const idLogeado = req.user.id;
+      const { id } = req.params;
+      const idEliminar = parseInt(id);
+      if (idEliminar === idLogeado) {
+        return res.status(400).json({ error: 'No puedes eliminar tu propio usuario.' });
+      }
       const resultado = await UsuariosService.eliminar(id);
       if (resultado) {
         res.status(200).json({ message: 'Usuario eliminado exitosamente.' });

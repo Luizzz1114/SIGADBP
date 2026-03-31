@@ -114,10 +114,8 @@ const filteredMenuGroups = computed(() =>
       </div>
     </nav>
 
-    <div class="flex flex-col gap-2 p-4 w-full"
-      :class="isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 bock'"
-    >
-      <Divider class="my-2! before:border-slate-300! dark:before:border-slate-700!" />
+    <div class="flex flex-col gap-1 p-4 pt-0 w-full" :class="isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 bock'">
+      <Divider class="mt-0! mb-4! before:border-slate-300! dark:before:border-slate-700!" />
       <ToggleSwitch
         :modelValue="isDark"
         @update:modelValue="emit('toggle-theme')"

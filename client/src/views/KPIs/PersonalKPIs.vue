@@ -135,7 +135,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i :class="metric.icon"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">{{ metric.title }}</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">{{ metric.title }}</span>
             <Tag
               :value="evaluarEstatus(metric.data[0].percentage).label"
               :severity="evaluarEstatus(metric.data[0].percentage).severity"
@@ -171,7 +171,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-book-alt"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de capacitación</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de capacitación</span>
           </div>
         </div>
         <div class="w-full p-5">
@@ -184,7 +184,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-smile-beam"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de satisfacción</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de satisfacción</span>
           </div>
         </div>
         <div class="w-full p-5">

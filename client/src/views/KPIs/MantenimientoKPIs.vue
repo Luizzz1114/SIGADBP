@@ -124,7 +124,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-time-fast"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tiempo promedio de mantenimiento</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tiempo promedio de mantenimiento</span>
           </div>
           <div class="flex items-center gap-3">
             <Button @click="opDiasPromedio.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
@@ -159,7 +159,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-check-circle"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de operatividad post-mantenimiento</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad post-mantenimiento</span>
           </div>
           <div class="flex items-center gap-3">
             <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />

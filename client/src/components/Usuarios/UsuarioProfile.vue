@@ -208,7 +208,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                         </template>
                       </Password>
                     </InputGroup>
-                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja este campo en blanco si desea mantener la contraseña actual</small>
+                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja este campo en blanco si deseas mantener la contraseña actual</small>
                     <Message v-if="$form.contrasena?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.contrasena.error?.message }}
                     </Message>
@@ -226,7 +226,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   <div class="flex flex-col gap-1">
                     <span>Pregunta</span>
                     <Select name="pregunta" :options="preguntasSeguridad" placeholder="Seleccione" size="small" fluid />
-                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja estos campos en blanco si no deseas cambiar tu pregunta de seguridad</small>
+                    <small class="text-slate-400 dark:text-slate-500 text-xs">Deja estos campos en blanco si no deseas cambiar la pregunta de seguridad</small>
                     <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
                       {{ $form.pregunta.error?.message }}
                     </Message>

@@ -7,6 +7,12 @@ class usuarios {
     return resultado.rows;
 	}
 
+  async contarAdministradores(client, id) {
+    const sql = "SELECT U.rol, (SELECT COUNT(*) FROM Usuarios WHERE rol = 'Administrador') AS total_admin FROM Usuarios U WHERE U.id = $1;";
+    const resultado = await client.query(sql, [id]);
+    return resultado.rows[0];
+  }
+
   async validarUsernameCorreo (validar) {
     const { username, correo, id = null } = validar;
     const sql = `SELECT 

@@ -111,7 +111,7 @@ async function eliminarUsuario(id) {
     showSuccess(respuesta.message);
     await listarUsuarios();
   } catch (error) {
-    showError(error.response?.data?.message);
+    showError(error.response?.data?.error);
     console.error('Error al eliminar usuario: ', error);
   }
 }

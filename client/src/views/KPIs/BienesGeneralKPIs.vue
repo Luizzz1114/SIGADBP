@@ -124,7 +124,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-arrow-trend-up"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Crecimiento del inventario</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Crecimiento del inventario</span>
           </div>
           <Button @click="opCrecimiento.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opCrecimiento">
@@ -151,7 +151,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-check-circle"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de operatividad</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad</span>
           </div>
           <Button @click="opRangos.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opRangos" >
@@ -180,7 +180,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Bienes sin número asignado</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Bienes sin número asignado</span>
             <Tag
               :value="evaluarEstatus(actualSinNumero.percentage).label"
               :severity="evaluarEstatus(actualSinNumero.percentage).severity"
@@ -214,7 +214,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de bienes sin número asignado</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de bienes sin número asignado</span>
           </div>
         </div>
         <div class="w-full p-5">

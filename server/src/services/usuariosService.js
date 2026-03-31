@@ -117,6 +117,26 @@ class UsuariosService {
   async eliminar(id) {
     return await UsuariosRepositorio.eliminar(id);
   }
+  
+/*
+  async eliminar(id) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      contador = await UsuariosRepositorio.contarAdministradores(client, id);
+      if (contador.total_admin === 1 && contador.rol === ) {
+        
+      }
+
+      await client.query('COMMIT');
+      return 
+      return
+    } catch (error) {
+      
+    }
+  }
+*/
 }
 
 export default new UsuariosService();

@@ -2,8 +2,8 @@
 import { computed, inject, onMounted, ref } from 'vue';
 import Card from '@/components/Card.vue';
 import BienesEstatus from '@/components/PanelControl/BienesEstatus.vue';
-import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
 import BienesPorCategoria from '@/components/PanelControl/BienesPorCategoria.vue';
+import BienesPorDependencia from '@/components/PanelControl/BienesPorDependencia.vue';
 import metricasServices from '@/services/metricas.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -30,7 +30,7 @@ onMounted(async() => {
     metricas.value = await metricasServices.obtenerMetricas();
   } catch (error) {
     showError(error.response?.data?.message);
-    console.error("Error cargando datos de estadísticas:", error);
+    console.error('Error cargando datos de estadísticas: ', error);
   }
 });
 </script>
@@ -62,6 +62,7 @@ onMounted(async() => {
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+
       <BienesPorDependencia class="xl:col-span-2" />
       
       <div class="flex flex-col h-full rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
@@ -88,7 +89,7 @@ onMounted(async() => {
               </router-link>
             </li>
           </ul>
-          <div class="grow relative overflow-hidden rounded-xl bg-linear-to-br from-slate-100/65 to-slate-50 p-3 border border-slate-200 dark:from-slate-800/50 dark:to-slate-850 dark:border-slate-750">
+          <div class="relative overflow-hidden flex-1 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750">
             <i class="fi-rr-info absolute -bottom-3 -right-3 text-7xl text-slate-200/60 dark:text-slate-700/30 pointer-events-none"></i>
             <div class="relative z-10 flex flex-col gap-1.5">
               <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Nivel de Acceso</span>
@@ -99,6 +100,7 @@ onMounted(async() => {
           </div>
         </div>    
       </div>
+
     </div>
 
   </div>

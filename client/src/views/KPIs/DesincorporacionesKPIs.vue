@@ -81,7 +81,7 @@ onMounted(async () => {
           <i class="fi-sr-apps-delete"></i>
         </div>
         <div class="flex flex-col">
-          <span class="font-bold text-lg dark:text-slate-50 whitespace-nowrap">Estadísticas de las desincorporaciones</span>
+          <span class="font-bold text-lg dark:text-slate-50 leading-tight">Estadísticas de desincorporaciones</span>
           <span class="-mt-0.5 text-xs text-slate-400">Análisis de las bajas del inventario</span>
         </div>
       </div>
@@ -103,7 +103,7 @@ onMounted(async () => {
         :message="actualTasa.message"
       />
       <Card
-        label="Desincorporaciones por deterioro"
+        label="Des. por deterioro"
         icon="fi-rr-damage"
         color="red"
         :value="actualDeterioro.value"
@@ -118,7 +118,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <i class="fi-rr-ruler-combined"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de desincorporaciones</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones</span>
           </div>
           <div class="flex items-center gap-3">
             <Button @click="opTasaDesincorporacion.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
@@ -151,7 +151,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <i class="fi-rr-damage"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Tendencia de desincorporaciones por deterioro</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones por deterioro</span>
           </div>
           <div class="flex items-center gap-3">
             <Button @click="opDeterioro.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />

@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col justify-between gap-3 p-3 min-w-76 min-h-36 snap-center rounded-xl bg-slate-50/50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+  <div class="flex flex-col justify-between gap-2 p-3 min-w-68 min-h-34 snap-center rounded-xl bg-slate-50/50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex items-center gap-3">
       <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
         <i :class="icon"></i>

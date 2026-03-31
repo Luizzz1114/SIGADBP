@@ -149,7 +149,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-bars-progress"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Disponibilidad actual de los bienes</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Disponibilidad actual de los bienes</span>
           </div>
           <Button @click="opInfoKPIs.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opInfoKPIs">
@@ -204,7 +204,7 @@ onMounted(async () => {
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1 mt-2">
-            <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+            <div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
               <div class="flex items-center gap-2">
                 <div class="grid place-items-center size-7 text-sm rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 ring-1 ring-inset ring-emerald-400/20">
                   <i class="fi-sr-check-circle text-sm"></i>
@@ -215,7 +215,7 @@ onMounted(async () => {
                 Mide el porcentaje de bienes que están operativos en la dependencia, garantizando la continuidad de las operaciones.
               </p>
             </div>
-            <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+            <div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
               <div class="flex items-center gap-2">
                 <div class="grid place-items-center size-7 text-sm rounded-lg bg-slate-100 dark:bg-slate-900/30 text-slate-500 dark:text-slate-400 ring-1 ring-inset ring-slate-400/20">
                   <i class="fi-sr-tools text-sm"></i>
@@ -235,7 +235,7 @@ onMounted(async () => {
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-time-forward"></i>
             </div>
-            <span class="font-bold text-base dark:text-slate-50">Histórico de disponibilidad de bienes</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Histórico de disponibilidad de bienes</span>
           </div>
         </div>
         <div class="w-full p-5">
