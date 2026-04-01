@@ -57,7 +57,7 @@ const onFormSubmit = async ({ valid, values }) => {
   <Dialog v-model:visible="visible" modal class="w-120!">
     <template #header>
       <div class="flex items-center gap-4 py-2">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-user"></i>
         </div>
         <div class="flex flex-col">
