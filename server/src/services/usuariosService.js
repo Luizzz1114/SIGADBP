@@ -127,7 +127,6 @@ class UsuariosService {
       await client.query('BEGIN');
 
       const contador = await UsuariosRepositorio.contarAdministradores(client, id);
-      console.log('Contador de administradores:', contador);
       if (contador.total_admin === '1' && contador.rol === 'Administrador') {
         throw new Error('ULTIMO_ADMIN');
       }

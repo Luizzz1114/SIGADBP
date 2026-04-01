@@ -94,8 +94,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
-    <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+  <div class="flex flex-col gap-4">
+    <div class="flex gap-4 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card
         label="Total de bienes"
         icon="fi-rr-boxes"
@@ -117,9 +117,9 @@ onMounted(async () => {
         :message="actualOperatividad.message"
       />
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-arrow-trend-up"></i>
@@ -141,12 +141,12 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <BarChart :data="crecimiento" :historical="true" type="Bienes" />
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-check-circle"></i>
@@ -168,14 +168,14 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <AreaChart :data="operatividad" unit="Operatividad" details="bienes" />
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="flex flex-col flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
@@ -209,7 +209,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
@@ -217,7 +217,7 @@ onMounted(async () => {
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de bienes sin número asignado</span>
           </div>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <AreaChart :data="sinNumero" unit="Sin número" details="b_sin_numero" />
         </div>
       </div>

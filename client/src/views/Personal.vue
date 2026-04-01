@@ -130,7 +130,7 @@ onMounted(async () => {
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
     <div class="flex items-center justify-between gap-4 flex-wrap">
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
         <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-employee-man"></i>
         </div>

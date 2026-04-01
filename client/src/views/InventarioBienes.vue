@@ -131,15 +131,14 @@ onMounted(async () => {
 <template>
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
-    
-    <div class="flex items-center justify-between gap-5 flex-wrap">
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-boxes"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Inventario de bienes</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Gestión completa del inventario de bienes</span>
+          <span class="-mt-1 text-xs text-slate-400">Gestión completa del inventario de bienes</span>
         </div>
       </div>
       <div class="flex items-center flex-wrap gap-4">
@@ -148,7 +147,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincorporado').length" icon="fi-rr-boxes" />
       <Card label="Operativos" :value="bienes.filter(b => b.estatus === 'Operativo').length" icon="fi-rr-check-circle" />
       <Card label="En Mantenimiento" :value="bienes.filter(b => b.estatus === 'En mantenimiento').length" icon="fi-rr-tools" />

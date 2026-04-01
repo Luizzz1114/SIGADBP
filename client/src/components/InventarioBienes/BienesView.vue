@@ -9,8 +9,8 @@ defineProps({ bien: Object });
 <template>
   <Drawer v-model:visible="visible" position="right" class="w-full! md:w-120!">
     <template #header>
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-boxes"></i>
         </div>
         <div class="flex flex-col">

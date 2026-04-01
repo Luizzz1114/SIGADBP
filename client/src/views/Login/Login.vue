@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import usuariosService from '@/services/usuarios.services.js';
 import { loginSchema } from '@/utils/login.utils.js';
+import { socket } from '@/api/socket';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -28,6 +29,10 @@ async function login(values) {
     const respuesta = await usuariosService.login(values);
     if (respuesta.autenticado) {
       localStorage.setItem('user_session', JSON.stringify(respuesta));
+      const token = respuesta.token;
+      console.log('Token recibido:', token);
+      socket.auth = { token };
+      socket.connect();
       router.push('/inicio');
     } else {
       showError('Credenciales incorrectas.');

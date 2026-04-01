@@ -22,6 +22,5 @@
       </div>
       <router-view></router-view>
     </div>
-    <Toast position="bottom-right" />
   </div>
 </template>

@@ -59,7 +59,6 @@ const closeMobileMenu = () => {
       <main class="flex flex-col flex-1 text-slate-700 overflow-y-auto">
         <router-view />
       </main>
-      <Toast position="bottom-right" />
     </div>
   </div>
 </template>

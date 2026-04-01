@@ -98,8 +98,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
-    <div class="flex items-start justify-between gap-5 flex-wrap">
+  <div class="flex flex-col gap-4">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
       <div class="flex items-center w-full max-w-full md:w-auto">
         <InputGroup class="flex w-full">
           <InputGroupAddon class="h-9! text-sm shrink-0">
@@ -119,7 +119,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
       <Card
         label="Total de bienes"
         icon="fi-rr-boxes"
@@ -142,9 +142,9 @@ onMounted(async () => {
       />
     </div>
     
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="flex flex-col rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-bars-progress"></i>
@@ -180,7 +180,7 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="flex flex-col flex-1 p-6 gap-5 w-full">
+        <div class="flex flex-col flex-1 p-6 gap-4 w-full">
           <div v-for="(item, index) in barrasData" :key="index" class="flex flex-col gap-1 w-full">
             <div class="flex justify-between items-center text-sm">
               <span class="font-medium text-slate-600 dark:text-slate-200">
@@ -203,7 +203,7 @@ onMounted(async () => {
               ></div>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1 mt-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 mt-2">
             <div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
               <div class="flex items-center gap-2">
                 <div class="grid place-items-center size-7 text-sm rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 ring-1 ring-inset ring-emerald-400/20">
@@ -230,7 +230,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-time-forward"></i>

@@ -81,8 +81,8 @@ const onMunicipioChange = async (event, form) => {
 <template>
   <Drawer v-model:visible="visible" :dismissable="false" position="right" class="w-full! md:w-180!">
     <template #header>
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-building"></i>
         </div>
         <div class="flex flex-col">

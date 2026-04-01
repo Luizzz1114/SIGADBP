@@ -130,13 +130,14 @@ onMounted(async () => {
         :key="metric.title"
         class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden"
       >
-        <div class="flex items-center justify-between gap-x-4 p-2 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i :class="metric.icon"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">{{ metric.title }}</span>
             <Tag
+              v-if="metric.data[0].percentage"
               :value="evaluarEstatus(metric.data[0].percentage).label"
               :severity="evaluarEstatus(metric.data[0].percentage).severity"
               class="ring-1 ring-inset ring-current/10"
@@ -166,7 +167,7 @@ onMounted(async () => {
     </div>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-book-alt"></i>
@@ -179,7 +180,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-smile-beam"></i>
