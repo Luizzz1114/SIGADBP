@@ -90,9 +90,10 @@ watch(visible, async(isOpen) => {
 <template>
   <Drawer v-model:visible="visible" position="right" :dismissable="false" class="w-full! md:w-212!">
     <template #header>
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-red-500 text-white">
-          <i class="fi-sr-apps-delete"></i> </div>
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-red-500 text-white">
+          <i class="fi-sr-apps-delete"></i>
+        </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg! dark:text-slate-50">Actualizar desincorporación</span>
         </div>

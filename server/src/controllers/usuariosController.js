@@ -89,7 +89,7 @@ class UsuariosController {
       const resultado = await UsuariosService.eliminar(id);
       if (resultado) {
         const io = req.app.get('socketio');
-        io.to(`sala_usuario_${id}`).emit('sesion_forzada', 'Tu cuenta ha sido eliminada por un administrador.');
+        io.to(`sala_usuario_${id}`).emit('sesion_forzada', 'Tu cuenta ha sido eliminada por un Administrador.');
         io.in(`sala_usuario_${id}`).disconnectSockets(true);
         res.status(200).json({ message: 'Usuario eliminado exitosamente.' });
       } else {

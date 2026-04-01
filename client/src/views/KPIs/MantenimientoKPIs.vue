@@ -83,19 +83,19 @@ onMounted(async () => {
 
 <template>
   <Breadcrumbs :items="items" />
-  <div class="flex flex-col px-4 pb-4 gap-5">
-    <div class="flex items-center justify-between gap-5 flex-wrap">
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center shrink-0 size-10 text-xl rounded-lg bg-blue-500 text-white">
+  <div class="flex flex-col px-4 pb-4 gap-4">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center shrink-0 size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-screw-alt"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50 whitespace-nowrap">Estadísticas de mantenimiento</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Análisis de la efectividad de los mantenimientos realizados</span>
+          <span class="-mt-1 text-xs text-slate-400">Análisis de la efectividad de los mantenimientos realizados</span>
         </div>
       </div>
     </div>
-    <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card
         label="Mantenimientos realizados"
         icon="fi-rr-screw-alt"
@@ -117,9 +117,9 @@ onMounted(async () => {
         :message="actualOperatividad.message"
       />
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-time-fast"></i>
@@ -143,7 +143,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <BarChart
             :data="diasPromedio"
             type="Promedio"
@@ -154,7 +154,7 @@ onMounted(async () => {
       </div>
 
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-check-circle"></i>
@@ -178,7 +178,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <AreaChart
             :data="operatividad"
             unit="Operatividad"

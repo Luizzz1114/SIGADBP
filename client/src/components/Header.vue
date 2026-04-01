@@ -73,7 +73,7 @@ onMounted(() => {
         <i class="fi-rr-menu-burger text-base"></i>
       </button>
       <Divider layout="vertical" class="mx-0!" />
-      <div class="flex items-center justify-center h-8 gap-2 px-2.5 rounded-lg border border-slate-200 bg-slate-100 text-sm dark:bg-slate-800 dark:border-slate-700">
+      <div class="flex items-center justify-center h-8 gap-2 px-2 rounded-lg border border-slate-200 bg-slate-100 text-sm dark:bg-slate-800 dark:border-slate-700">
         <i class="fi-sr-calendar-day text-base"></i>
         {{ fechaFormateada() }}
       </div>

@@ -14,7 +14,7 @@ const iconMap = {
 </script>
 
 <template>
-  <div v-if="data?.length > 0" class="flex gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+  <div v-if="data?.length > 0" class="flex gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
     <MoneyCard
       v-for="(presupuesto, index) in data" 
       :key="index"

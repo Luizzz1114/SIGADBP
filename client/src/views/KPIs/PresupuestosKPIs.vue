@@ -94,20 +94,20 @@ onMounted(async () => {
 <template>
   <Breadcrumbs :items="items" />
   
-  <div class="flex flex-col px-4 pb-4 gap-5">
-    <div class="flex items-center justify-between gap-5 flex-wrap">
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+  <div class="flex flex-col px-4 pb-4 gap-4">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-piggy-bank"></i>
         </div>
         <div class="flex flex-col">
-          <span class="font-bold text-lg dark:text-slate-50">Análisis Presupuestario</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Control y seguimiento de inversión en bienes</span>
+          <span class="font-bold text-lg dark:text-slate-50">Análisis presupuestario</span>
+          <span class="-mt-1 text-xs text-slate-400">Control y seguimiento de inversión en bienes</span>
         </div>
       </div>
     </div>
 
-    <div class="flex gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <MoneyCard
         v-for="(card, index) in cardsData"
         :key="index"
@@ -118,7 +118,7 @@ onMounted(async () => {
 
     <div class="w-full">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-percentage"></i>
@@ -140,7 +140,7 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="w-full p-5">
+        <div class="w-full p-4">
           <MultiBarChart
             :labels="chartLabels" 
             :datasets="chartDatasets"

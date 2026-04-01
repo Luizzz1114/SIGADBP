@@ -1,7 +1,7 @@
 <template>
   <div class="w-full mx-auto">
     <div class="flex flex-col md:flex-row items-center justify-center gap-8" role="region" aria-label="Gráfico de distribución">
-      <div ref="chartWrapper" class="relative size-48 shrink-0 flex items-center justify-center">
+      <div ref="chartWrapper" class="relative size-45 shrink-0 flex items-center justify-center">
         <svg
           viewBox="0 0 200 200"
           class="w-full h-full overflow-visible"
@@ -141,7 +141,7 @@ onMounted(() => {
   }, 100);
 });
 
-const radius = 65; 
+const radius = 70; 
 const strokeWidth = 40; 
 const circumference = 2 * Math.PI * radius;
 const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; 
@@ -153,7 +153,6 @@ const isEmpty = computed(() => {
 
 // --- CÁLCULOS DEL GRÁFICO ---
 const processedData = computed(() => {
-  // Retornamos vacío temprano si entra en estado "Empty" para evitar divisiones por 0
   if (isEmpty.value) return [];
 
   const totalValue = props.data.reduce((acc, curr) => acc + Number(curr.value), 0);

@@ -139,14 +139,14 @@ onMounted(async () => {
 <template>
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
-    <div class="flex items-center justify-between gap-5 flex-wrap">
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-piggy-bank"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Presupuestos</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Control y seguimiento del presupuesto de bienes</span>
+          <span class="-mt-1 text-xs text-slate-400">Control y seguimiento del presupuesto de bienes</span>
         </div>
       </div>
       <div class="flex items-center gap-4">

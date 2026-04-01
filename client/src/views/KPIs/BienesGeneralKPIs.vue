@@ -95,11 +95,11 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex gap-4 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card
         label="Total de bienes"
         icon="fi-rr-boxes"
-        :value="historialSinNumero.total_bienes"
+        :value="historialSinNumero.total_bienes || '0'"
         message="Bienes en inventario"
       />
       <Card
@@ -182,6 +182,7 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Bienes sin número asignado</span>
             <Tag
+              v-if="actualSinNumero.percentage !== undefined"
               :value="evaluarEstatus(actualSinNumero.percentage).label"
               :severity="evaluarEstatus(actualSinNumero.percentage).severity"
               class="ring-1 ring-inset ring-current/10"

@@ -59,8 +59,8 @@ const handleEditRequest = async (item) => {
 
 const handleDeleteRequest = (item) => {
   const info = {
-    'Bien': item.numero,
-    'Descripción del bien': item.descripcion,
+    'Bien': item.numero_bien,
+    'Descripción del bien': item.descripcion_bien,
     'Fecha programada': item.fecha_inicio,
     'Tipo de mantenimiento': item.tipo
   };
@@ -143,14 +143,14 @@ const totalMes = computed(() => {
 <template>
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
-    <div class="flex items-center justify-between gap-5 flex-wrap">
-      <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-screw-alt"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Mantenimiento</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Gestión del mantenimiento de los bienes</span>
+          <span class="-mt-1 text-xs text-slate-400">Gestión del mantenimiento de los bienes</span>
         </div>
       </div>
       <div class="flex items-center flex-wrap gap-4">
@@ -159,7 +159,7 @@ const totalMes = computed(() => {
       </div>
     </div>
 
-    <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card label="Total este mes" :value="totalMes" icon="fi-rr-screw-alt" color="blue" />
       <Card label="Mantenimientos en proceso" :value="mantenimientos.filter(m => m.estatus === 'En proceso').length" icon="fi-rr-clock" color="sky" />
     </div>

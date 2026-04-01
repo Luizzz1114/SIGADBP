@@ -112,7 +112,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="flex gap-4 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card
         label="Personal evaluado"
         icon="fi-rr-user"
