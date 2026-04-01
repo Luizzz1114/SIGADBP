@@ -56,7 +56,7 @@ const closeMobileMenu = () => {
     />
     <div class="flex flex-col w-full overflow-hidden">
       <Header @toggle-sidebar="handleToggleSidebar" />
-      <main class="flex flex-col flex-1 px-2.5 pb-2.5 pt-1.5 gap-1.5 text-slate-700 overflow-y-auto">
+      <main class="flex flex-col flex-1 text-slate-700 overflow-y-auto">
         <router-view />
       </main>
       <Toast position="bottom-right" />

@@ -27,7 +27,7 @@ const iconClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-1.5 p-3 min-w-56 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+  <div class="flex flex-col gap-1.5 p-2.5 min-w-52 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex justify-between">
       <div :class="iconClasses" class="grid place-items-center size-9 text-lg rounded-lg border">
         <i :class="icon"></i>

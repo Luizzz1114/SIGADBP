@@ -117,8 +117,8 @@ onMounted(() => {
   }, 100);
 });
 
-const radius = 70; 
-const strokeWidth = 45; 
+const radius = 65; 
+const strokeWidth = 40; 
 const circumference = 2 * Math.PI * radius;
 const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; 
 

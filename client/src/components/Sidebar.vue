@@ -55,11 +55,11 @@ const filteredMenuGroups = computed(() =>
     class="fixed inset-y-0 left-0 z-30 flex flex-col border-e border-slate-300 bg-slate-200 text-slate-700 duration-300 ease-in-out md:static dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
     :class="[
       isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-      isDesktopCollapsed ? 'w-17' : 'w-72',
+      isDesktopCollapsed ? 'w-16' : 'w-72',
     ]"
   >
-    <div class="flex items-center gap-3 px-2.5 h-16 border-b border-slate-300 overflow-hidden duration-300 ease-in-out dark:border-slate-700">
-      <div class="flex items-center justify-center shrink-0 p-1.5 h-10 w-12 rounded-md bg-blue-600">
+    <div class="flex items-center gap-3 px-2 h-14 border-b border-slate-300 overflow-hidden duration-300 ease-in-out dark:border-slate-700">
+      <div class="flex items-center justify-center shrink-0 p-1 h-8 w-12 rounded-lg bg-blue-600">
         <img
           src="../assets/images/Mercal_logo.webp"
           alt="Mercal_logo"
@@ -72,7 +72,7 @@ const filteredMenuGroups = computed(() =>
         :class="isDesktopCollapsed ? 'opacity-0' : 'opacity-100'"
       >
         <span class="font-bold text-lg">SIGADBP</span>
-        <span class="text-sm -mt-1.5">Mercal Sucre</span>
+        <span class="text-sm -mt-2">Mercal Sucre</span>
       </div>
       <div class="md:hidden flex-1"></div>
       <div class="md:hidden text-slate-600 dark:text-slate-400 dark:border-slate-700">
@@ -88,14 +88,14 @@ const filteredMenuGroups = computed(() =>
     <nav class="flex flex-col flex-1 p-4 overflow-y-auto text-sm overflow-hidden">
       <div v-for="(group, index) in filteredMenuGroups" :key="group.title" class="flex flex-col">
         <Divider v-if="index > 0" class="my-2! before:border-slate-300! dark:before:border-slate-700!" />
-        <span class="p-2.5 pb-2 font-bold overflow-hidden whitespace-nowrap text-slate-450 dark:text-slate-400 duration-300 ease-in-out" :class="isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 bock'">
+        <span class="p-2 font-bold overflow-hidden whitespace-nowrap text-slate-450 dark:text-slate-400 duration-300 ease-in-out" :class="[isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 bock'], [index > 0 ? 'pt-2' : 'pt-0']">
           {{ group.title }}
         </span>
         <ul class="flex flex-col gap-0.5 text-slate-600 dark:text-slate-200">
           <li v-for="item in group.items" :key="item.name" class="flex items-center group">
             <router-link
               :to="item.path"
-              class="relative group flex items-center gap-2.5 p-2.5 h-9 w-full rounded-lg hover:bg-slate-300/40 transition-colors dark:hover:bg-slate-700/50 dark:hover:text-slate-300 dark:hover:border-slate-700 after:content-[''] after:absolute after:-inset-e-2.5 after:rounded-full after:h-7 after:w-1 after:bg-blue-500 after:opacity-0"
+              class="relative group flex items-center gap-2.5 p-2 h-8 w-full rounded-lg hover:bg-slate-300/40 transition-colors dark:hover:bg-slate-700/50 dark:hover:text-slate-300 dark:hover:border-slate-700 after:content-[''] after:absolute after:-inset-e-2.5 after:rounded-full after:h-7 after:w-1 after:bg-blue-500 after:opacity-0"
               active-class="active bg-white hover:bg-white text-slate-700 dark:hover:text-slate-700 hover:border-transparent! dark:hover:bg-white after:opacity-100"
             >
               <i :class="item.icon" class="text-[0.95rem] duration-300 ease-in-out group-[.active]:text-blue-500"></i>

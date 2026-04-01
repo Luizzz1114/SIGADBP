@@ -37,18 +37,18 @@ onMounted(async() => {
 
 <template>
   <Breadcrumbs />
-  <div class="flex flex-col gap-5 px-4 pb-4">
-    <div class="flex items-center gap-4">
-      <div class="grid place-items-center size-10 text-xl rounded-md bg-blue-500 text-white">
+  <div class="flex flex-col gap-4 px-5 pb-5">
+    <div class="flex items-center gap-3">
+      <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
         <i class="fi-sr-chart-pie"></i>
       </div>
       <div class="flex flex-col">
         <span class="font-bold text-lg dark:text-slate-50">Panel de control</span>
-        <span class="-mt-0.5 text-xs text-slate-400">Resumen general del sistema</span>
+        <span class="-mt-1 text-xs text-slate-400">Resumen general del sistema</span>
       </div>
     </div>
 
-    <div class="flex *:flex-1 gap-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex *:flex-1 gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <Card label="Total de bienes" :value="metricas.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
       <Card label="Incorporaciones" :value="metricas.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
       <Card label="Desincorporaciones" :value="metricas.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />
@@ -56,12 +56,12 @@ onMounted(async() => {
       <Card label="Mantenimientos" :value="metricas.mantenimientos_mes || 0" icon="fi-rr-screw-alt" message="Este mes" />
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <BienesEstatus />
       <BienesPorCategoria />
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
 
       <BienesPorDependencia class="xl:col-span-2" />
       
@@ -91,7 +91,7 @@ onMounted(async() => {
           </ul>
           <div class="relative overflow-hidden flex-1 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750">
             <i class="fi-rr-info absolute -bottom-3 -right-3 text-7xl text-slate-200/60 dark:text-slate-700/30 pointer-events-none"></i>
-            <div class="relative z-10 flex flex-col gap-1.5">
+            <div class="relative z-10 flex flex-col gap-0.5">
               <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Nivel de Acceso</span>
               <p class="text-xs text-slate-500 dark:text-slate-400">
                 Los módulos mostrados están filtrados automáticamente para tu rol en el sistema.

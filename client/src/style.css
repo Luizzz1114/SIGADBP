@@ -18,7 +18,7 @@
   src: url('./assets/fonts/Poppins-Regular.ttf');
   font-weight: 400;
   font-style: normal;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -26,7 +26,7 @@
   src: url('./assets/fonts/Poppins-Medium.ttf');
   font-weight: 500;
   font-style: normal;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -34,7 +34,7 @@
   src: url('./assets/fonts/Poppins-SemiBold.ttf');
   font-weight: 600;
   font-style: normal;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -42,7 +42,7 @@
   src: url('./assets/fonts/Poppins-Bold.ttf');
   font-weight: 700;
   font-style: normal;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -50,7 +50,7 @@
   src: url('./assets/fonts/Poppins-ExtraBold.ttf');
   font-weight: 800;
   font-style: normal;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -58,7 +58,7 @@
   src: url('./assets/fonts/Poppins-Italic.ttf');
   font-weight: 400;
   font-style: italic;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -66,7 +66,7 @@
   src: url('./assets/fonts/Poppins-MediumItalic.ttf');
   font-weight: 500;
   font-style: italic;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -74,7 +74,7 @@
   src: url('./assets/fonts/Poppins-SemiBoldItalic.ttf');
   font-weight: 600;
   font-style: italic;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -82,7 +82,7 @@
   src: url('./assets/fonts/Poppins-BoldItalic.ttf');
   font-weight: 700;
   font-style: italic;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 @font-face {
@@ -90,7 +90,7 @@
   src: url('./assets/fonts/Poppins-ExtraBoldItalic.ttf');
   font-weight: 800;
   font-style: italic;
-  size-adjust: 89%;
+  size-adjust: 88%;
 }
 
 
@@ -134,7 +134,7 @@ i, span::before, span::after {
 }
 
 .p-datatable-header-cell {
-  padding: 0.65rem 1rem !important;
+  padding: 0.5rem 1rem !important;
   border-top: 1px solid var(--color-slate-200) !important;
   border-bottom: 1px solid var(--color-slate-200) !important;
 }
@@ -184,7 +184,7 @@ i, span::before, span::after {
 }
 
 .p-paginator {
-  padding-inline: 12px !important;
+  padding-inline: 8px !important;
 }
 
 
@@ -322,6 +322,11 @@ i, span::before, span::after {
 
 .p-tabpanels {
   padding: 0 !important;
+}
+
+.p-breadcrumb {
+  padding-inline: 24px !important;
+  padding-block: 14px !important;
 }
 
 

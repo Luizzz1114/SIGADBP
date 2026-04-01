@@ -30,7 +30,7 @@ onMounted(async() => {
       <span class="font-bold text-base leading-tight dark:text-slate-50">Estado de los bienes</span>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 p-4 gap-4">
-      <div v-for="card in stats" :key="card.key" class="flex flex-col justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg dark:bg-slate-800 dark:border-slate-700">
+      <div v-for="card in stats" :key="card.key" class="flex flex-col justify-between gap-1.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg dark:bg-slate-800 dark:border-slate-700">
         <div class="grid place-items-center size-9 text-lg rounded-lg bg-white border border-slate-200 dark:bg-slate-850 dark:border-slate-700 dark:text-slate-100">
           <i :class="card.icono"></i>
         </div>
@@ -49,7 +49,7 @@ onMounted(async() => {
         </div>
       </div>
     </div>
-    <div class="p-4 pt-2">
+    <div class="p-4 pt-1">
       <DistributionBar :data="stats" />
     </div>
   </div>

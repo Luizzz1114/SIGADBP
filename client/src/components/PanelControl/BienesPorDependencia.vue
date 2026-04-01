@@ -11,14 +11,14 @@ onMounted(async() => {
 
 <template>
   <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
-    <div class="flex items-center gap-3 px-4 pt-4 pb-1">
+    <div class="flex items-center gap-3 px-3 pt-3 pb-1">
       <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
         <i class="fi-rr-building"></i>
       </div>
       <span class="font-bold text-base leading-tight dark:text-slate-50">Distribución de bienes por dependencia</span>
     </div>
 
-    <div class="px-4 pb-4">
+    <div class="px-3 pb-3">
       <Tabs value="resumen">
         <TabList>
           <Tab value="resumen">
@@ -35,10 +35,10 @@ onMounted(async() => {
           </Tab>
         </TabList>
 
-        <TabPanels class="p-0 pt-4 bg-transparent!">
+        <TabPanels class="p-0 pt-3 bg-transparent!">
           
           <TabPanel value="resumen">
-            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-4!">
+            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-3!">
               <template #paginatorcontainer="{ first, last, page, pageCount, prevPageCallback, nextPageCallback, totalRecords }">
                 <div class="flex items-center justify-between w-full">
                   <div class="flex items-center gap-4">
@@ -52,7 +52,7 @@ onMounted(async() => {
                   </div>
                 </div>
               </template>
-              <template #empty><div class="p-4 text-center text-slate-500">No se encontraron registros.</div></template>
+              <template #empty><div class="p-3 text-center text-slate-500">No se encontraron registros.</div></template>
               <Column field="dependencia" header="Dependencia" style="width: 400px; min-width: 400px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
               <Column header="Total de bienes asignados">
                 <template #body="{ data }">
@@ -75,7 +75,7 @@ onMounted(async() => {
           </TabPanel>
 
           <TabPanel value="desglose">
-            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-4!">
+            <DataTable :value="data" paginator :rows="5" size="small" tableStyle="min-width: 100%" class="mt-3!">
               <template #paginatorcontainer="{ first, last, page, pageCount, prevPageCallback, nextPageCallback, totalRecords }">
                 <div class="flex items-center justify-between w-full">
                   <div class="flex items-center gap-4">
@@ -89,7 +89,7 @@ onMounted(async() => {
                   </div>
                 </div>
               </template>
-              <template #empty><div class="p-4 text-center text-slate-500">No se encontraron registros.</div></template>
+              <template #empty><div class="p-3 text-center text-slate-500">No se encontraron registros.</div></template>
               <Column field="dependencia" header="Dependencia" style="width: 350px; min-width: 350px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
               <Column header="Muebles" style="width: 175px; min-width: 150px;">
                 <template #body="{ data }">
