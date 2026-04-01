@@ -124,7 +124,7 @@ i, span::before, span::after {
 }
 
 .p-datatable-header {
-  padding-block: 20px !important;
+  padding-block: 16px !important;
   padding-inline: 0 !important;
   border: 0 !important;
 }
@@ -306,8 +306,8 @@ i, span::before, span::after {
 /* --- Drawer (Sidebar) --- */
 .p-drawer-header {
   padding-block: 0px !important;
-  padding-inline: 18px !important;
-  height: 64px !important;
+  padding-inline: 12px !important;
+  height: 56px !important;
   border-bottom: 1px solid;
   border-color: var(--color-slate-200);
 }
@@ -325,7 +325,7 @@ i, span::before, span::after {
 }
 
 .p-breadcrumb {
-  padding-inline: 24px !important;
+  padding-inline: 20px !important;
   padding-block: 14px !important;
 }
 

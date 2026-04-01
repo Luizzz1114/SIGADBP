@@ -59,7 +59,7 @@ const iconStyles = {
     <span class="text-sm! font-medium! flex-1 whitespace-nowrap">
       {{ label }}
     </span>
-    <span :class="sizeStyles[size] || sizeStyles.base" class="font-bold px-2 whitespace-nowrap">
+    <span :class="sizeStyles[size] || sizeStyles.base" class="font-bold pl-1 pr-1.5 whitespace-nowrap">
       {{ value }}
     </span>
   </div>

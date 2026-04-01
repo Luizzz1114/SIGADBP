@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import UsuariosRepositorio from '../repositories/usuariosRepositorio.js';
 import EvaluacionesRepositorio from '../repositories/evaluacionesRepositorio.js';
+import pool from '../config/database.js';
 
 class UsuariosService {
   async listar() {
@@ -113,30 +114,33 @@ class UsuariosService {
     };
     return await UsuariosRepositorio.actualizar(user);
   }
-
+  
+/*
   async eliminar(id) {
     return await UsuariosRepositorio.eliminar(id);
   }
-  
-/*
+*/
+
   async eliminar(id) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      contador = await UsuariosRepositorio.contarAdministradores(client, id);
-      if (contador.total_admin === 1 && contador.rol === ) {
-        
+      const contador = await UsuariosRepositorio.contarAdministradores(client, id);
+      console.log('Contador de administradores:', contador);
+      if (contador.total_admin === '1' && contador.rol === 'Administrador') {
+        throw new Error('ULTIMO_ADMIN');
       }
-
+      const resultado = await UsuariosRepositorio.eliminar(client, id);
       await client.query('COMMIT');
-      return 
-      return
+      return resultado;
     } catch (error) {
-      
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
   }
-*/
 }
 
 export default new UsuariosService();

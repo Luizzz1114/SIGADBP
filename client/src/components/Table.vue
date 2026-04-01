@@ -173,13 +173,13 @@ const options = computed(() => [
         </div>
         <div class="flex items-center gap-2">
           <span class="text-sm text-slate-600 dark:text-slate-400">Filas:</span>
-          <Select v-model="rows" :options="[5, 10, 20]" size="small" class="h-9!" />
+          <Select v-model="rows" :options="[5, 10, 20]" size="small" />
         </div>
       </div>
     </template>
 
     <template #empty>
-      <div class="p-4 text-center text-slate-500">No se encontraron registros.</div>
+      <div class="p-3 text-center text-slate-500">No se encontraron registros.</div>
     </template>
 
     <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header">

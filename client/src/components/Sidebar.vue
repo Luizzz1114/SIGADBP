@@ -80,8 +80,8 @@ const filteredMenuGroups = computed(() =>
       <button 
         @click="emit('close-mobile')"
         type="button"
-        class="grid place-items-center w-9 h-9 rounded-md border border-slate-300 cursor-pointer duration-300 ease-in-out dark:border-slate-700">
-        <i class="fi-rr-menu-burger text-lg"></i>
+        class="grid place-items-center size-8 rounded-lg border border-slate-300 cursor-pointer duration-300 ease-in-out dark:border-slate-700">
+        <i class="fi-rr-menu-burger text-base"></i>
       </button>
     </div>
     </div>

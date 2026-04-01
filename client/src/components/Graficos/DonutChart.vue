@@ -23,7 +23,19 @@
               :stroke-width="strokeWidth"
             />
             
+            <circle
+              v-if="isEmpty"
+              cx="100"
+              cy="100"
+              :r="radius"
+              fill="none"
+              stroke="url(#stripes_donut)"
+              :stroke-width="strokeWidth"
+              class="opacity-60 transition-opacity duration-300"
+            />
+
             <path
+              v-else
               v-for="(item, index) in processedData"
               :key="'slice-' + index"
               :d="`M 100, ${100 - radius} A ${radius},${radius} 0 0,1 100,${100 + radius} A ${radius},${radius} 0 0,1 100,${100 - radius}`"
@@ -48,23 +60,34 @@
       </div>
 
       <div class="flex flex-col md:w-auto gap-3 transition-opacity duration-1000" :class="isMounted ? 'opacity-100' : 'opacity-0'">
-        <div v-for="(item, index) in processedData" :key="'legend-' + index" class="flex items-center gap-3">
-          
+        
+        <div v-if="isEmpty" class="flex items-center gap-3">
           <svg width="10" height="10" class="shrink-0 overflow-visible">
-            <rect width="10" height="10" rx="5" :fill="item.color" />
+            <rect width="10" height="10" rx="5" fill="url(#stripes_donut)" class="opacity-60" />
           </svg>
-
-          <div class="flex items-center justify-between gap-4 w-full">
-            <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
-              {{ item.label }}
-            </span>
-            <span class="flex items-center gap-1.5 *:text-sm text-slate-600 dark:text-slate-400">
-              <span>{{ item.percentage }}%</span>
-              <span>•</span>
-              <span>{{ formatNumber(item.value) }} {{ unit }}</span>
-            </span>
-          </div>
+          <span class="text-sm italic text-slate-500 dark:text-slate-400">
+            Sin datos disponibles
+          </span>
         </div>
+
+        <template v-else>
+          <div v-for="(item, index) in processedData" :key="'legend-' + index" class="flex items-center gap-3">
+            <svg width="10" height="10" class="shrink-0 overflow-visible">
+              <rect width="10" height="10" rx="5" :fill="item.color" />
+            </svg>
+
+            <div class="flex items-center justify-between gap-4 w-full">
+              <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                {{ item.label }}
+              </span>
+              <span class="flex items-center gap-1.5 *:text-sm text-slate-600 dark:text-slate-400">
+                <span>{{ item.percentage }}%</span>
+                <span>•</span>
+                <span>{{ formatNumber(item.value) }} {{ unit }}</span>
+              </span>
+            </div>
+          </div>
+        </template>
       </div>
 
     </div>
@@ -108,6 +131,7 @@ const props = defineProps({
   }
 });
 
+// --- ESTADO GENERAL ---
 const isMounted = ref(false);
 const chartWrapper = ref(null);
 
@@ -122,8 +146,15 @@ const strokeWidth = 40;
 const circumference = 2 * Math.PI * radius;
 const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; 
 
+// --- ESTADO VACÍO (COMPUTADO) ---
+const isEmpty = computed(() => {
+  return !props.data || props.data.length === 0 || props.data.every(item => !Number(item.value));
+});
+
+// --- CÁLCULOS DEL GRÁFICO ---
 const processedData = computed(() => {
-  if (!props.data || props.data.length === 0) return [];
+  // Retornamos vacío temprano si entra en estado "Empty" para evitar divisiones por 0
+  if (isEmpty.value) return [];
 
   const totalValue = props.data.reduce((acc, curr) => acc + Number(curr.value), 0);
   let currentOffsetAcc = 0;
@@ -147,10 +178,12 @@ const processedData = computed(() => {
   });
 });
 
+// --- UTILIDADES ---
 const formatNumber = (num) => {
   return new Intl.NumberFormat('en-US').format(num);
 };
 
+// --- TOOLTIP LOGIC ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({

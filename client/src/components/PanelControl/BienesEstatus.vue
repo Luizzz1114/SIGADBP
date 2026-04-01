@@ -30,19 +30,19 @@ onMounted(async() => {
       <span class="font-bold text-base leading-tight dark:text-slate-50">Estado de los bienes</span>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 p-4 gap-4">
-      <div v-for="card in stats" :key="card.key" class="flex flex-col justify-between gap-1.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg dark:bg-slate-800 dark:border-slate-700">
-        <div class="grid place-items-center size-9 text-lg rounded-lg bg-white border border-slate-200 dark:bg-slate-850 dark:border-slate-700 dark:text-slate-100">
+      <div v-for="card in stats" :key="card.key" class="flex flex-col gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+        <div class="grid place-items-center size-8 text-base rounded-lg bg-white border border-slate-200 dark:bg-slate-850 dark:border-slate-700 dark:text-slate-100">
           <i :class="card.icono"></i>
         </div>
-        <div class="flex flex-col">
-          <span class="text-sm font-medium text-slate-500 dark:text-slate-200">
+        <div class="flex flex-col mt-0.5">
+          <span class="text-sm font-medium leading-tight text-slate-500 dark:text-slate-200">
             {{ card.label }}
           </span>
-          <div class="flex items-baseline gap-3">
-            <span class="text-2xl font-bold text-slate-700 dark:text-white">
+          <div class="flex items-baseline gap-3 mt-0.5">
+            <span class="text-2xl font-bold leading-none text-slate-700 dark:text-white">
               {{ card.value }}
             </span>
-            <span class="text-sm font-medium text-slate-400">
+            <span class="text-xs font-medium leading-none text-slate-400">
               {{ card.percentage }}%
             </span>
           </div>

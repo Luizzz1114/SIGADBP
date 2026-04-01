@@ -129,14 +129,14 @@ onMounted(async () => {
 <template>
   <Breadcrumbs :items="items" />
   <div class="flex flex-col px-4 pb-4">
-    <div class="flex items-center justify-between gap-5 flex-wrap">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
       <div class="flex items-center gap-4">
-        <div class="grid place-items-center size-10 text-xl rounded-lg bg-blue-500 text-white">
+        <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-employee-man"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Personal</span>
-          <span class="-mt-0.5 text-xs text-slate-400">Gestión del personal</span>
+          <span class="-mt-1 text-xs text-slate-400">Gestión del personal</span>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -145,7 +145,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex items-stretch gap-5 mt-5 overflow-x-auto pb-1 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
       <MiniCard label="Total de Personal" :value="personal.length" icon="fi-sr-employee-man" color="blue" />
       <MiniCard label="Personal Activo" :value="personal.filter(p => p.estatus === 'Activo').length" icon="fi-sr-user-check" color="green" />
       <MiniCard label="Personal Inactivo" :value="personal.filter(p => p.estatus === 'Inactivo').length" icon="fi-sr-remove-user" color="slate" />

@@ -77,9 +77,9 @@ class usuarios {
     return resultado.rowCount === 1;
   }
 
-  async eliminar (id) {
+  async eliminar (client,id) {
     const sql = 'DELETE FROM Usuarios WHERE id = $1;';
-    const resultado = await pool.query(sql, [id]);
+    const resultado = await client.query(sql, [id]);
     return resultado.rowCount === 1;
   }
 }

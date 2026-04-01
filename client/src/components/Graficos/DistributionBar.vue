@@ -17,7 +17,19 @@
           </pattern>
         </defs>
 
+        <rect
+          v-if="isEmpty"
+          :x="0"
+          :y="0"
+          :width="containerWidth"
+          :height="svgHeight"
+          :rx="8"
+          fill="url(#stripes)"
+          class="opacity-60 transition-opacity duration-300"
+        />
+
         <g 
+          v-else
           v-for="(item, index) in processedSegments" 
           :key="index"
           class="outline-none"
@@ -41,7 +53,16 @@
       :class="isMounted ? 'opacity-100' : 'opacity-0'"
       aria-label="Leyenda del gráfico"
     >
-      <div v-for="(item, index) in processedSegments" :key="'legend-' + index" class="flex items-center gap-2">
+      <div v-if="isEmpty" class="flex items-center gap-2">
+        <svg width="12" height="12" class="shrink-0">
+          <rect width="12" height="12" rx="3" fill="url(#stripes)" class="opacity-60" />
+        </svg>
+        <span class="text-sm italic text-slate-500 dark:text-slate-400">
+          Sin datos disponibles
+        </span>
+      </div>
+
+      <div v-else v-for="(item, index) in processedSegments" :key="'legend-' + index" class="flex items-center gap-2">
         <svg width="12" height="12" class="shrink-0">
           <rect width="12" height="12" rx="3" :fill="item.color" />
         </svg>
@@ -80,6 +101,12 @@ const containerWidth = ref(0);
 const svgHeight = 28; 
 const gapSizePx = 8; 
 
+// --- ESTADO VACÍO (COMPUTADO) ---
+// Retorna true si el array no existe, está vacío o todos los valores son 0
+const isEmpty = computed(() => {
+  return !props.data || props.data.length === 0 || props.data.every(item => !item.value);
+});
+
 // --- UTILIDADES ---
 const formatNumber = (num) => {
   return new Intl.NumberFormat('en-US').format(num);
@@ -109,7 +136,8 @@ onUnmounted(() => {
 
 // --- CÁLCULOS MATEMÁTICOS PRECISOS ---
 const processedSegments = computed(() => {
-  if (!props.data || props.data.length === 0 || containerWidth.value <= 0) return [];
+  // Evitamos procesar si está vacío o no hay contenedor
+  if (isEmpty.value || containerWidth.value <= 0) return [];
 
   const totalNetValue = props.data.reduce((sum, item) => sum + (item.value || 0), 0);
   const numGaps = props.data.length - 1;

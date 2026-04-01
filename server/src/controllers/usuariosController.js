@@ -93,6 +93,10 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al eliminar usuario.' });
       }
     } catch (error) {
+      if (error.message === 'ULTIMO_ADMIN') {
+        return res.status(400).json({ error: 'No puedes eliminar el ultimo usuario Administrador.' });
+      }
+
       res.status(500).json({ error: 'Error al eliminar usuario.', error: error.message });
     }
   }

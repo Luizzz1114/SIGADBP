@@ -37,7 +37,7 @@ onMounted(async() => {
 
 <template>
   <Breadcrumbs />
-  <div class="flex flex-col gap-4 px-5 pb-5">
+  <div class="flex flex-col gap-4 px-4 pb-4">
     <div class="flex items-center gap-3">
       <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
         <i class="fi-sr-chart-pie"></i>
