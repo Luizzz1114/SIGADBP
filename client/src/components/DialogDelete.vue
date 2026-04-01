@@ -22,11 +22,11 @@ const emit = defineEmits(['confirmDelete']);
   <ConfirmDialog group="headless" class="overflow-hidden">
     <template #container="{ message, acceptCallback, rejectCallback }">
       <div class="flex flex-col items-center p-6 bg-slate-0 dark:bg-slate-850">
-        <div class="grid place-items-center p-1.5 text-lg rounded-lg bg-red-100 border border-red-200 dark:bg-red-500/10 dark:border-red-500/20">
-          <i class="fi-rr-hexagon-exclamation text-4xl! text-red-400!"></i>
+        <div class="grid place-items-center size-10 text-lg rounded-lg bg-red-100 border border-red-200 dark:bg-red-500/10 dark:border-red-500/20">
+          <i class="fi-rr-hexagon-exclamation text-xl! text-red-400!"></i>
         </div>
         <span class="mt-2 font-bold text-xl!">{{ message.header }}</span>
-        <p class="mt-2 text-center">¿Está seguro de eliminar este registro?</p>
+        <p class="mt-1 text-center">¿Está seguro de eliminar este registro?</p>
         <div class="flex flex-col w-full mt-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800/50 overflow-hidden">
           <div 
             v-for="(val, label, index) in message.message" 
