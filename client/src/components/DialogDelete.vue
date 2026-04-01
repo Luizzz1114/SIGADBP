@@ -31,7 +31,7 @@ const emit = defineEmits(['confirmDelete']);
           <div 
             v-for="(val, label, index) in message.message" 
             :key="label" 
-            class="flex justify-between items-center py-2 px-3 text-sm"
+            class="flex justify-between items-center gap-4 py-2 px-3 text-sm"
             :class="{ 'border-b border-slate-200 dark:border-slate-700': index !== Object.keys(message.message).length - 1 }"
           >
             <span class="font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
