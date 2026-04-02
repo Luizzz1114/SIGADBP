@@ -48,22 +48,23 @@ onMounted(async() => {
       </div>
     </div>
 
-    <div class="flex *:flex-1 gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 *:min-w-0">
       <Card label="Total de bienes" :value="metricas.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
+      <Card label="Dependencias" :value="metricas.dependencias || 0" icon="fi-rr-building" message="Total registradas" />
       <Card label="Incorporaciones" :value="metricas.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
       <Card label="Desincorporaciones" :value="metricas.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />
       <Card label="Movimientos" :value="metricas.movimientos_mes || 0" icon="fi-rr-priority-arrows rotate-90!" message="Este mes" />
       <Card label="Mantenimientos" :value="metricas.mantenimientos_mes || 0" icon="fi-rr-screw-alt" message="Este mes" />
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <BienesEstatus />
       <BienesPorCategoria />
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-      <BienesPorDependencia class="xl:col-span-2" />
+      <BienesPorDependencia class="lg:col-span-2" />
       
       <div class="flex flex-col h-full rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 p-4">

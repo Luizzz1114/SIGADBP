@@ -137,7 +137,7 @@ onMounted(async () => {
       <Button @click="isDrawerRegisterOpen = true" type="button" label="Agregar Usuario" icon="fi-sr-plus-small" />
     </div>
 
-    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex flex-wrap gap-3 mt-4">
       <MiniCard label="Total de Usuarios" :value="usuarios.length" icon="fi-sr-users" color="blue" />
       <MiniCard label="Administrador" :value="usuarios.filter(u => u.rol === 'Administrador').length" icon="fi-sr-admin-alt" color="violet" />
       <MiniCard label="Supervisor" :value="usuarios.filter(u => u.rol === 'Supervisor').length" icon="fi-sr-user-tag" color="indigo" />

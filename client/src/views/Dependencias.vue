@@ -139,7 +139,7 @@ onMounted(async () => {
       <Button @click="isDrawerRegisterOpen = true" type="button" label="Agregar Dependencia" icon="fi-sr-plus-small" />
     </div>
 
-    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex flex-wrap gap-3 mt-4">
       <MiniCard label="Total de Dependencias" :value="dependencias.length" icon="fi-sr-building" color="blue" />
       <MiniCard label="Centros de Acopio" :value="dependencias.filter(d => d.tipo === 'Centro de Acopio').length" icon="fi-sr-warehouse-alt" color="violet" />
       <MiniCard label="Módulos" :value="dependencias.filter(d => d.tipo === 'Módulo').length" icon="fi-sr-shop" color="indigo" />

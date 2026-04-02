@@ -86,7 +86,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">
       <Card
         label="Bienes desincorporados"
         icon="fi-rr-apps-delete"

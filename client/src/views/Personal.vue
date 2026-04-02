@@ -145,7 +145,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex flex-wrap gap-3 mt-4">
       <MiniCard label="Total de Personal" :value="personal.length" icon="fi-sr-employee-man" color="blue" />
       <MiniCard label="Personal Activo" :value="personal.filter(p => p.estatus === 'Activo').length" icon="fi-sr-user-check" color="green" />
       <MiniCard label="Personal Inactivo" :value="personal.filter(p => p.estatus === 'Inactivo').length" icon="fi-sr-remove-user" color="slate" />

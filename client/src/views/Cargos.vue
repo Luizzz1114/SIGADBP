@@ -111,7 +111,7 @@ onMounted(async () => {
       <Button @click="isDrawerRegisterOpen = true" type="button" label="Agregar Cargo" icon="fi-sr-plus-small" />
     </div>
 
-    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="flex flex-wrap gap-3 mt-4">
       <MiniCard label="Total de Cargos" :value="cargos.length" icon="fi-sr-briefcase" color="blue" />
       <MiniCard label="Responsable Patrimonial Primario" :value="cargos.filter(cargo => cargo.tipo === 'Responsable Patrimonial Primario').length" icon="fi-sr-boss" color="violet" />
       <MiniCard label="Responsable Patrimonial de Uso y Custodia" :value="cargos.filter(cargo => cargo.tipo === 'Responsable Patrimonial de Uso y Custodia').length" icon="fi-sr-user-tie-hair" color="indigo" />

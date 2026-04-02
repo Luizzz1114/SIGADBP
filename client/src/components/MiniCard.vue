@@ -52,14 +52,14 @@ const iconStyles = {
 </script>
 
 <template>
-  <div class="flex items-center gap-3 p-1 rounded-xl border" :class="containerStyles[color]">
-    <div class="grid place-items-center size-8 text-lg! rounded-lg text-white" :class="iconStyles[color]">
+  <div class="flex items-center gap-3 p-1 rounded-xl border min-w-0" :class="containerStyles[color]">
+    <div class="grid place-items-center size-7.5 text-base! rounded-lg text-white shrink-0" :class="iconStyles[color]">
       <i :class="icon"></i>
     </div>
-    <span class="text-sm! font-medium! flex-1 whitespace-nowrap">
+    <span class="text-sm! font-medium! flex-1 truncate">
       {{ label }}
     </span>
-    <span :class="sizeStyles[size] || sizeStyles.base" class="font-bold pl-1 pr-1.5 whitespace-nowrap">
+    <span :class="sizeStyles[size] || sizeStyles.base" class="font-bold pl-1 pr-1.5 whitespace-nowrap shrink-0">
       {{ value }}
     </span>
   </div>

@@ -146,7 +146,7 @@ onMounted(async() => {
       </div>
     </div>
 
-    <div class="flex items-stretch gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
       <Card label="Desincorporaciones este mes" :value="desincorporacionesMesActual" icon="fi-rr-apps-delete" color="red" />
     </div>
 

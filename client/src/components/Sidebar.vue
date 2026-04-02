@@ -55,7 +55,7 @@ const filteredMenuGroups = computed(() =>
     class="fixed inset-y-0 left-0 z-30 flex flex-col border-e border-slate-300 bg-slate-200 text-slate-700 duration-300 ease-in-out md:static dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
     :class="[
       isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-      isDesktopCollapsed ? 'w-16' : 'w-72',
+      isDesktopCollapsed ? 'w-16' : 'w-60 sm:w-68',
     ]"
   >
     <div class="flex items-center gap-3 px-2 h-14 border-b border-slate-300 overflow-hidden duration-300 ease-in-out dark:border-slate-700">
@@ -123,10 +123,7 @@ const filteredMenuGroups = computed(() =>
         inputId="toggle-dark-mode"
       >
         <template #handle>
-          <i 
-            :class="isDark ? 'fi-sr-moon' : 'fi-sr-sun'"
-            class="text-[8px]!"
-          />
+          <i :class="isDark ? 'fi-sr-moon' : 'fi-sr-sun'" class="text-[8px]!"/>
         </template>
       </ToggleSwitch>
     </div>

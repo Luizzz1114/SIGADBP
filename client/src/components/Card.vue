@@ -27,9 +27,9 @@ const iconClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-1 p-2.5 min-w-52 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+  <div class="flex flex-col gap-1 p-2.5 min-w-0 snap-center rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex items-start justify-between">
-      <div :class="iconClasses" class="grid place-items-center size-8 text-base rounded-lg border">
+      <div :class="iconClasses" class="grid place-items-center shrink-0 size-8 text-base rounded-lg border">
         <i :class="icon"></i>
       </div>
       <Tag 
@@ -39,8 +39,8 @@ const iconClasses = computed(() => {
         class="ring-1 ring-inset ring-current/10"
       />
     </div>
-    <div class="flex flex-col items-start mt-0.5">
-      <span class="text-sm font-medium leading-tight text-slate-500 dark:text-slate-200 whitespace-nowrap">
+    <div class="flex flex-col items-start mt-0.5 min-w-0 w-full">
+      <span class="text-sm font-medium w-full leading-tight text-slate-500 dark:text-slate-200 truncate">
         {{ label }}
       </span>
       <span class="text-2xl font-bold leading-none mt-0.5 text-slate-700 dark:text-white">

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mx-auto">
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8" role="region" aria-label="Gráfico de distribución">
+    <div class="flex flex-col md:flex-row flex-wrap items-center justify-center gap-x-8 gap-y-4" role="region" aria-label="Gráfico de distribución">
       <div ref="chartWrapper" class="relative size-45 shrink-0 flex items-center justify-center">
         <svg
           viewBox="0 0 200 200"
@@ -76,7 +76,7 @@
               <rect width="10" height="10" rx="5" :fill="item.color" />
             </svg>
 
-            <div class="flex items-center justify-between gap-4 w-full">
+            <div class="flex items-center justify-between gap-6 w-full">
               <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
                 {{ item.label }}
               </span>

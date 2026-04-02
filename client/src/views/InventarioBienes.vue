@@ -147,7 +147,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex gap-4 mt-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
       <Card label="Total de Bienes" :value="bienes.filter(b => b.estatus !== 'Desincorporado').length" icon="fi-rr-boxes" />
       <Card label="Operativos" :value="bienes.filter(b => b.estatus === 'Operativo').length" icon="fi-rr-check-circle" />
       <Card label="En Mantenimiento" :value="bienes.filter(b => b.estatus === 'En mantenimiento').length" icon="fi-rr-tools" />

@@ -107,7 +107,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
       <MoneyCard
         v-for="(card, index) in cardsData"
         :key="index"
