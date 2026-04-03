@@ -3,7 +3,7 @@ import UsuariosRepositorio from '../repositories/usuariosRepositorio.js';
 
 
 // --- 1.  Middleware para Express / HTTP ---
-export const verificarToken = (req, res, next) => {
+export const verificarToken = async (req, res, next) => {
 
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -14,6 +14,13 @@ export const verificarToken = (req, res, next) => {
     
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // --- solo esto :o
+    const usuarioExiste = await UsuariosRepositorio.obtenerPorId(decoded.id);
+    if (!usuarioExiste) {
+      return res.status(401).json({ mensaje: 'Usuario inexistente o sesión invalidada.' });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {

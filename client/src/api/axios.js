@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '@/router';
 import nprogress from 'nprogress';
 import 'nprogress/nprogress.css';
 
@@ -33,7 +34,12 @@ api.interceptors.response.use(
   },
   error => {
     nprogress.done();
-    return Promise.reject(error);
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      localStorage.removeItem('user_session');
+      if (router.currentRoute.value.name !== 'login') {
+        router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } });
+      }
+    }
   }
 );
 

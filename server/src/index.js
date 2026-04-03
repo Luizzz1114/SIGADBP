@@ -1,9 +1,9 @@
 import 'dotenv/config';
+import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import router from './routes/index.js';
 import { iniciarTareasProgramadas } from './jobs/scheduler.js';
-import http from 'http';
 import { Server as SocketServer } from 'socket.io';
 import { verificarTokenSocket } from './middlewares/authMiddleware.js'; 
 

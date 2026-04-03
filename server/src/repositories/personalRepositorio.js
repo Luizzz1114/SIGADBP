@@ -9,8 +9,8 @@ class Personal {
 
   async listarSinUsuario() {
     const sql = `SELECT id, cedula, nombres, apellidos FROM vistaPersonal
-      WHERE tipo_cargo = 'Personal de la Unidad de Administración'
-      AND id NOT IN (SELECT idPersonal FROM Usuarios)
+      WHERE --tipo_cargo = 'Personal de la Unidad de Administración' AND
+      id NOT IN (SELECT idPersonal FROM Usuarios)
       AND estatus = 'Activo';`;
     const resultado = await pool.query(sql);
     return resultado.rows;
