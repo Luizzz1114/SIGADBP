@@ -7,7 +7,7 @@ const UsuariosRouter = express.Router();
 UsuariosRouter.post('/login', UsuariosController.iniciarSesion);
 UsuariosRouter.post('/username-correo', verificarToken, UsuariosController.validarUsernameCorreo);
 UsuariosRouter.post('/recuperar-contrasena', UsuariosController.recuperarContrasena);
-UsuariosRouter.put('/cambiar-contrasena', verificarToken, UsuariosController.recuperarContrasenaActualizar);
+UsuariosRouter.put('/cambiar-contrasena', verificarToken, UsuariosController.cambiarContrasena);
 
 UsuariosRouter.route('/')
   .get(verificarToken, UsuariosController.listar)

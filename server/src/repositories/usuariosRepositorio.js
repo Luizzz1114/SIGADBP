@@ -77,7 +77,7 @@ class usuarios {
     return resultado.rowCount === 1;
   }
 
-  async recuperarContrasenaActualizar (user) {
+  async cambiarContrasena (user) {
     const { id, contrasena } = user;
     const sql = 'UPDATE Usuarios SET contrasena = $1, fechaActualizacion = CURRENT_TIMESTAMP WHERE id = $2;';
     const resultado = await pool.query(sql, [contrasena, id]);

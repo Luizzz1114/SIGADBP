@@ -121,24 +121,13 @@ class UsuariosService {
     return await UsuariosRepositorio.actualizar(user);
   }
 
-  async recuperarContrasenaActualizar(usuario) {
-    let {id, contrasena } = usuario;    
+  async cambiarContrasena(usuario) {
+    let { id, contrasena } = usuario;    
     contrasena = await bcrypt.hash(contrasena, 10);
-
-    const user = {
-      id,
-      contrasena
-    };
-
-    return await UsuariosRepositorio.recuperarContrasenaActualizar(user);
+    const user = { id, contrasena };
+    return await UsuariosRepositorio.cambiarContrasena(user);
   }
   
-/*
-  async eliminar(id) {
-    return await UsuariosRepositorio.eliminar(id);
-  }
-*/
-
   async eliminar(id) {
     const client = await pool.connect();
     try {

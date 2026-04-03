@@ -78,12 +78,12 @@ class UsuariosController {
     }
   }
 
-  async recuperarContrasenaActualizar(req, res) {
+  async cambiarContrasena(req, res) {
     try {
       const data = req.body;
       const id = req.user.id;
       const usuario = { ...data, id };
-      const resultado = await UsuariosService.recuperarContrasenaActualizar(usuario);
+      const resultado = await UsuariosService.cambiarContrasena(usuario);
       if (resultado) {
         res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
       } else {
