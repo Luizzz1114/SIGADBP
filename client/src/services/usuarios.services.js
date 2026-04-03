@@ -43,7 +43,7 @@ export default {
   },
 
   async actualizarContrasena(usuario) {
-    const res = await api.patch('/usuarios', usuario);
+    const res = await api.put('/usuarios/cambiar-contrasena', usuario);
     return res.data;
   },
 

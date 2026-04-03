@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import Cronometro from '@/components/Cronometro.vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { nuevaContrasenaSchema, recuperarContrasenaSchema } from '@/utils/login.utils.js';
 import { preguntasSeguridad, } from '@/utils/usuarios.utils';
@@ -11,12 +12,6 @@ const vistaActual = ref('inicio');
 const cargando = ref(false);
 const resolver = zodResolver(recuperarContrasenaSchema);
 const resolverNuevaContrasena = zodResolver(nuevaContrasenaSchema);
-
-const dataUsuario = ref({
-  id: null,
-  username: '',
-  correo: ''
-});
 
 const datos = ref({
   identificador: '',
@@ -37,15 +32,15 @@ const metodoRecuperacion = [
 
 const onFormSubmit = async ({ valid, values }) => {
   if (!valid) return;
+  if (values.metodo === 'correo') return;
+
   cargando.value = true;
   try {
     const respuesta = await usuariosServices.recuperarContrasena(values);
     if (respuesta.encontrado) {
-      dataUsuario.value = {
-        id: respuesta.id,
-        username: respuesta.username,
-        correo: respuesta.correo
-      };
+
+      localStorage.setItem('token_tmp', JSON.stringify(respuesta.token));
+
       if (values.metodo === 'correo') {
         vistaActual.value = 'correo_enviado';
       } else {
@@ -66,13 +61,11 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
   if (!valid)  return;
   cargando.value = true;
   try {
-    const respuesta = await usuariosServices.actualizarContrasena({
-      id: dataUsuario.value.id,
-      contrasena: values.contrasena
-    });
+    const respuesta = await usuariosServices.actualizarContrasena(values);
     if (respuesta) {
       vistaActual.value = 'exito';
       showSuccess('Ya puedes iniciar sesión con tu nueva contraseña');
+      localStorage.removeItem('token_tmp');
     } else {
       showError(respuesta.mensaje);
     }
@@ -83,6 +76,25 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
     cargando.value = false;
   }
 };
+
+const alAgotarseTiempo = () => {
+  localStorage.removeItem('token_tmp');
+  vistaActual.value = 'inicio';
+  showError('El tiempo de 10 minutos para cambiar la contraseña ha expirado.');
+};
+
+const cancelarCambio = () => {
+  localStorage.removeItem('token_tmp');
+  vistaActual.value = 'inicio';
+};
+
+onMounted(() => {
+  localStorage.removeItem('token_tmp');
+});
+
+onUnmounted(() => {
+  localStorage.removeItem('token_tmp');
+});
 </script>
 
 <template>
@@ -154,8 +166,11 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
 
     <template v-else-if="vistaActual === 'nueva_contrasena'">
       <div class="flex flex-col">
-        <span class="text-xl font-bold">Crear nueva contraseña</span>
-        <span class="text-sm text-slate-400">Credenciales correctas. Ingrese su nueva contraseña a continuación.</span>
+        <div class="flex justify-between items-center flex-wrap gap-x-2">
+          <span class="text-xl font-bold">Crear nueva contraseña</span>
+          <Cronometro @tiempo-agotado="alAgotarseTiempo" />
+        </div>
+        <span class="text-sm text-slate-400 mt-1">Credenciales correctas. Ingrese su nueva contraseña a continuación.</span>
       </div>
       <Form v-slot="$form" :initialValues="datosNuevaContrasena" :resolver="resolverNuevaContrasena" @submit="onNuevaContrasenaSubmit">
         <div class="grid grid-cols-1 gap-y-4 gap-x-6">
@@ -194,7 +209,7 @@ const onNuevaContrasenaSubmit = async ({ valid, values }) => {
           </div>
         </div>
         <div class="flex items-center gap-3 mt-6">
-          <Button @click="vistaActual = 'inicio'" label="Cancelar" severity="secondary" outlined class="grow h-9!" type="button" />
+          <Button @click="cancelarCambio" label="Cancelar" severity="secondary" outlined class="grow h-9!" type="button" />
           <Button label="Guardar contraseña" type="submit" class="grow h-9! whitespace-nowrap" :disabled="cargando">
             <i class="fi-rr-loading text-lg animate-[spin_5s_linear_infinite] text-white!" v-if="cargando"></i>
           </Button>

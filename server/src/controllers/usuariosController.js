@@ -78,6 +78,22 @@ class UsuariosController {
     }
   }
 
+  async recuperarContrasenaActualizar(req, res) {
+    try {
+      const data = req.body;
+      const id = req.user.id;
+      const usuario = { ...data, id };
+      const resultado = await UsuariosService.recuperarContrasenaActualizar(usuario);
+      if (resultado) {
+        res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
+      } else {
+        res.status(400).json({ message: 'Error al actualizar contraseña.', error: error.message });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Error al actualizar contraseña.', error: error.message });
+    }
+  }
+
   async eliminar(req, res) {
     try {
       const idLogeado = req.user.id;

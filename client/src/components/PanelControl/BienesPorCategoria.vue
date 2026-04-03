@@ -28,7 +28,7 @@ onMounted(async() => {
     <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
       <span class="font-bold text-base leading-tight dark:text-slate-50">Clasificación de los bienes</span>
     </div>
-    <div class="flex-1 flex items-center justify-center w-full overflow-x-auto p-4">
+    <div class="flex-1 flex items-center justify-center w-full overflow-x-auto py-4 px-6">
       <DonutChart :data="categorias" unit="Bienes" />
     </div>
   </div>

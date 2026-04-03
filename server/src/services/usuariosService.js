@@ -75,7 +75,13 @@ class UsuariosService {
     if (!match) {
       return { encontrado: false, mensaje: 'Respuesta incorrecta.' };
     }
-    return { encontrado: true, mensaje: 'Usuario verificado.', id: recuperar.id, username: recuperar.username, correo: recuperar.correo };
+
+    const token = jwt.sign(
+      { id: recuperar.id, username: recuperar.username, correo: recuperar.correo },
+      process.env.JWT_SECRET, { expiresIn: '10m' }
+    );
+
+    return { encontrado: true, mensaje: 'Usuario verificado.', token: token };
   }
 
   async crear(usuario) {
@@ -113,6 +119,18 @@ class UsuariosService {
       respuesta,
     };
     return await UsuariosRepositorio.actualizar(user);
+  }
+
+  async recuperarContrasenaActualizar(usuario) {
+    let {id, contrasena } = usuario;    
+    contrasena = await bcrypt.hash(contrasena, 10);
+
+    const user = {
+      id,
+      contrasena
+    };
+
+    return await UsuariosRepositorio.recuperarContrasenaActualizar(user);
   }
   
 /*

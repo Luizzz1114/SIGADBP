@@ -7,12 +7,12 @@ const UsuariosRouter = express.Router();
 UsuariosRouter.post('/login', UsuariosController.iniciarSesion);
 UsuariosRouter.post('/username-correo', verificarToken, UsuariosController.validarUsernameCorreo);
 UsuariosRouter.post('/recuperar-contrasena', UsuariosController.recuperarContrasena);
+UsuariosRouter.put('/cambiar-contrasena', verificarToken, UsuariosController.recuperarContrasenaActualizar);
 
 UsuariosRouter.route('/')
   .get(verificarToken, UsuariosController.listar)
   .post(verificarToken, UsuariosController.crear)
-  .put(verificarToken, UsuariosController.actualizar)
-  .patch(UsuariosController.actualizar);
+  .put(verificarToken, UsuariosController.actualizar);
 
 UsuariosRouter.route('/:id')
   .get(verificarToken, UsuariosController.obtenerPorId)

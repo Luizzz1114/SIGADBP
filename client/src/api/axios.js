@@ -15,7 +15,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     nprogress.start();
-    const token = JSON.parse(localStorage.getItem('user_session'))?.token;
+    const token = JSON.parse(localStorage.getItem('user_session'))?.token || JSON.parse(localStorage.getItem('token_tmp'));
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -40,6 +40,7 @@ api.interceptors.response.use(
         router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } });
       }
     }
+    return Promise.reject(error);
   }
 );
 

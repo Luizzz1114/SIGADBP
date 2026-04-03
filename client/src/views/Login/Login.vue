@@ -30,7 +30,6 @@ async function login(values) {
     if (respuesta.autenticado) {
       localStorage.setItem('user_session', JSON.stringify(respuesta));
       const token = respuesta.token;
-      console.log('Token recibido:', token);
       socket.auth = { token };
       socket.connect();
       router.push('/inicio');
