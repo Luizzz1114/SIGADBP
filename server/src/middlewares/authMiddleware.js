@@ -15,7 +15,6 @@ export const verificarToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // --- solo esto :o
     const usuarioExiste = await UsuariosRepositorio.obtenerPorId(decoded.id);
     if (!usuarioExiste) {
       return res.status(401).json({ mensaje: 'Usuario inexistente o sesión invalidada.' });
