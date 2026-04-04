@@ -55,7 +55,8 @@ const handleEditRequest = async (item) => {
 
 const handleDeleteRequest = (item) => {
   const info = {
-    'Nombres y apellidos': `${item.nombres} ${item.apellidos}`,
+    'Nombres': item.nombres,
+    'Apellidos': item.apellidos,
     'Cédula': item.cedula
   };
   confirmDialogRef.value.openConfirm(item, info);

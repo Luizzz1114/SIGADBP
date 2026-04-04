@@ -19,7 +19,7 @@ defineProps({ dependencia: Object });
       </div>
     </template>
 
-    <div class="flex flex-col gap-0.5 mt-4">
+    <div class="flex flex-col gap-0.5">
       <span class="font-bold text-lg!">{{ dependencia.nombre }}</span>
       <CustomTag
         :value="dependencia.tipo"
@@ -28,7 +28,7 @@ defineProps({ dependencia: Object });
       />
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl bg-slate-50/60 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl bg-slate-50/60 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
       <div class="flex flex-col gap-3">
         <span class="flex items-center gap-2 font-bold uppercase">
           <i class="fi-br-marker text-blue-500"></i>
@@ -54,7 +54,7 @@ defineProps({ dependencia: Object });
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
       <MiniCard 
         label="Personal"
         :value="dependencia.total_personal"

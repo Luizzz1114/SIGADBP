@@ -58,8 +58,11 @@ const filteredMenuGroups = computed(() =>
       isDesktopCollapsed ? 'w-16' : 'w-60 sm:w-68',
     ]"
   >
-    <div class="flex items-center gap-3 px-2 h-14 border-b border-slate-300 overflow-hidden duration-300 ease-in-out dark:border-slate-700">
-      <div class="flex items-center justify-center shrink-0 p-1 h-8 w-12 rounded-lg bg-blue-600">
+    <div class="flex items-center gap-3 px-4 h-14 border-b border-slate-300 overflow-hidden duration-300 ease-in-out dark:border-slate-700">
+      <div
+        :class="isDesktopCollapsed ? 'w-8' : 'w-12'"
+        class="flex items-center justify-center shrink-0 p-1 h-8 rounded-lg bg-blue-600 transition-all duration-300"
+      >
         <img
           src="../assets/images/Mercal_logo.webp"
           alt="Mercal_logo"
@@ -95,6 +98,7 @@ const filteredMenuGroups = computed(() =>
           <li v-for="item in group.items" :key="item.name" class="flex items-center group">
             <router-link
               :to="item.path"
+              @click="isMobileOpen && emit('close-mobile')" 
               class="relative group flex items-center gap-2.5 p-2 h-8 w-full rounded-lg hover:bg-slate-300/40 transition-colors dark:hover:bg-slate-700/50 dark:hover:text-slate-300 dark:hover:border-slate-700 after:content-[''] after:absolute after:-inset-e-2.5 after:rounded-full after:h-7 after:w-1 after:bg-blue-500 after:opacity-0"
               active-class="active bg-white hover:bg-white text-slate-700 dark:hover:text-slate-700 hover:border-transparent! dark:hover:bg-white after:opacity-100"
             >
@@ -106,9 +110,9 @@ const filteredMenuGroups = computed(() =>
                 {{ item.name }}
               </span>
             </router-link>
-            <div v-if="isDesktopCollapsed" class="shadow-xl origin-left absolute z-60 inset-s-20 rounded-lg whitespace-nowrap bg-blue-600 text-sm px-3 py-2 text-white opacity-0 group-hover:opacity-100 group-hover:scale-100 pointer-events-none ease-in-out duration-300 scale-85">
+            <div v-if="isDesktopCollapsed" class="shadow-xl origin-left absolute z-60 inset-s-18 rounded-lg whitespace-nowrap bg-slate-600 text-sm px-3 py-1.5 text-white opacity-0 group-hover:opacity-100 group-hover:scale-100 pointer-events-none ease-in-out duration-300 scale-85">
               {{ item.name }}
-				    </div>
+            </div>
           </li>
         </ul>
       </div>

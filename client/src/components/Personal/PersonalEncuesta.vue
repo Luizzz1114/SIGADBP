@@ -56,7 +56,7 @@ const onFormSubmit = async ({ valid, values }) => {
 <template>
   <Dialog v-model:visible="visible" modal class="w-120!">
     <template #header>
-      <div class="flex items-center gap-4 py-2">
+      <div class="flex items-center gap-4">
         <div class="grid place-items-center size-9 text-xl rounded-lg bg-blue-500 text-white">
           <i class="fi-sr-user"></i>
         </div>
@@ -66,7 +66,7 @@ const onFormSubmit = async ({ valid, values }) => {
       </div>
     </template>
     <Form v-slot="$form"  :initialValues="encuesta" @submit="onFormSubmit" class="flex flex-col">
-      <span class="leading-tight mt-2 p-3 rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Necesitamos actualizar los indicadores semestrales de la unidad. Por favor, responde estas dos preguntas rápidas antes de continuar.</span>
+      <span class="leading-tight p-3 rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Necesitamos actualizar los indicadores semestrales de la unidad. Por favor, responde estas dos preguntas rápidas antes de continuar.</span>
       <div class="flex items-center gap-2 mt-6">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Capacitación</span>

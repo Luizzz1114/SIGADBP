@@ -79,7 +79,7 @@ watch([() => initialValues.value.montousd, () => initialValues.value.tasacambio]
       </div>
     </template>
     <Form :key="formKey" v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit">
-      <div class="flex items-center gap-2 mt-6">
+      <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Datos del Registro</span>
       </div>

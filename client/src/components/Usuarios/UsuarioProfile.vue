@@ -64,9 +64,9 @@ const onFormSubmit = async ({ valid, values, reset }) => {
         </div>
       </div>
     </template>
-    <div class="mt-4">
+    <div>
 
-      <div class="flex gap-4 mt-4">
+      <div class="flex gap-4">
         <div class="grid place-items-center p-3 size-16 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
           {{ usuario.username.charAt(0) }}
         </div>
@@ -99,7 +99,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
           </TabList>
           <TabPanels>
             <TabPanel value="0">
-              <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+              <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
                 <span class="flex items-center gap-2 font-bold uppercase">
                   <i class="fi-br-info text-blue-500"></i>
                   Información personal
@@ -129,7 +129,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   <span class="font-medium! text-right">{{ usuario.telefono }}</span>
                 </div>
               </div>
-              <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+              <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
                 <span class="flex items-center gap-2 font-bold uppercase">
                   <i class="fi-br-briefcase text-blue-500"></i>
                   Información laboral
@@ -158,7 +158,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
             </TabPanel>
             <TabPanel value="1">
               <Form v-slot="$form" :initialValues="initialValues" :key="usuario?.id" :resolver="resolver" @submit="onFormSubmit">
-                <div class="grid grid-cols-1 gap-y-4 gap-x-6 mt-6">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-6 mt-4">
                   <div class="flex flex-col gap-1">
                     <label for="username">Nombre de usuario <span class="text-red-500">*</span></label>
                     <InputGroup>

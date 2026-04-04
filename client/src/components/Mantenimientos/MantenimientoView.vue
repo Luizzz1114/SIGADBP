@@ -19,7 +19,7 @@ defineProps({ mantenimiento: Object });
       </div>
     </template>
 
-    <div class="flex gap-4 mt-4">
+    <div class="flex gap-4">
       <div class="flex flex-col min-w-0 w-full">
         <span class="font-bold text-lg! block wrap-break-word whitespace-normal">
           {{ mantenimiento.descripcion_bien }}
@@ -37,7 +37,7 @@ defineProps({ mantenimiento: Object });
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 mt-4">
+    <div class="grid grid-cols-1 gap-3 mt-3">
       <MiniCard
         label="Número de bien" 
         :value="mantenimiento.numero_bien"
@@ -47,7 +47,7 @@ defineProps({ mantenimiento: Object });
       />
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-clock-three text-blue-500"></i>  
         Tiempos y Estado
@@ -70,7 +70,7 @@ defineProps({ mantenimiento: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-home-location-alt text-blue-500"></i>  
         Ubicación Actual
@@ -89,7 +89,7 @@ defineProps({ mantenimiento: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi fi-br-document text-blue-500"></i>  
         Detalles Técnicos y Presupuesto

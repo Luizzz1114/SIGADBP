@@ -18,7 +18,7 @@ defineProps({ personal: Object });
       </div>
     </template>
 
-    <div class="flex gap-4 mt-4">
+    <div class="flex gap-4">
       <div class="grid place-items-center p-3 size-16 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
         {{ personal.nombres.charAt(0) }}{{ personal.apellidos.charAt(0) }}
       </div>
@@ -32,7 +32,7 @@ defineProps({ personal: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-info text-blue-500"></i>
         Información personal
@@ -55,7 +55,7 @@ defineProps({ personal: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-briefcase text-blue-500"></i>
         Ubicación y Cargo
@@ -78,7 +78,7 @@ defineProps({ personal: Object });
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
       <MiniCard 
         label="Bienes asignados"
         :value="personal.bienes_asignados || 0" 

@@ -53,10 +53,10 @@ onMounted(async() => {
                 </div>
               </template>
               <template #empty><div class="p-3 text-center text-slate-500">No se encontraron registros.</div></template>
-              <Column field="dependencia" header="Dependencia" style="width: 400px; min-width: 400px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
+              <Column field="dependencia" header="Dependencia" bodyClass="h-10!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
               <Column header="Total de bienes asignados">
                 <template #body="{ data }">
-                  <div v-if="Number(data.total) > 0" class="flex flex-col gap-1 w-full max-w-50">
+                  <div v-if="Number(data.total) > 0" class="flex flex-col w-full max-w-50">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.total }}</span>
                       <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_bienes }}%</span>
@@ -90,10 +90,10 @@ onMounted(async() => {
                 </div>
               </template>
               <template #empty><div class="p-3 text-center text-slate-500">No se encontraron registros.</div></template>
-              <Column field="dependencia" header="Dependencia" style="width: 350px; min-width: 350px;" bodyClass="h-12!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
+              <Column field="dependencia" header="Dependencia" bodyClass="h-10!" class="whitespace-nowrap text-slate-700 dark:text-slate-200 w-1/2" />
               <Column header="Muebles" style="width: 175px; min-width: 150px;">
                 <template #body="{ data }">
-                  <div v-if="Number(data.muebles) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                  <div v-if="Number(data.muebles) > 0" class="flex flex-col w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.muebles }}</span>
                       <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_muebles }}%</span>
@@ -110,7 +110,7 @@ onMounted(async() => {
               </Column>
               <Column header="Tecnológicos" style="width: 175px; min-width: 150px;">
                 <template #body="{ data }">
-                  <div v-if="Number(data.tecnologicos) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                  <div v-if="Number(data.tecnologicos) > 0" class="flex flex-col w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.tecnologicos }}</span>
                       <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_tecnologicos }}%</span>
@@ -127,7 +127,7 @@ onMounted(async() => {
               </Column>
               <Column header="Vehículos" style="width: 175px; min-width: 150px;">
                 <template #body="{ data }">
-                  <div v-if="Number(data.vehiculos) > 0" class="flex flex-col gap-1 w-full max-w-28">
+                  <div v-if="Number(data.vehiculos) > 0" class="flex flex-col w-full max-w-28">
                     <div class="flex items-baseline justify-between">
                       <span class="font-semibold text-slate-800 dark:text-slate-100">{{ data.vehiculos }}</span>
                       <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">{{ data.p_vehiculos }}%</span>

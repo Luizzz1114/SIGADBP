@@ -112,7 +112,7 @@ watch(visible, async(isOpen) => {
       </div>
     </template>
     <Form v-slot="$form" :initialValues="movimiento" :resolver="resolver" :key="movimiento?.id" @submit="onFormSubmit" class="flex flex-col">
-      <div class="flex items-center gap-2 mt-4">
+      <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Datos del Movimiento</span>
       </div>

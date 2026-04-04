@@ -44,7 +44,7 @@ const onFormSubmit = ({ valid, values, reset }) => {
       </div>
     </template>
     <Form v-slot="$form" :resolver="resolver" :initialValues="cargo" :key="cargo?.id" @submit="onFormSubmit">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mt-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
         <div class="flex flex-col gap-1">
           <label for="nombre-cargo">Nombre del cargo <span class="text-red-500">*</span></label>
           <InputText name="nombre" id="nombre-cargo" placeholder="Ingrese el nombre del cargo" maxlength="50" autocomplete="off" size="small" fluid />

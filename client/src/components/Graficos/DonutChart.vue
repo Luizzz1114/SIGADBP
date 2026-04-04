@@ -1,7 +1,7 @@
 <template>
   <div class="w-full mx-auto">
     
-    <div class="flex flex-col md:flex-row flex-wrap items-center justify-center gap-x-12 gap-y-4" role="region" aria-label="Gráfico de distribución">
+    <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-12 gap-y-4" role="region" aria-label="Gráfico de distribución">
       
       <div ref="chartWrapper" class="relative size-45 shrink-0 flex items-center justify-center">
         <svg

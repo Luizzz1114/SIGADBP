@@ -67,7 +67,7 @@ onMounted(async() => {
       <BienesPorDependencia class="lg:col-span-2" />
       
       <div class="flex flex-col h-full rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
-        <div class="flex items-center gap-3 p-4">
+        <div class="flex items-center gap-3 p-3">
           <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-bolt"></i>
           </div>
@@ -76,10 +76,10 @@ onMounted(async() => {
             <span class="-mt-0.5 text-xs text-slate-400">Indicadores clave de gestión</span>
           </div>
         </div>
-        <div class="flex flex-col px-4 pb-4 pt-0 gap-3 h-full text-sm">
-          <ul class="flex flex-col gap-3">
+        <div class="flex flex-col px-3 pb-3 pt-0 gap-2 h-full text-sm">
+          <ul class="flex flex-col gap-2">
             <li v-for="item in accesoRapido" :key="item.name" class="w-full">
-              <router-link :to="item.path" class="group flex items-center justify-between rounded-xl p-2 font-medium border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-500 dark:border-slate-750 dark:bg-slate-800/50 dark:hover:border-blue-500/20 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">
+              <router-link :to="item.path" class="group flex items-center justify-between rounded-xl p-1.5 font-medium border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-500 dark:border-slate-750 dark:bg-slate-800/50 dark:hover:border-blue-500/20 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">
                 <div class="flex items-center gap-3">
                   <div class="flex size-7 items-center justify-center rounded-md bg-white shadow-sm ring-1 ring-slate-200 transition-colors group-hover:ring-blue-200 dark:bg-slate-850 dark:ring-slate-700 dark:group-hover:ring-blue-500/50">
                     <i :class="item.icon" class="text-[0.95rem] transition-colors group-hover:text-blue-500 dark:text-slate-300 dark:group-hover:text-blue-400"></i>

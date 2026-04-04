@@ -18,7 +18,7 @@ defineProps({ incorporacion: Object });
       </div>
     </template>
 
-    <div class="flex gap-4 mt-4">
+    <div class="flex gap-4">
       <div class="flex flex-col min-w-0 w-full">
         <span class="font-bold text-lg! block wrap-break-word whitespace-normal">
           Incorporación de bienes
@@ -30,7 +30,7 @@ defineProps({ incorporacion: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-info text-blue-500"></i>
         Detalles
@@ -53,7 +53,7 @@ defineProps({ incorporacion: Object });
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 p-3 mt-4 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
       <span class="flex items-center gap-2 font-bold uppercase">
         <i class="fi-br-file-invoice-dollar text-blue-500"></i>
         Adquisición
@@ -72,7 +72,7 @@ defineProps({ incorporacion: Object });
       </div>
     </div>
 
-    <div class="flex flex-col mt-4 w-full">
+    <div class="flex flex-col mt-3 w-full">
       <div class="p-3">
         <span class="font-bold uppercase text-sm flex items-center gap-2">
           <i class="fi fi-br-boxes text-blue-500"></i>

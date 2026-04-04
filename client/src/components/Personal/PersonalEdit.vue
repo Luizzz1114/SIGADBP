@@ -76,7 +76,7 @@ watch(visible, async (isOpen) => {
       </div>
     </template>
     <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" :key="personal?.id" @submit="onFormSubmit">
-      <div class="flex items-center gap-2 mt-6">
+      <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Información básica</span>
       </div>

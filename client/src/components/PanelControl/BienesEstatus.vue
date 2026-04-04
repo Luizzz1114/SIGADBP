@@ -39,7 +39,6 @@ onMounted(async() => {
             {{ card.percentage }}%
           </span>
         </div>
-
         <div class="flex flex-col mt-0.5 min-w-0">
           <span class="text-sm font-medium leading-tight text-slate-500 dark:text-slate-200 truncate">
             {{ card.label }}
