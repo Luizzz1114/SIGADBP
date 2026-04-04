@@ -34,7 +34,7 @@
 - [Tareas Programadas (Cron Jobs)](#tareas-programadas-cron-jobs)
 - [Indicadores de Gestión (KPIs)](#indicadores-de-gestión-kpis)
 - [Scripts Disponibles](#scripts-disponibles)
-- [Despliegue en Producción](#despliegue-en-producción)
+- [Autores](#autores)
 
 
 
@@ -689,6 +689,6 @@ Cada indicador tiene un valor **meta** y un umbral de **peligro** definido, con 
 
 
 
-## Licencia
+## Autores
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Luis Reinaldo Cortesía Henríquez y Gilberto Jose Zapata Rios
