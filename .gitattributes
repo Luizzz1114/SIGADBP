@@ -1,0 +1,4 @@
+# Ignorar CSS, HTML y SVGs de fuentes/iconos de terceros en las estadísticas
+client/src/assets/**/*.css linguist-vendored
+client/src/assets/**/*.html linguist-vendored
+client/src/assets/**/*.svg linguist-vendored
