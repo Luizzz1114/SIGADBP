@@ -141,7 +141,10 @@ onMounted(async () => {
           <AreaChart
             :data="tasaDesincorporacion"
             unit="Tasa"
-            details="d_tasa"
+            :details-formatter="(d) => [
+              { label: 'Desincorporados', value: d.cantidad },
+              { label: 'En inventario', value: d.total }
+            ]"
           />
         </div>
       </div>
@@ -174,7 +177,10 @@ onMounted(async () => {
           <AreaChart
             :data="deterioro"
             unit="Deterioro"
-            details="d_deterioro"
+            :details-formatter="(d) => [
+              { label: 'Por deterioro', value: d.cantidad },
+              { label: 'Desinc. totales', value: d.total }
+            ]"
           />
         </div>
       </div>

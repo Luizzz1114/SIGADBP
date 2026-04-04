@@ -144,11 +144,14 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full p-4">
-          <BarChart
-            :data="diasPromedio"
+          <BarChart 
+            :data="diasPromedio" 
+            :historical="true"
             type="Promedio"
             unit="días"
-            details="dias_promedio"
+            :details-formatter="(d) => [
+              { label: 'Mant. realizados', value: d.cantidad }
+            ]"
           />
         </div>
       </div>
@@ -181,8 +184,11 @@ onMounted(async () => {
         <div class="w-full p-4">
           <AreaChart
             :data="operatividad"
-            unit="Operatividad"
-            details="mantenimiento_operatividad"
+            unit="Eficiencia"
+            :details-formatter="(d) => [
+              { label: 'Estado óptimo', value: d.cantidad },
+              { label: 'Mant. realizados', value: d.total }
+            ]"
           />
         </div>
       </div>

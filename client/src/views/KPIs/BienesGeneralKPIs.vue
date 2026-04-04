@@ -169,7 +169,14 @@ onMounted(async () => {
           </Popover>
         </div>
         <div class="w-full p-4">
-          <AreaChart :data="operatividad" unit="Operatividad" details="bienes" />
+          <AreaChart
+            :data="operatividad"
+            unit="Tasa"
+            :details-formatter="(d) => [
+              { label: 'Operativos', value: d.cantidad },
+              { label: 'En inventario', value: d.total }
+            ]"
+            />
         </div>
       </div>
     </div>
@@ -219,7 +226,14 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full p-4">
-          <AreaChart :data="sinNumero" unit="Sin número" details="b_sin_numero" />
+          <AreaChart
+            :data="sinNumero"
+            unit="Sin número"
+            :details-formatter="(d) => [
+              { label: 'Sin número', value: d.cantidad },
+              { label: 'En inventario', value: d.total }
+            ]"
+          />
         </div>
       </div>
     </div>

@@ -176,7 +176,14 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full p-4">
-          <AreaChart :data="capacitacionHistorial" unit="Personal capacitado" details="personal" />
+          <AreaChart
+            :data="capacitacionHistorial"
+            unit="Personal capacitado"
+            :details-formatter="(d) => [
+              { label: 'Capacitados', value: d.cantidad },
+              { label: 'Total evaluados', value: d.total }
+            ]"
+          />
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
@@ -189,7 +196,14 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full p-4">
-          <AreaChart :data="satisfacionHistorial" unit="Personal satisfecho" details="personal" />
+          <AreaChart
+            :data="satisfacionHistorial"
+            unit="Personal satisfecho"
+            :details-formatter="(d) => [
+              { label: 'Satisfechos', value: d.cantidad },
+              { label: 'Total evaluados', value: d.total }
+            ]"
+          />
         </div>
       </div>
     </div>

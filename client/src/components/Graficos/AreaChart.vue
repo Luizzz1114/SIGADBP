@@ -133,7 +133,7 @@
       </svg>
     </div>
 
-    <!-- Tooltip Original -->
+    <!-- Tooltip -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -144,21 +144,27 @@
         <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
           {{ tooltipData.label }}
         </div>
-        <div class="px-2 pb-2 pt-1.5 flex flex-col gap-1">
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full shrink-0 bg-blue-400"></div>
+        <div class="px-2 pb-2 pt-1.5 flex flex-col">
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+              <div class="w-2.5 h-2.5 rounded-full shrink-0 bg-blue-400"></div>
+              <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+                {{ unit }}:
+              </span>
+            </div>
             <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-              {{ unit }}: {{ tooltipData.value }}%
+              {{ tooltipData.value }}%
             </span>
           </div>
-          <!-- Detalles dinámicos (se mantienen tus condiciones exactas) -->
-          <div v-if="tooltipData.detalles" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span v-if="details === 'bienes'">{{ tooltipData.detalles.cantidad }} bienes operativos de {{ tooltipData.detalles.total }} en inventario</span>
-            <span v-else-if="details === 'mantenimiento_operatividad'">{{ tooltipData.detalles.cantidad }} bienes en estado óptimo de {{ tooltipData.detalles.total }} mantenimientos realizados</span>
-            <span v-else-if="details === 'personal'">{{ tooltipData.detalles.cantidad }} de {{ tooltipData.detalles.total }} miembros del personal</span>
-            <span v-else-if="details === 'd_deterioro'">{{ tooltipData.detalles.cantidad }} desincorporaciones por deterioro de {{ tooltipData.detalles.total }} totales</span>
-            <span v-else-if="details === 'd_tasa'">{{ tooltipData.detalles.cantidad }} bienes desincorporados de {{ tooltipData.detalles.total }} en inventario</span>
-            <span v-else-if="details === 'b_sin_numero'">{{ tooltipData.detalles.cantidad }} bien(es) de {{ tooltipData.detalles.total }} en inventario</span>
+          <div v-if="tooltipData.detalles && detailsFormatter" class="pl-4.5 flex flex-col">
+            <div 
+              v-for="(item, idx) in detailsFormatter(tooltipData.detalles)" 
+              :key="idx" 
+              class="flex items-center justify-between gap-4 text-xs"
+            >
+              <span class="text-slate-500 dark:text-slate-400">{{ item.label }}:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ item.value }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -172,7 +178,7 @@ import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
 const props = defineProps({
   data: { type: Array, required: true },
   unit: { type: String, default: 'Valor'},
-  details: { type: String, default: '' }
+  detailsFormatter: { type: Function, default: null } 
 });
 
 const isMounted = ref(false);

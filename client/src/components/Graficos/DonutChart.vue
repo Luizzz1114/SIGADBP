@@ -26,7 +26,7 @@
               :stroke-width="strokeWidth"
             />
             
-            <!-- Estado vacío con tu patrón original -->
+            <!-- Estado vacío con patrón original -->
             <circle
               v-if="isEmpty"
               cx="100"
@@ -38,7 +38,7 @@
               class="opacity-60 transition-opacity duration-300"
             />
 
-            <!-- Segmentos: RESTAURADA TU LÓGICA DE PATH EXACTA -->
+            <!-- Segmentos -->
             <path
               v-else
               v-for="(item, index) in processedData"
@@ -60,13 +60,13 @@
           </g>
         </svg>
 
-        <!-- Agujero central (Hole) -->
+        <!-- Agujero central -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div class="size-24 bg-white dark:bg-slate-850 rounded-full"></div>
         </div>
       </div>
 
-      <!-- Leyenda: Mejorado el alineado y el espacio entre items -->
+      <!-- Leyenda -->
       <div class="flex flex-col md:w-auto gap-3 transition-opacity duration-1000" :class="isMounted ? 'opacity-100' : 'opacity-0'">
         
         <div v-if="isEmpty" class="flex items-center gap-3">
@@ -100,7 +100,7 @@
 
     </div>
 
-    <!-- Tooltip Original intacto -->
+    <!-- Tooltip Estandarizado -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -111,13 +111,44 @@
         <div class="px-2 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium mb-1">
           {{ tooltipData.label }}
         </div>
-        <div class="flex items-center gap-2 px-3 pb-2 pt-2">
-          <svg width="10" height="10" class="shrink-0 overflow-visible">
-            <rect width="10" height="10" rx="5" :fill="tooltipData.color" />
-          </svg>
-          <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
-             {{ tooltipData.percentage }}% • {{ formatNumber(tooltipData.value) }} {{ unit }}
-          </span>
+        
+        <div class="px-2 pb-2 pt-1.5 flex flex-col">
+          <!-- Valor Principal -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+              <svg width="10" height="10" class="shrink-0 overflow-visible">
+                <rect width="10" height="10" rx="5" :fill="tooltipData.color" />
+              </svg>
+              <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+                {{ type }}:
+              </span>
+            </div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
+              {{ formatNumber(tooltipData.value) }} {{ unit }}
+            </span>
+          </div>
+          
+          <!-- Detalles (Porcentaje y Formateador) -->
+          <div class="pl-4.5 flex flex-col">
+            <!-- El porcentaje siempre se muestra de primero en los detalles -->
+            <div class="flex items-center justify-between gap-4 text-xs">
+              <span class="text-slate-500 dark:text-slate-400">Porcentaje:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ tooltipData.percentage }}%</span>
+            </div>
+
+            <!-- Detalles adicionales inyectados por prop -->
+            <template v-if="tooltipData.detalles && detailsFormatter">
+              <div 
+                v-for="(item, idx) in detailsFormatter(tooltipData.detalles)" 
+                :key="'detail-' + idx" 
+                class="flex items-center justify-between gap-4 text-xs mt-0.5"
+              >
+                <span class="text-slate-500 dark:text-slate-400">{{ item.label }}:</span>
+                <span class="font-medium text-slate-700 dark:text-slate-300">{{ item.value }}</span>
+              </div>
+            </template>
+          </div>
+
         </div>
       </div>
     </Teleport>
@@ -129,7 +160,9 @@ import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
 
 const props = defineProps({
   data: { type: Array, required: true },
-  unit: { type: String, default: 'Products' }
+  type: { type: String, default: 'Total' }, // Añadido para estandarizar
+  unit: { type: String, default: '' },      // Limpiado el default de "Products"
+  detailsFormatter: { type: Function, default: null } // El mismo prop mágico
 });
 
 const isMounted = ref(false);
@@ -155,7 +188,6 @@ const isEmpty = computed(() => {
   return !props.data || props.data.length === 0 || props.data.every(item => !Number(item.value));
 });
 
-// --- TU LÓGICA DE CÁLCULO ORIGINAL ---
 const processedData = computed(() => {
   if (isEmpty.value) return [];
   const totalValue = props.data.reduce((acc, curr) => acc + Number(curr.value), 0);
@@ -167,7 +199,6 @@ const processedData = computed(() => {
     const sliceLength = ratio * circumference;
     const percentage = Math.round(ratio * 100);
     
-    // Volvemos a tu dashOffset original
     const dashOffset = -currentOffsetAcc;
     currentOffsetAcc += sliceLength; 
 
@@ -183,10 +214,12 @@ const processedData = computed(() => {
 
 const formatNumber = (num) => new Intl.NumberFormat('en-US').format(num);
 
-// --- TOOLTIP LOGIC (CON FIX PARA MÓVIL) ---
+// --- TOOLTIP LOGIC ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
-const tooltipStyle = ref({ left: '0px', top: '0px', transform: 'translate(-50%, -100%)', whiteSpace: 'nowrap' });
+const tooltipStyle = ref({ 
+  left: '0px', top: '0px', transform: 'translate(-50%, -100%)' // Removido el nowrap
+});
 
 const updateTooltipPosition = (event) => {
   let x, y;
@@ -205,8 +238,7 @@ const updateTooltipPosition = (event) => {
 
   tooltipStyle.value = {
     left: `${x}px`, top: `${y}px`,
-    transform: `translate(${transformX}, ${transformY})`,
-    whiteSpace: 'nowrap'
+    transform: `translate(${transformX}, ${transformY})`
   };
 };
 
