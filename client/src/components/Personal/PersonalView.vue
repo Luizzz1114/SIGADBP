@@ -19,10 +19,10 @@ defineProps({ personal: Object });
     </template>
 
     <div class="flex gap-4 mt-4">
-      <div class="grid place-items-center p-3 size-18 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
+      <div class="grid place-items-center p-3 size-16 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
         {{ personal.nombres.charAt(0) }}{{ personal.apellidos.charAt(0) }}
       </div>
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col gap-0.5">
         <span class="font-bold text-xl! tracking-tight leading-none">{{ personal.nombres }} {{ personal.apellidos }}</span>
         <span class="text-sm font-medium text-slate-500 dark:text-slate-400">CI: {{ personal.cedula }}</span>
         <div class="flex gap-2">

@@ -15,7 +15,11 @@
               y="0" 
               :width="isMounted ? svgWidth : 0" 
               :height="svgHeight" 
-              class="transition-all duration-1000 ease-out" 
+              :style="{ 
+                transitionProperty: 'width', 
+                transitionDuration: isResizing ? '0ms' : '1000ms', 
+                transitionTimingFunction: 'ease-out' 
+              }" 
             />
           </clipPath>
 
@@ -24,11 +28,12 @@
           </pattern>
 
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" class="stop-color-blue-400" stop-opacity="0.2" stop-color="#60a5fa" />
-            <stop offset="100%" class="stop-color-blue-400" stop-opacity="0.00" stop-color="#60a5fa" />
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.00" />
           </linearGradient>
         </defs>
 
+        <!-- Eje Y -->
         <g class="y-axis" aria-hidden="true">
           <template v-for="(tick, index) in computedYTicks" :key="'tick-' + index">
             <line 
@@ -50,17 +55,10 @@
           </template>
         </g>
 
+        <!-- Área y Líneas -->
         <g clip-path="url(#chart-reveal-clip)">
-          <path 
-            :d="areaPath" 
-            fill="url(#areaGradient)" 
-            class="transition-all duration-300"
-          />
-          <path 
-            :d="areaPath" 
-            fill="url(#diagonalHatch)" 
-            class="transition-all duration-300"
-          />
+          <path :d="areaPath" fill="url(#areaGradient)" />
+          <path :d="areaPath" fill="url(#diagonalHatch)" />
 
           <path 
             :d="linePath" 
@@ -71,6 +69,7 @@
             stroke-linejoin="round"
           />
 
+          <!-- Línea vertical del último dato -->
           <line
             v-if="processedData.length"
             :x1="processedData[processedData.length - 1].x"
@@ -83,15 +82,16 @@
           />
         </g>
 
+        <!-- Interacción y Puntos -->
         <g 
           v-for="(item, index) in processedData" 
           :key="index"
-          class="group cursor-pointer outline-none"
+          class="group cursor-pointer outline-none chart-bar-group"
           role="graphics-symbol"
-          :aria-label="`Mes de ${item.label}, valor: ${item.value}%`"
           @mouseenter="onMouseEnter($event, item)"
           @mousemove="onMouseMove($event)"
           @mouseleave="onMouseLeave"
+          @touchstart.passive="onTouchStart($event, item)"
         >
           <rect 
             :x="item.x - (spacePerBar / 2)" 
@@ -133,6 +133,7 @@
       </svg>
     </div>
 
+    <!-- Tooltip Original -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -150,23 +151,14 @@
               {{ unit }}: {{ tooltipData.value }}%
             </span>
           </div>
-          <div v-if="tooltipData.detalles && details === 'bienes'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} bienes operativos de {{ tooltipData.detalles.total }} en inventario</span>
-          </div>
-          <div v-if="tooltipData.detalles && details === 'mantenimiento_operatividad'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} bienes en estado óptimo de {{ tooltipData.detalles.total }} mantenimientos realizados</span>
-          </div>
-          <div v-if="tooltipData.detalles && details === 'personal'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} de {{ tooltipData.detalles.total }} miembros del personal</span>
-          </div>
-          <div v-if="tooltipData.detalles && details === 'd_deterioro'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} desincorporaciones por deterioro de {{ tooltipData.detalles.total }} totales</span>
-          </div>
-          <div v-if="tooltipData.detalles && details === 'd_tasa'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} bienes desincorporados de {{ tooltipData.detalles.total }} en inventario</span>
-          </div>
-          <div v-if="tooltipData.detalles && details === 'b_sin_numero'" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>{{ tooltipData.detalles.cantidad }} bien(es) de {{ tooltipData.detalles.total }} en inventario</span>
+          <!-- Detalles dinámicos (se mantienen tus condiciones exactas) -->
+          <div v-if="tooltipData.detalles" class="pl-4.5 flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span v-if="details === 'bienes'">{{ tooltipData.detalles.cantidad }} bienes operativos de {{ tooltipData.detalles.total }} en inventario</span>
+            <span v-else-if="details === 'mantenimiento_operatividad'">{{ tooltipData.detalles.cantidad }} bienes en estado óptimo de {{ tooltipData.detalles.total }} mantenimientos realizados</span>
+            <span v-else-if="details === 'personal'">{{ tooltipData.detalles.cantidad }} de {{ tooltipData.detalles.total }} miembros del personal</span>
+            <span v-else-if="details === 'd_deterioro'">{{ tooltipData.detalles.cantidad }} desincorporaciones por deterioro de {{ tooltipData.detalles.total }} totales</span>
+            <span v-else-if="details === 'd_tasa'">{{ tooltipData.detalles.cantidad }} bienes desincorporados de {{ tooltipData.detalles.total }} en inventario</span>
+            <span v-else-if="details === 'b_sin_numero'">{{ tooltipData.detalles.cantidad }} bien(es) de {{ tooltipData.detalles.total }} en inventario</span>
           </div>
         </div>
       </div>
@@ -175,7 +167,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
 
 const props = defineProps({
   data: { type: Array, required: true },
@@ -184,10 +176,11 @@ const props = defineProps({
 });
 
 const isMounted = ref(false);
+const isResizing = ref(false);
 const chartWrapper = ref(null);
 const containerWidth = ref(400);
 
-// --- ESTADO Y LÓGICA DEL TOOLTIP ---
+// --- TOOLTIP LOGIC ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({ 
@@ -195,28 +188,27 @@ const tooltipStyle = ref({
 });
 
 const updateTooltipPosition = (event) => {
-  let x = event.clientX;
-  let y = event.clientY; 
-  const offset = 15; 
+  let x, y;
+  let isTouch = false;
 
+  if (event.touches && event.touches.length > 0) {
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+    isTouch = true;
+  } else {
+    x = event.clientX;
+    y = event.clientY;
+  }
+
+  const offset = isTouch ? 35 : 15; 
   let transformX = '-50%';
   let transformY = '-100%';
 
-  if (x > window.innerWidth - 180) {
-    transformX = '-100%';
-    x -= offset;
-  } else if (x < 150) {
-    transformX = '0%';
-    x += offset; 
-  }
+  if (x > window.innerWidth - 180) { transformX = '-100%'; x -= offset; }
+  else if (x < 150) { transformX = '0%'; x += offset; }
 
-  if (y < 100) {
-    transformY = '0%';
-    y += offset;
-  } else {
-    transformY = '-100%';
-    y -= offset;
-  }
+  if (y < 100) { transformY = '0%'; y += offset; }
+  else { transformY = '-100%'; y -= offset; }
 
   tooltipStyle.value = {
     left: `${x}px`,
@@ -236,39 +228,57 @@ const onMouseMove = (event) => {
   if (tooltipVisible.value) updateTooltipPosition(event);
 };
 
-const onMouseLeave = () => {
-  tooltipVisible.value = false;
+const onMouseLeave = () => { tooltipVisible.value = false; };
+
+const onTouchStart = (event, item) => {
+  tooltipData.value = item;
+  tooltipVisible.value = true;
+  updateTooltipPosition(event);
 };
 
-// --- LÓGICA RESPONSIVE ---
+const handleOutsideInteraction = (event) => {
+  if (tooltipVisible.value && !event.target.closest('.chart-bar-group')) {
+    tooltipVisible.value = false;
+  }
+};
+
+// --- RESPONSIVE LOGIC ---
+let resizeTimeout = null;
 let resizeObserver = null;
+
 onMounted(() => {
-  requestAnimationFrame(() => {
+  nextTick(() => {
     setTimeout(() => { isMounted.value = true; }, 50);
   });
 
   if (chartWrapper.value) {
     resizeObserver = new ResizeObserver((entries) => {
       if (entries[0]) {
-        containerWidth.value = entries[0].contentRect.width - 2; 
+        isResizing.value = true;
+        containerWidth.value = entries[0].contentRect.width;
+        
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => { isResizing.value = false; }, 100);
       }
     });
     resizeObserver.observe(chartWrapper.value);
   }
+
+  document.addEventListener('touchstart', handleOutsideInteraction, { passive: true });
 });
 
 onUnmounted(() => {
   if (resizeObserver) resizeObserver.disconnect();
+  document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CONFIGURACIÓN BASE ---
+// --- CÁLCULOS BASE ---
 const svgHeight = 250; 
 const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
 const minSpacePerBar = 90; 
 
-// --- CÁLCULO DE LÍMITE DINÁMICO ---
 const maxValue = computed(() => {
   if (!props.data || props.data.length === 0) return 100;
   const maxInData = Math.max(...props.data.map(item => Number(item.value) || 0));
@@ -278,7 +288,6 @@ const maxValue = computed(() => {
   return Math.min(roundedMax, 100);
 });
 
-// --- DIMENSIONES Y CÁLCULOS ---
 const svgWidth = computed(() => {
   const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar);
   return Math.max(containerWidth.value, minRequiredWidth, 400);
@@ -287,7 +296,6 @@ const svgWidth = computed(() => {
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
 
-// --- LÓGICA DEL EJE Y ---
 const computedYTicks = computed(() => {
   const max = maxValue.value;
   return Array.from({ length: ticksCount + 1 }, (_, i) => {
@@ -299,12 +307,10 @@ const computedYTicks = computed(() => {
   });
 });
 
-// --- PROCESAMIENTO DE PUNTOS ---
 const processedData = computed(() => {
   return props.data.map((item, index) => {
     const heightRatio = item.value / maxValue.value; 
     const yPos = margins.top + chartHeight - (heightRatio * chartHeight);
-    
     return {
       ...item,
       x: margins.left + (index * spacePerBar.value) + (spacePerBar.value / 2),
@@ -313,25 +319,21 @@ const processedData = computed(() => {
   });
 });
 
-// --- GENERACIÓN DE PATHS (Línea y Área) ---
 const linePath = computed(() => {
   if (processedData.value.length === 0) return '';
   const pts = processedData.value;
   let d = `M ${pts[0].x} ${pts[0].y}`;
-  for (let i = 1; i < pts.length; i++) {
-    d += ` L ${pts[i].x} ${pts[i].y}`;
-  }
+  for (let i = 1; i < pts.length; i++) { d += ` L ${pts[i].x} ${pts[i].y}`; }
   return d;
 });
 
 const areaPath = computed(() => {
   if (processedData.value.length === 0) return '';
   const pts = processedData.value;
-  let d = `M ${pts[0].x} ${margins.top + chartHeight}`;
-  for (let i = 0; i < pts.length; i++) {
-    d += ` L ${pts[i].x} ${pts[i].y}`;
-  }
-  d += ` L ${pts[pts.length - 1].x} ${margins.top + chartHeight} Z`;
+  const baseY = margins.top + chartHeight;
+  let d = `M ${pts[0].x} ${baseY}`;
+  for (let i = 0; i < pts.length; i++) { d += ` L ${pts[i].x} ${pts[i].y}`; }
+  d += ` L ${pts[pts.length - 1].x} ${baseY} Z`;
   return d;
 });
 </script>

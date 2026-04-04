@@ -108,11 +108,11 @@ onMounted(async () => {
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg dark:text-slate-50">Estadísticas del personal</span>
-          <span class="-mt-1 text-xs text-slate-400">Formación y crecimiento de la Unidad de Administración</span>
+          <span class="-mt-1 text-xs text-slate-400">Formación y crecimiento del Área de Administración</span>
         </div>
       </div>
     </div>
-    <div class="flex gap-4 overflow-x-auto pb-0.5 snap-x snap-mandatory hide-scrollbar">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">
       <Card
         label="Personal evaluado"
         icon="fi-rr-user"

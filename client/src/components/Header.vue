@@ -67,7 +67,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="relative flex items-center justify-between px-4 h-14 border-b border-slate-200 bg-white text-slate-500 shrink-0 dark:text-slate-300 dark:bg-slate-850 dark:border-slate-700">
+  <header class="relative flex items-center justify-between px-4 h-14 border-b border-slate-200 bg-white text-slate-500 shrink-0 dark:text-slate-300 dark:bg-slate-850 dark:border-slate-750">
     <div class="flex items-center gap-4">
       <button @click="emit('toggle-sidebar')" type="button" class="grid place-items-center size-8 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-100 cursor-pointer duration-300 ease-in-out dark:bg-slate-850 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:border-slate-700">
         <i class="fi-rr-menu-burger text-base"></i>

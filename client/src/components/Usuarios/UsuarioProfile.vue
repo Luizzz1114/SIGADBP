@@ -67,10 +67,10 @@ const onFormSubmit = async ({ valid, values, reset }) => {
     <div class="mt-4">
 
       <div class="flex gap-4 mt-4">
-        <div class="grid place-items-center p-3 size-18 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
+        <div class="grid place-items-center p-3 size-16 text-2xl font-bold rounded-2xl bg-blue-500 text-white">
           {{ usuario.username.charAt(0) }}
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col">
           <span class="font-bold text-xl! tracking-tight leading-none">{{ usuario.username }}</span>
           <span class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ usuario.correo }}</span>
           <CustomTag
@@ -150,14 +150,10 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   <span class="text-slate-500 dark:text-slate-400">Fecha de salida</span>
                   <span class="font-medium! text-right">{{ usuario.fechasalida || 'N/A' }}</span>
                 </div>
-              </div>
-              <div class="grid grid-cols-1 gap-4 mt-4">
-                <MiniCard
-                  label="Años de servicio" 
-                  :value="usuario.antiguedad"
-                  icon="fi-sr-calendar-clock" 
-                  color="indigo" 
-                />
+                <div class="flex justify-between gap-3">
+                  <span class="text-slate-500 dark:text-slate-400">Años de servicio</span>
+                  <span class="font-medium! text-right">{{ usuario.antiguedad }}</span>
+                </div>
               </div>
             </TabPanel>
             <TabPanel value="1">

@@ -26,7 +26,7 @@ const activeTab = ref('globales');
         </div>
       </div>
     </div>
-    <Tabs v-model:value="activeTab" class="pt-2">
+    <Tabs v-model:value="activeTab" class="pt-4">
       <TabList>
         <Tab value="globales" class="flex items-center gap-2 font-medium">
           <i class="fi-rr-chart-pie-alt"></i>

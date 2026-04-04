@@ -18,6 +18,7 @@
           </pattern>
         </defs>
 
+        <!-- Eje Y -->
         <g class="y-axis" aria-hidden="true">
           <template v-for="(tick, index) in computedYTicks" :key="'tick-' + index">
             <line 
@@ -39,16 +40,19 @@
           </template>
         </g>
 
+        <!-- Grupos de Barras -->
         <g 
           v-for="(item, index) in processedData" 
           :key="index"
-          class="group cursor-pointer outline-none"
+          class="group cursor-pointer outline-none chart-bar-group"
           role="graphics-symbol"
           :aria-label="`Mes de ${item.label}, valor: ${item.value}`"
           @mouseenter="onMouseEnter($event, item)"
           @mousemove="onMouseMove($event)"
           @mouseleave="onMouseLeave"
+          @touchstart.passive="onTouchStart($event, item)"
         >
+          <!-- Área de hover -->
           <rect 
             :x="item.x - (spacePerBar / 2)" 
             :y="margins.top" 
@@ -58,6 +62,7 @@
             class="transition-colors duration-200 group-hover:fill-slate-200/30 dark:group-hover:fill-slate-800/50"
           />
 
+          <!-- Fondo gris de la barra -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="margins.top"
@@ -67,6 +72,7 @@
             class="fill-slate-100/50 dark:fill-slate-800/50"
           />
           
+          <!-- Patrón de rayas -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="margins.top"
@@ -76,6 +82,7 @@
             fill="url(#stripes_bar)"
           />
 
+          <!-- Barra de valor (Animada) -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="isMounted ? item.yAnimated : item.yStatic"
@@ -86,20 +93,20 @@
             :class="item.color || 'fill-blue-400 dark:fill-blue-400'" 
             :style="{ 
               transitionProperty: 'height, y', 
-              transitionDuration: '700ms', 
+              transitionDuration: isResizing ? '0ms' : '700ms', 
               transitionTimingFunction: 'ease-out',
-              transitionDelay: `${index * 40}ms`, 
-              marginBottom: '12px',
+              transitionDelay: isResizing ? '0ms' : `${index * 40}ms`, 
             }"
           />
 
+          <!-- Label del eje X -->
           <text
             :x="item.x"
             :y="item.yStatic + 25"
             text-anchor="middle"
             :class="[
               'fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300',
-              item.hoverTextColor || 'group-hover:fill-slate-700 dark:group-hover:fill-slate-200!',
+              item.hoverTextColor || 'group-hover:fill-slate-700 dark:group-hover:fill-slate-200',
               index === processedData.length - 1 && historical ? 'font-semibold fill-slate-700 dark:fill-slate-200!' : ''
             ]"
             aria-hidden="true"
@@ -110,6 +117,7 @@
       </svg>
     </div>
 
+    <!-- Tooltip -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -137,7 +145,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
 
 const props = defineProps({
   data: { type: Array, required: true },
@@ -148,10 +156,11 @@ const props = defineProps({
 });
 
 const isMounted = ref(false);
+const isResizing = ref(false);
 const chartWrapper = ref(null);
 const containerWidth = ref(400);
 
-// --- ESTADO Y LÓGICA DEL TOOLTIP ---
+// --- TOOLTIP LOGIC (ORIGINAL) ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({ 
@@ -159,28 +168,29 @@ const tooltipStyle = ref({
 });
 
 const updateTooltipPosition = (event) => {
-  let x = event.clientX;
-  let y = event.clientY; 
-  const offset = 15; 
+  let x, y;
+  let isTouch = false;
 
+  if (event.touches && event.touches.length > 0) {
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+    isTouch = true;
+  } else {
+    x = event.clientX;
+    y = event.clientY;
+  }
+
+  if (x === undefined || y === undefined) return;
+
+  const offset = isTouch ? 35 : 15; 
   let transformX = '-50%';
   let transformY = '-100%';
 
-  if (x > window.innerWidth - 180) {
-    transformX = '-100%';
-    x -= offset;
-  } else if (x < 150) {
-    transformX = '0%';
-    x += offset; 
-  }
+  if (x > window.innerWidth - 180) { transformX = '-100%'; x -= offset; }
+  else if (x < 150) { transformX = '0%'; x += offset; }
 
-  if (y < 100) {
-    transformY = '0%';
-    y += offset;
-  } else {
-    transformY = '-100%';
-    y -= offset;
-  }
+  if (y < 100) { transformY = '0%'; y += offset; }
+  else { transformY = '-100%'; y -= offset; }
 
   tooltipStyle.value = {
     left: `${x}px`,
@@ -200,29 +210,47 @@ const onMouseMove = (event) => {
   if (tooltipVisible.value) updateTooltipPosition(event);
 };
 
-const onMouseLeave = () => {
-  tooltipVisible.value = false;
+const onMouseLeave = () => { tooltipVisible.value = false; };
+const onTouchStart = (event, item) => {
+  tooltipData.value = item;
+  tooltipVisible.value = true;
+  updateTooltipPosition(event);
 };
 
-// --- LÓGICA RESPONSIVE ---
+const handleOutsideInteraction = (event) => {
+  if (tooltipVisible.value && !event.target.closest('.chart-bar-group')) {
+    tooltipVisible.value = false;
+  }
+};
+
+// --- RESPONSIVE LOGIC (OPTIMIZADA) ---
+let resizeTimeout = null;
 let resizeObserver = null;
+
 onMounted(() => {
-  requestAnimationFrame(() => {
+  nextTick(() => {
     setTimeout(() => { isMounted.value = true; }, 50);
   });
 
   if (chartWrapper.value) {
     resizeObserver = new ResizeObserver((entries) => {
       if (entries[0]) {
-        containerWidth.value = entries[0].contentRect.width - 2; 
+        isResizing.value = true;
+        containerWidth.value = entries[0].contentRect.width;
+        
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => { isResizing.value = false; }, 100);
       }
     });
     resizeObserver.observe(chartWrapper.value);
   }
+
+  document.addEventListener('touchstart', handleOutsideInteraction, { passive: true });
 });
 
 onUnmounted(() => {
   if (resizeObserver) resizeObserver.disconnect();
+  document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
 // --- CONFIGURACIÓN BASE ---
@@ -230,29 +258,27 @@ const svgHeight = 250;
 const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
-const minSpacePerBar = 90; 
 
-// --- CÁLCULO DE LÍMITE DINÁMICO ---
+// --- CÁLCULOS ---
 const maxValue = computed(() => {
   if (!props.data || props.data.length === 0) return ticksCount;
   const maxInData = Math.max(...props.data.map(item => item.value));
   if (maxInData <= 0) return ticksCount;
-  
   const targetMax = maxInData * 1.15;
   return Math.ceil(targetMax / ticksCount) * ticksCount;
 });
 
-// --- DIMENSIONES Y CÁLCULOS ---
+const minSpacePerBar = computed(() => containerWidth.value < 600 ? 70 : 90);
+
 const svgWidth = computed(() => {
-  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar);
-  return Math.max(containerWidth.value, minRequiredWidth, 400);
+  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar.value);
+  return Math.max(containerWidth.value, minRequiredWidth);
 });
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
 const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32));
 
-// --- LÓGICA DEL EJE Y (Enteros) ---
 const computedYTicks = computed(() => {
   const max = maxValue.value;
   return Array.from({ length: ticksCount + 1 }, (_, i) => {
@@ -264,7 +290,6 @@ const computedYTicks = computed(() => {
   });
 });
 
-// --- LÓGICA DE LAS BARRAS ---
 const processedData = computed(() => {
   return props.data.map((item, index) => {
     const heightRatio = item.value / maxValue.value; 
