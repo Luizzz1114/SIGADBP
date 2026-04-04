@@ -114,7 +114,7 @@
         
         <div class="px-2 pb-2 pt-1.5 flex flex-col">
           <!-- Valor Principal -->
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-between gap-4 whitespace-nowrap">
             <div class="flex items-center gap-2">
               <svg width="10" height="10" class="shrink-0 overflow-visible">
                 <rect width="10" height="10" rx="5" :fill="tooltipData.color" />
@@ -131,7 +131,7 @@
           <!-- Detalles (Porcentaje y Formateador) -->
           <div class="pl-4.5 flex flex-col">
             <!-- El porcentaje siempre se muestra de primero en los detalles -->
-            <div class="flex items-center justify-between gap-4 text-xs">
+            <div class="flex items-center justify-between gap-4 text-xs whitespace-nowrap">
               <span class="text-slate-500 dark:text-slate-400">Porcentaje:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ tooltipData.percentage }}%</span>
             </div>
@@ -141,7 +141,7 @@
               <div 
                 v-for="(item, idx) in detailsFormatter(tooltipData.detalles)" 
                 :key="'detail-' + idx" 
-                class="flex items-center justify-between gap-4 text-xs mt-0.5"
+                class="flex items-center justify-between gap-4 text-xs whitespace-nowrap"
               >
                 <span class="text-slate-500 dark:text-slate-400">{{ item.label }}:</span>
                 <span class="font-medium text-slate-700 dark:text-slate-300">{{ item.value }}</span>
@@ -218,7 +218,7 @@ const formatNumber = (num) => new Intl.NumberFormat('en-US').format(num);
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({ 
-  left: '0px', top: '0px', transform: 'translate(-50%, -100%)' // Removido el nowrap
+  left: '0px', top: '0px', transform: 'translate(-50%, -100%)', whiteSpace: 'nowrap'
 });
 
 const updateTooltipPosition = (event) => {

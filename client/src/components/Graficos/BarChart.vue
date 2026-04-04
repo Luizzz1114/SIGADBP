@@ -35,7 +35,8 @@
               text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
             >
-              {{ tick.value }}
+              <!-- Solo añade % si el prop está activo -->
+              {{ tick.value }}{{ isPercentage ? '%' : '' }}
             </text>
           </template>
         </g>
@@ -129,7 +130,7 @@
           {{ tooltipData.label }}
         </div>
         <div class="px-2 pb-2 pt-1.5 flex flex-col">
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-between gap-4 whitespace-nowrap">
             <div class="flex items-center gap-2">
               <div :class="tooltipData.color || 'bg-blue-400'" class="w-2.5 h-2.5 rounded-full shrink-0"></div>
               <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
@@ -141,18 +142,16 @@
             </span>
           </div>
           
-          <!-- Detalles Formateados Estilo AreaChart -->
           <div v-if="tooltipData.detalles && detailsFormatter" class="pl-4.5 flex flex-col">
             <div 
               v-for="(item, idx) in detailsFormatter(tooltipData.detalles)" 
               :key="idx" 
-              class="flex items-center justify-between gap-4 text-xs"
+              class="flex items-center justify-between gap-4 text-xs whitespace-nowrap"
             >
               <span class="text-slate-500 dark:text-slate-400">{{ item.label }}:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ item.value }}</span>
             </div>
           </div>
-
         </div>
       </div>
     </Teleport>
@@ -167,7 +166,8 @@ const props = defineProps({
   historical: { type: Boolean, default: false },
   type: { type: String, default: 'Valor'},
   unit: { type: String, default: ''},
-  detailsFormatter: { type: Function, default: null } 
+  detailsFormatter: { type: Function, default: null },
+  isPercentage: { type: Boolean, default: false }
 });
 
 const isMounted = ref(false);
@@ -179,13 +179,12 @@ const containerWidth = ref(400);
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({ 
-  left: '0px', top: '0px', transform: 'translate(-50%, -100%)' 
+  left: '0px', top: '0px', transform: 'translate(-50%, -100%)', whiteSpace: 'nowrap'
 });
 
 const updateTooltipPosition = (event) => {
   let x, y;
   let isTouch = false;
-
   if (event.touches && event.touches.length > 0) {
     x = event.touches[0].clientX;
     y = event.touches[0].clientY;
@@ -194,19 +193,14 @@ const updateTooltipPosition = (event) => {
     x = event.clientX;
     y = event.clientY;
   }
-
   if (x === undefined || y === undefined) return;
-
   const offset = isTouch ? 35 : 15; 
   let transformX = '-50%';
   let transformY = '-100%';
-
   if (x > window.innerWidth - 180) { transformX = '-100%'; x -= offset; }
   else if (x < 150) { transformX = '0%'; x += offset; }
-
   if (y < 100) { transformY = '0%'; y += offset; }
   else { transformY = '-100%'; y -= offset; }
-
   tooltipStyle.value = {
     left: `${x}px`,
     top: `${y}px`,
@@ -245,20 +239,17 @@ onMounted(() => {
   nextTick(() => {
     setTimeout(() => { isMounted.value = true; }, 50);
   });
-
   if (chartWrapper.value) {
     resizeObserver = new ResizeObserver((entries) => {
       if (entries[0]) {
         isResizing.value = true;
         containerWidth.value = entries[0].contentRect.width;
-        
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => { isResizing.value = false; }, 100);
       }
     });
     resizeObserver.observe(chartWrapper.value);
   }
-
   document.addEventListener('touchstart', handleOutsideInteraction, { passive: true });
 });
 
@@ -267,7 +258,7 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CONFIGURACIÓN BASE ---
+// --- CONFIGURACIÓN BASE (RESTAURADA) ---
 const svgHeight = 250; 
 const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
 const ticksCount = 4;
@@ -276,14 +267,19 @@ const chartHeight = svgHeight - margins.top - margins.bottom;
 // --- CÁLCULOS ---
 const maxValue = computed(() => {
   if (!props.data || props.data.length === 0) return ticksCount;
-  const maxInData = Math.max(...props.data.map(item => item.value));
-  if (maxInData <= 0) return ticksCount;
+  const maxInData = Math.max(...props.data.map(item => Number(item.value) || 0));
+  if (maxInData <= 0) return props.isPercentage ? 100 : ticksCount;
+  
+  if (props.isPercentage) {
+    const baseMax = Math.max(100, maxInData);
+    return Math.ceil(baseMax / ticksCount) * ticksCount;
+  }
+  
   const targetMax = maxInData * 1.15;
   return Math.ceil(targetMax / ticksCount) * ticksCount;
 });
 
 const minSpacePerBar = computed(() => containerWidth.value < 600 ? 70 : 90);
-
 const svgWidth = computed(() => {
   const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar.value);
   return Math.max(containerWidth.value, minRequiredWidth);
@@ -291,6 +287,7 @@ const svgWidth = computed(() => {
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
+
 const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32));
 
 const computedYTicks = computed(() => {
@@ -309,7 +306,6 @@ const processedData = computed(() => {
     const heightRatio = item.value / maxValue.value; 
     const height = heightRatio * chartHeight;
     const yStatic = margins.top + chartHeight; 
-    
     return {
       ...item,
       x: margins.left + (index * spacePerBar.value) + (spacePerBar.value / 2),

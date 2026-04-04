@@ -145,7 +145,7 @@
           {{ tooltipData.label }}
         </div>
         <div class="px-2 pb-2 pt-1.5 flex flex-col">
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-between gap-4 whitespace-nowrap">
             <div class="flex items-center gap-2">
               <div class="w-2.5 h-2.5 rounded-full shrink-0 bg-blue-400"></div>
               <span class="text-sm font-bold text-slate-700 dark:text-slate-100">
@@ -160,7 +160,7 @@
             <div 
               v-for="(item, idx) in detailsFormatter(tooltipData.detalles)" 
               :key="idx" 
-              class="flex items-center justify-between gap-4 text-xs"
+              class="flex items-center justify-between gap-4 text-xs whitespace-nowrap"
             >
               <span class="text-slate-500 dark:text-slate-400">{{ item.label }}:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ item.value }}</span>

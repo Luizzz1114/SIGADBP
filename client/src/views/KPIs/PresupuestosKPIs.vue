@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import MoneyCard from '@/components/MoneyCard.vue';
-import MultiBarChart from '@/components/Graficos/MultiBarChart.vue';
+import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -15,9 +15,9 @@ const items = [
 ];
 
 const kpisConfig = [
-  { name: 'Inversión Equipos Tecnológicos', color: '#2563eb', icon: 'fi-rr-computer', label: 'Inversión Equipos Tecnológicos' },
-  { name: 'Inversión Muebles', color: '#60a5fa', icon: 'fi-rr-chair',    label: 'Inversión Muebles' },
-  { name: 'Mantenimiento Bienes', color: '#93c5fd', icon: 'fi-rr-tools', label: 'Mantenimiento Bienes' }
+  { name: 'Inversión Equipos Tecnológicos', color: '#2563eb', icon: 'fi-rr-computer' },
+  { name: 'Inversión Muebles', color: '#60a5fa', icon: 'fi-rr-chair' },
+  { name: 'Mantenimiento Bienes', color: '#93c5fd', icon: 'fi-rr-tools' }
 ];
 
 
@@ -56,21 +56,40 @@ const cardsData = computed(() => {
   });
 });
 
-const chartLabels = computed(() => {
-  const primerHistorial = respuestasAPI.value[0]?.[0]?.historial_metricas || [];
-  return primerHistorial.map(m => m.periodo); 
-});
-
-const chartDatasets = computed(() => {
-  if (!respuestasAPI.value.length) return [];
-  
-  return respuestasAPI.value.map((res, index) => ({
-    name: kpisConfig[index].name,
-    color: kpisConfig[index].color,
-    values: (res?.[0]?.historial_metricas || []).map(m => m.valor),
-    detalles: (res?.[0]?.historial_metricas || []).map(m => m.detalles)
+const chartDataEquipos = computed(() => {
+  const historial = respuestasAPI.value[0]?.[0]?.historial_metricas || [];
+  return historial.map(m => ({
+    label: m.periodo,
+    value: m.valor,
+    detalles: m.detalles
   }));
 });
+
+const chartDataMuebles = computed(() => {
+  const historial = respuestasAPI.value[1]?.[0]?.historial_metricas || [];
+  return historial.map(m => ({
+    label: m.periodo,
+    value: m.valor,
+    detalles: m.detalles
+  }));
+});
+
+const chartDataMantenimiento = computed(() => {
+  const historial = respuestasAPI.value[2]?.[0]?.historial_metricas || [];
+  return historial.map(m => ({
+    label: m.periodo,
+    value: m.valor,
+    detalles: m.detalles
+  }));
+});
+
+const formatDetallesPresupuesto = (detalles) => {
+  if (!detalles) return [];
+  return [
+    { label: 'Ejecutado', value: `$${new Intl.NumberFormat('de-DE').format(detalles.cantidad)}` },
+    { label: 'Total', value: `$${new Intl.NumberFormat('de-DE').format(detalles.total)}` }
+  ];
+};
 
 
 // --- Operaciones con la API ---
@@ -107,7 +126,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
       <MoneyCard
         v-for="(card, index) in cardsData"
         :key="index"
@@ -117,13 +136,13 @@ onMounted(async () => {
     </div>
 
     <div class="w-full">
-      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-850">
         <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
             <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
-              <i class="fi-rr-percentage"></i>
+              <i class="fi-rr-stats"></i>
             </div>
-            <span class="font-bold text-base leading-tight dark:text-slate-50">Distribución porcentual de la inversión</span>
+            <span class="font-bold text-base leading-tight dark:text-slate-50">Histórico de ejecución presupuestaria</span>
           </div>
           <Button @click="opPresupuesto.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
           <Popover ref="opPresupuesto">
@@ -140,11 +159,67 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="w-full p-4">
-          <MultiBarChart
-            :labels="chartLabels" 
-            :datasets="chartDatasets"
-          />
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-slate-200 dark:bg-slate-700">
+          <!-- Equipos Tecnológicos -->
+          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
+            <div class="flex items-center gap-2">
+              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
+                <i class="fi-rr-computer"></i>
+              </div>
+              <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Equipos Tecnológicos</span>
+            </div>
+            <div class="w-full">
+              <BarChart
+                v-if="chartDataEquipos.length"
+                :data="chartDataEquipos" 
+                is-percentage
+                historical
+                type="Ejecución"
+                unit="%"
+                :details-formatter="formatDetallesPresupuesto"
+              />
+            </div>
+          </div>
+          <!-- Muebles -->
+          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
+            <div class="flex items-center gap-2">
+              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
+                <i class="fi-rr-chair"></i>
+              </div>
+              <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Muebles</span>
+            </div>
+            <div class="w-full">
+              <BarChart
+                v-if="chartDataMuebles.length"
+                :data="chartDataMuebles" 
+                is-percentage
+                historical
+                type="Ejecución"
+                unit="%"
+                :details-formatter="formatDetallesPresupuesto"
+              />
+            </div>
+          </div>
+          <!-- Mantenimiento Bienes -->
+          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850 lg:col-span-2">
+            <div class="flex items-center gap-2">
+              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
+                <i class="fi-rr-tools"></i>
+              </div>
+              <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Mantenimiento Bienes</span>
+            </div>
+            <div class="w-full">
+              <BarChart
+                v-if="chartDataMantenimiento.length"
+                :data="chartDataMantenimiento" 
+                is-percentage
+                historical
+                type="Ejecución"
+                unit="%"
+                :details-formatter="formatDetallesPresupuesto"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
