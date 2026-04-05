@@ -6,7 +6,7 @@ import usuariosService from '@/services/usuarios.services.js';
 import { loginSchema } from '@/utils/login.utils.js';
 import { socket } from '@/api/socket';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
-const { showError } = useNotificaciones();
+const { showError, showWarning } = useNotificaciones();
 
 const usuario = ref({
   username: '',
@@ -37,7 +37,11 @@ async function login(values) {
       showError('Credenciales incorrectas.');
     }
   } catch(error) {
-    showError('Error al validar las credenciales.');
+    if (error.response.status === 429) {
+      showWarning(error.response.data.error)
+    } else {
+      showError('Error al validar las credenciales.');
+    }
     console.error('Ocurrió un error al validar las credenciales: ', error);
   } finally {
     cargando.value = false;

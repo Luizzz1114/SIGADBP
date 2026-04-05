@@ -1,12 +1,13 @@
 import express from 'express';
 import UsuariosController from '../controllers/usuariosController.js';
+import { loginLimiter } from '../middlewares/rateLimit.js';
 import { verificarToken } from '../middlewares/authMiddleware.js'; 
 
 const UsuariosRouter = express.Router();
 
-UsuariosRouter.post('/login', UsuariosController.iniciarSesion);
+UsuariosRouter.post('/login', loginLimiter, UsuariosController.iniciarSesion);
+UsuariosRouter.post('/recuperar-contrasena', loginLimiter, UsuariosController.recuperarContrasena);
 UsuariosRouter.post('/username-correo', verificarToken, UsuariosController.validarUsernameCorreo);
-UsuariosRouter.post('/recuperar-contrasena', UsuariosController.recuperarContrasena);
 UsuariosRouter.put('/cambiar-contrasena', verificarToken, UsuariosController.cambiarContrasena);
 
 UsuariosRouter.route('/')

@@ -8,26 +8,8 @@ export const loginSchema = z.object({
 
 export const recuperarContrasenaSchema = z.object({
   identificador: z.string().min(1, 'Requerido'),
-  metodo: z.enum(['correo', 'pregunta']),
-  pregunta: z.string().optional(),
-  respuesta: z.string().optional()
-}).superRefine((datos, ctx) => {
-  if (datos.metodo === 'pregunta') {
-    if (!datos.pregunta || datos.pregunta.trim() === '') {
-      ctx.addIssue({
-        path: ['pregunta'],
-        message: 'La pregunta es requerida',
-        code: "custom",
-      });
-    }
-    if (!datos.respuesta || datos.respuesta.trim() === '') {
-      ctx.addIssue({
-        path: ['respuesta'],
-        message: 'La respuesta es requerida',
-        code: "custom",
-      });
-    }
-  }
+  pregunta: z.string().min(1, 'Requerido'),
+  respuesta: z.string().min(1, 'Requerido'),
 });
 
 const contrasenaBaseSchema = z.string({ required_error: 'La contraseña es obligatoria' })

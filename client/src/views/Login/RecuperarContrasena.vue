@@ -6,7 +6,7 @@ import { nuevaContrasenaSchema, recuperarContrasenaSchema } from '@/utils/login.
 import { preguntasSeguridad, } from '@/utils/usuarios.utils';
 import usuariosServices from '@/services/usuarios.services';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
-const { showSuccess, showError } = useNotificaciones();
+const { showSuccess, showError, showWarning } = useNotificaciones();
 
 const vistaActual = ref('inicio');
 const cargando = ref(false);
@@ -15,9 +15,8 @@ const resolverNuevaContrasena = zodResolver(nuevaContrasenaSchema);
 
 const datos = ref({
   identificador: '',
-  metodo: 'correo', 
-  pregunta: undefined,
-  respuesta: undefined
+  pregunta: '',
+  respuesta: ''
 });
 
 const datosNuevaContrasena = ref({
@@ -25,32 +24,23 @@ const datosNuevaContrasena = ref({
   confirmarContrasena: ''
 });
 
-const metodoRecuperacion = [
-  { label: 'Enviar por correo', value: 'correo' },
-  { label: 'Pregunta de seguridad', value: 'pregunta' }
-];
-
 const onFormSubmit = async ({ valid, values }) => {
   if (!valid) return;
-  if (values.metodo === 'correo') return;
-
   cargando.value = true;
   try {
     const respuesta = await usuariosServices.recuperarContrasena(values);
     if (respuesta.encontrado) {
-
       localStorage.setItem('token_tmp', JSON.stringify(respuesta.token));
-
-      if (values.metodo === 'correo') {
-        vistaActual.value = 'correo_enviado';
-      } else {
-        vistaActual.value = 'nueva_contrasena';
-      }
+      vistaActual.value = 'nueva_contrasena';
     } else {
       showError(respuesta.mensaje);
     }
   } catch (error) {
-    showError(error.response?.data?.message);
+    if (error.response.status === 429) {
+      showWarning(error.response.data.error)
+    } else {
+      showError(error.response?.data?.message);
+    }
     console.error('Ocurrió un error al validar las credenciales: ', error);
   } finally {
     cargando.value = false;
@@ -103,7 +93,7 @@ onUnmounted(() => {
     <template v-if="vistaActual === 'inicio'">
       <div class="flex flex-col">
         <span class="text-xl font-bold">Recuperar contraseña</span>
-        <span class="text-sm text-slate-400">Ingrese su nombre de usuario o correo para recuperar su contraseña</span>
+        <span class="text-sm text-slate-400">Ingrese su usuario o correo y la preguta de seguridad para recuperar su contraseña</span>
       </div>
       <Form v-slot="$form" :initialValues="datos" :resolver="resolver" @submit="onFormSubmit">
         <div class="grid grid-cols-1 gap-y-4 gap-x-6">
@@ -120,19 +110,15 @@ onUnmounted(() => {
             </Message>
           </div>
           <div class="flex flex-col gap-1">
-            <label for="identificador">Método de recuperación</label>
-            <SelectButton name="metodo" :options="metodoRecuperacion" optionLabel="label" optionValue="value" fluid />
-          </div>
-          <div class="flex flex-col gap-1 mt-2">
             <span>Pregunta de seguridad</span>
-            <Select name="pregunta" :options="preguntasSeguridad" size="small" fluid :disabled="$form.metodo?.value === 'correo' || $form.metodo?.value === null" />
+            <Select name="pregunta" :options="preguntasSeguridad" size="small" fluid />
             <Message v-if="$form.pregunta?.invalid" severity="error" size="small" variant="simple">
               {{ $form.pregunta.error?.message }}
             </Message>
           </div>
           <div class="flex flex-col gap-1">
             <label for="respuesta">Respuesta secreta</label>
-            <InputText name="respuesta" id="respuesta" size="small" fluid autocomplete="off" :disabled="$form.metodo?.value === 'correo' || $form.metodo?.value === null" />
+            <InputText name="respuesta" id="respuesta" size="small" fluid autocomplete="off" />
             <Message v-if="$form.respuesta?.invalid" severity="error" size="small" variant="simple">
               {{ $form.respuesta.error?.message }}
             </Message>
@@ -140,28 +126,11 @@ onUnmounted(() => {
         </div>
         <div class="flex items-center gap-3 mt-6">
           <Button as="router-link" to="/login" label="Volver" severity="secondary" outlined class="grow h-9!" />
-          <Button :label="$form.metodo?.value === 'correo' ? 'Enviar nueva contraseña' : 'Verificar y recuperar'" type="submit" class="grow h-9! whitespace-nowrap" :disabled="cargando">
+          <Button label="Verificar y recuperar" type="submit" class="grow h-9! whitespace-nowrap" :disabled="cargando">
             <i class="fi-rr-loading text-lg animate-[spin_5s_linear_infinite] text-white!" v-if="cargando"></i>
           </Button>
         </div>
       </Form>
-    </template>
-
-    <template v-else-if="vistaActual === 'correo_enviado'">
-      <div class="flex flex-col gap-4 py-8">
-        <div class="flex flex-col gap-2">
-          <span class="text-xl font-bold">Correo enviado</span>
-          <span class="text-sm text-slate-500 dark:text-slate-400">Hemos enviado las credenciales de recuperación al correo:</span>
-          <span class="font-bold text-slate-700 dark:text-slate-200">{{ 'correo@ejemplo.com' }}</span>
-        </div>
-        <div class="flex items-center gap-3 p-4 rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-          <i class="fi-rr-info text-sm"></i>
-          <span class="text-[13px] leading-4">
-            Si no lo encuentras en unos minutos, revisa tu carpeta de <b>spam</b> o correo no deseado.
-          </span>
-        </div>
-        <Button as="router-link" to="/login" label="Volver al inicio de sesión" class="mt-4 w-full h-9!" />
-      </div>
     </template>
 
     <template v-else-if="vistaActual === 'nueva_contrasena'">

@@ -2,6 +2,7 @@ import 'dotenv/config';
 import http from 'http';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import router from './routes/index.js';
 import { iniciarTareasProgramadas } from './jobs/scheduler.js';
 import { Server as SocketServer } from 'socket.io';
@@ -19,6 +20,7 @@ const io = new SocketServer(server, {
 app.set('socketio', io);
 app.use(express.json());
 app.use(cors({ origin: '*' }));
+app.use(helmet());
 app.use('/api-sigadbp', router);
 
 iniciarTareasProgramadas();-
