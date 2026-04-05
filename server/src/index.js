@@ -23,7 +23,7 @@ app.use(cors({ origin: '*' }));
 app.use(helmet());
 app.use('/api-sigadbp', router);
 
-iniciarTareasProgramadas();-
+iniciarTareasProgramadas();
 
 io.use(verificarTokenSocket);
 io.on('connection', (socket) => {

@@ -67,7 +67,7 @@ class PresupuestosController {
         res.status(400).json({ error: 'Error al crear el presupuesto.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear el presupuesto.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al crear el presupuesto.', error: error.message });
     }
   }
 
@@ -81,7 +81,7 @@ class PresupuestosController {
         res.status(400).json({ error: 'Error al actualizar el presupuesto.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar el presupuesto.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al actualizar el presupuesto.', error: error.message });
     }
   }
 
@@ -98,7 +98,7 @@ class PresupuestosController {
       if (error.code === '23503') {
         return res.status(409).json({ message: "No se puede eliminar el presupuesto porque tiene registros asociados." });
       }
-      res.status(500).json({ error: 'Error al eliminar el presupuesto.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al eliminar el presupuesto.', error: error.message });
     }
   }
 }

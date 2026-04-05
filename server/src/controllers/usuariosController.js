@@ -6,7 +6,7 @@ class UsuariosController {
       const usuarios = await UsuariosService.listar();
       res.status(200).json(usuarios);
     } catch (error) {
-      res.status(500).json({ error: 'Error al listar usuarios.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al listar usuarios.', error: error.message });
     }
   }
 
@@ -16,7 +16,7 @@ class UsuariosController {
       const sonUnicos = await UsuariosService.validarUsernameCorreo(validar);
       res.status(200).json(sonUnicos);
     } catch (error) {
-      res.status(500).json({ error: 'Error al validar username y correo.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al validar username y correo.', error: error.message });
     } 
   }
 
@@ -26,7 +26,7 @@ class UsuariosController {
       const usuario = await UsuariosService.obtenerPorId(id);
       res.status(200).json(usuario);
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener usuario por ID.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al obtener usuario por ID.', error: error.message });
     }
   }
 
@@ -36,7 +36,7 @@ class UsuariosController {
       const resultado = await UsuariosService.iniciarSesion(usuario);
       res.status(200).json(resultado);
     } catch (error) {
-      res.status(500).json({ error: 'Error al iniciar sesión.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al iniciar sesión.', error: error.message });
     }
   }
 
@@ -46,7 +46,7 @@ class UsuariosController {
       const resultado = await UsuariosService.recuperarContrasena(user);
       res.status(200).json(resultado);
     } catch (error) {
-      res.status(500).json({ error: 'Error al recuperar contraseña.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al recuperar contraseña.', error: error.message });
     }
   }
 
@@ -60,7 +60,7 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al crear usuario.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear usuario.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al crear usuario.', error: error.message });
     }
   }
 
@@ -74,7 +74,7 @@ class UsuariosController {
         res.status(400).json({ error: 'Error al actualizar usuario.' });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar usuario.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al actualizar usuario.', error: error.message });
     }
   }
 
@@ -87,7 +87,7 @@ class UsuariosController {
       if (resultado) {
         res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
       } else {
-        res.status(400).json({ message: 'Error al actualizar contraseña.', error: error.message });
+        res.status(400).json({ message: 'Error al actualizar contraseña.' });
       }
     } catch (error) {
       res.status(500).json({ message: 'Error al actualizar contraseña.', error: error.message });
@@ -116,7 +116,7 @@ class UsuariosController {
         return res.status(400).json({ error: 'No puedes eliminar el ultimo usuario Administrador.' });
       }
 
-      res.status(500).json({ error: 'Error al eliminar usuario.', error: error.message });
+      res.status(500).json({ mensaje: 'Error al eliminar usuario.', error: error.message });
     }
   }
 }

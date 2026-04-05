@@ -6,7 +6,7 @@ class EvaluacionesController {
       const resultado = await EvaluacionesService.listarKpiCapacitacionSatisfaccion();
       res.status(200).json(resultado);
     } catch (error) {
-      res.status(500).json({ message: 'Error al listar kpi: capacitacion y satisfaccion', erro: error.message });
+      res.status(500).json({ message: 'Error al listar kpi: capacitacion y satisfaccion', error: error.message });
     }
   }
 

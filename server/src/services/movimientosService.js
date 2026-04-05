@@ -11,7 +11,7 @@ class MovimientosServices {
   async obtenerPorId(id) {
     const client = await pool.connect();
     try {
-      client.query('BEGIN');
+      await client.query('BEGIN');
 
       const movimiento = await MovimientosRepositorio.obtenerPorId(client, id);
       const bienes = await BienesRepositorio.obtenerPorIdMovimiento(client, id);
@@ -21,10 +21,10 @@ class MovimientosServices {
         bienes: bienes
       };
 
-      client.query('COMMIT');
+      await client.query('COMMIT');
       return resultado;
     } catch (error) {
-      client.query('ROLLBACK');
+      await client.query('ROLLBACK');
       throw error;
     } finally {
       client.release();
