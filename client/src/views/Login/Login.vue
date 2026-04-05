@@ -37,7 +37,7 @@ async function login(values) {
       showError('Credenciales incorrectas.');
     }
   } catch(error) {
-    if (error.response.status === 429) {
+    if (error.response?.status === 429) {
       showWarning(error.response.data.error)
     } else {
       showError('Error al validar las credenciales.');

@@ -22,10 +22,6 @@ import DesincorporacionesKPIs from '@/views/KPIs/DesincorporacionesKPIs.vue';
 
 const routes = [
   {
-    path: '/',
-    redirect: '/inicio'
-  },
-  {
     path: '/login',
     name: 'LoginLayout',
     component: LoginLayout,
@@ -37,7 +33,7 @@ const routes = [
         component: Login
       },
       {
-        path: '/recuperar-contrasena',
+        path: 'recuperar-contrasena',
         name: 'RecuperarContrasena',
         component: RecuperarContrasena
       }
@@ -49,13 +45,17 @@ const routes = [
     component: MainLayout,
     meta: { autenticado: true },
     children: [
+      { 
+        path: '',
+        redirect: '/inicio' 
+      },
       {
         path: 'inicio',
         name: 'Inicio',
         component: Inicio
       },
       {
-        path: '/inventario',
+        path: 'inventario',
         children: [
           {
             path: '',

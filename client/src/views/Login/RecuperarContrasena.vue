@@ -36,7 +36,7 @@ const onFormSubmit = async ({ valid, values }) => {
       showError(respuesta.mensaje);
     }
   } catch (error) {
-    if (error.response.status === 429) {
+    if (error.response?.status === 429) {
       showWarning(error.response.data.error)
     } else {
       showError(error.response?.data?.message);

@@ -1,4 +1,4 @@
-import PersonalService from "../services/personalService.js";
+import PersonalService from "../services/personalServices.js";
 
 class PersonalController {
   async listar(req, res) {

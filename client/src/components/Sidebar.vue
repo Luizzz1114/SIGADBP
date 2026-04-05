@@ -91,7 +91,7 @@ const filteredMenuGroups = computed(() =>
     <nav class="flex flex-col flex-1 p-4 overflow-y-auto text-sm overflow-hidden">
       <div v-for="(group, index) in filteredMenuGroups" :key="group.title" class="flex flex-col">
         <Divider v-if="index > 0" class="my-2! before:border-slate-300! dark:before:border-slate-700!" />
-        <span class="p-2 font-bold overflow-hidden whitespace-nowrap text-slate-450 dark:text-slate-400 duration-300 ease-in-out" :class="[isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 bock'], [index > 0 ? 'pt-2' : 'pt-0']">
+        <span class="p-2 font-bold overflow-hidden whitespace-nowrap text-slate-450 dark:text-slate-400 duration-300 ease-in-out" :class="[isDesktopCollapsed ? 'opacity-0 hidden' : 'opacity-100 block'], [index > 0 ? 'pt-2' : 'pt-0']">
           {{ group.title }}
         </span>
         <ul class="flex flex-col gap-0.5 text-slate-600 dark:text-slate-200">

@@ -100,12 +100,6 @@ class Bienes {
     await client.query(sql, [idIncorporacion, responsable, dependencia, idBien]);
   }
 
-  async registrarMetrica(client, metrica) {
-    const {  } = metrica;
-    const sql = 'INSERT INTO (periodo, valor, idIndicador, fecha) VALUES ($1, $2, $3, $4)';
-    //await 
-  }
-
   async actualizar(bien, client) {
     const { id, numero, descripcion, marca, modelo } = bien;
     const sql = 'UPDATE Bienes SET numeroBien = $1, descripcion = $2, marca = $3, modelo = $4 WHERE id = $5;';

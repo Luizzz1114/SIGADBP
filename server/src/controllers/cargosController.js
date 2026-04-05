@@ -1,4 +1,4 @@
-import CargosService from '../services/cargosService.js';
+import CargosService from '../services/cargosServices.js';
 
 class CargosController {
   async listar (req, res) {
