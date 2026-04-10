@@ -50,7 +50,7 @@ onMounted(async() => {
 
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 *:min-w-0">
       <Card label="Total de bienes" :value="metricas.total_bienes || 0" icon="fi-rr-boxes" message="Bienes activos" />
-      <Card label="Dependencias" :value="metricas.dependencias || 0" icon="fi-rr-building" message="Total registradas" />
+      <Card label="Dependencias" :value="metricas.total_dependencias || 0" icon="fi-rr-building" message="Total registradas" />
       <Card label="Incorporaciones" :value="metricas.incorporaciones_mes || 0" icon="fi-rr-apps-add" message="Este mes" />
       <Card label="Desincorporaciones" :value="metricas.desincorporaciones_mes || 0" icon="fi-rr-apps-delete" message="Este mes" />
       <Card label="Movimientos" :value="metricas.movimientos_mes || 0" icon="fi-rr-priority-arrows rotate-90!" message="Este mes" />
