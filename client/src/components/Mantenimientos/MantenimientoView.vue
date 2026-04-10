@@ -97,7 +97,7 @@ defineProps({ mantenimiento: Object });
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="flex flex-col gap-0.5">
           <span class="text-slate-500 dark:text-slate-400">Costo del mantenimiento</span>
-          <span class="font-bold!">{{ mantenimiento.gasto ? `${formatearMonto(mantenimiento.gasto)}` : 'N/A' }}</span>
+          <span class="font-bold!">{{ mantenimiento.gasto ? `$${formatearMonto(mantenimiento.gasto)}` : 'N/A' }}</span>
         </div>
         <div class="flex flex-col gap-0.5">
           <span class="text-slate-500 dark:text-slate-400">Partida presupuestaria</span>

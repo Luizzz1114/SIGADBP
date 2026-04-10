@@ -39,7 +39,7 @@ defineProps({ usuario: Object });
         Información personal
       </span>
       <div class="flex justify-between gap-3">
-        <span class="text-slate-500 dark:text-slate-400">Empleado responsable</span>
+        <span class="text-slate-500 dark:text-slate-400">Empleado</span>
         <span class="font-medium! text-right">{{ usuario.empleado }}</span>
       </div>
       <div class="flex justify-between gap-3">

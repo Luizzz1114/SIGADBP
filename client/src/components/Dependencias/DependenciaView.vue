@@ -65,7 +65,7 @@ defineProps({ dependencia: Object });
         label="Bienes"
         :value="dependencia.total_bienes"
         icon="fi-sr-box"
-        color="blue"
+        color="indigo"
       />
     </div>
 
