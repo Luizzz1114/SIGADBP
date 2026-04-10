@@ -47,6 +47,7 @@ const routes = [
     children: [
       { 
         path: '',
+        name: 'Inicio',
         redirect: '/inicio' 
       },
       {
