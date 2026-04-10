@@ -1,3 +1,4 @@
+-- Active: 1775572526746@@127.0.0.1@5432@sigadbp_bd
 --- TABLAS ---
 
 
@@ -554,6 +555,7 @@ GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 CREATE OR REPLACE VIEW vistaMetricasBasicas AS
 SELECT 
 (SELECT COUNT(*) FROM Bienes WHERE estatus != 'Desincorporado') AS total_bienes,
+(SELECT COUNT(*) FROM Dependencias) AS total_dependencias,
 (SELECT COUNT(*) FROM Incorporaciones WHERE fechaEntrada >= DATE_TRUNC('month', CURRENT_DATE)) AS incorporaciones_mes,
 (SELECT COUNT(*) FROM Desincorporaciones WHERE fechaSalida >= DATE_TRUNC('month', CURRENT_DATE)) AS desincorporaciones_mes,
 (SELECT COUNT(*) FROM Movimientos WHERE fecha >= DATE_TRUNC('month', CURRENT_DATE)) AS movimientos_mes,
