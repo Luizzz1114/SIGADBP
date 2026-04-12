@@ -33,7 +33,7 @@ const routes = [
         component: Login
       },
       {
-        path: 'recuperar-contrasena',
+        path: '/recuperar-contrasena',
         name: 'RecuperarContrasena',
         component: RecuperarContrasena
       }
@@ -47,7 +47,7 @@ const routes = [
     children: [
       { 
         path: '',
-        name: 'Inicio',
+        name: 'Placeholder',
         redirect: '/inicio' 
       },
       {
