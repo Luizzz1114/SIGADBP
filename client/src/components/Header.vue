@@ -79,10 +79,6 @@ onMounted(() => {
       </div>
     </div>
     <div class="flex items-center gap-4">
-      <button type="button" class="grid place-items-center size-8 rounded-lg bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-100 cursor-pointer duration-300 ease-in-out dark:bg-slate-850 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:border-slate-700">
-        <i class="fi-sr-bell text-base"></i>
-      </button>
-      <Divider layout="vertical" class="mx-0!" />
       <button @click="toggleMenu($event)" type="button" class="flex items-center gap-3 sm:ps-2 h-8 rounded-lg cursor-pointer group">
         <div class="flex-col hidden sm:flex items-end">
           <span class="text-sm font-bold">{{ usuario.username }}</span>
