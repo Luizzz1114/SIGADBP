@@ -310,6 +310,25 @@ WHEN (OLD.estatus = 'En proceso')
 EXECUTE FUNCTION revertir_estatus_al_eliminar();
 
 
+--- Historial de cambios en el personal ---
+CREATE OR REPLACE FUNCTION cerrar_cargo_anterior()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE HistorialCargos
+  SET fechaSalida = NEW.fechaIngreso
+  WHERE idPersonal = NEW.idPersonal
+    AND id != NEW.id
+    AND fechaSalida IS NULL;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_nuevo_cargo_historial
+BEFORE INSERT ON HistorialCargos
+FOR EACH ROW
+EXECUTE FUNCTION cerrar_cargo_anterior();
+
+
 
 
 --- VISTAS ---
@@ -325,6 +344,7 @@ WITH count_bienes AS (
 count_personal AS (
 	SELECT idDependencia, COUNT(*) as total_personal
 	FROM HistorialCargos
+  WHERE fechaSalida IS NULL
 	GROUP BY idDependencia
 )
 SELECT D.id, D.nombre, D.tipo, D.direccion,
@@ -356,7 +376,7 @@ SELECT P.id, P.cedula, P.nombres, P.apellidos, CONCAT_WS(' ', nombres, apellidos
 	DATE_PART('YEAR', AGE(COALESCE(HC.fechaSalida, CURRENT_DATE), HC.fechaIngreso)) AS antiguedad,
 	COALESCE(CB.bienes_asignados, 0) AS bienes_asignados
 FROM Personal P
-LEFT JOIN HistorialCargos HC ON HC.idPersonal = P.id
+LEFT JOIN HistorialCargos HC ON HC.idPersonal = P.id AND HC.fechaSalida IS NULL
 LEFT JOIN Cargos C ON HC.idCargo = C.id
 LEFT JOIN Dependencias D ON HC.idDependencia = D.id
 LEFT JOIN count_bienes CB ON P.id = CB.idPersonal;
@@ -440,7 +460,7 @@ INNER JOIN DetallesMovimientos DM ON B.id = DM.idBien;
 
 
 -- 7. DESINCORPORACIONES
-CREATE VIEW vistaDesincorporaciones AS
+CREATE OR REPLACE VIEW vistaDesincorporaciones AS
 WITH resumen_bienes AS (
   SELECT DD.idDesincorporacion, COUNT(DD.idBien) AS cantidad_bienes
   FROM DetallesDesincorporacion AS DD
@@ -454,7 +474,7 @@ FROM Desincorporaciones D
 INNER JOIN resumen_bienes RB ON D.id = RB.idDesincorporacion
 INNER JOIN Dependencias DP ON DP.id = D.idDependencia
 INNER JOIN Personal P ON P.id = D.idPersonal
-INNER JOIN HistorialCargos HC ON P.id = HC.idPersonal
+INNER JOIN HistorialCargos HC ON P.id = HC.idPersonal AND HC.fechaSalida IS NULL
 INNER JOIN Cargos C ON C.id = HC.idCargo;
 
 CREATE VIEW vistaBienesDesincorporados AS
@@ -466,7 +486,7 @@ WHERE B.estatus = 'Desincorporado';
 
 
 -- 8. INCORPORACIONES
-CREATE VIEW vistaIncorporaciones AS
+CREATE OR REPLACE VIEW vistaIncorporaciones AS
 WITH ResumenBienes AS (
   SELECT B.idIncorporacion, 
     COUNT(B.id) AS cantidad_bienes,
@@ -483,7 +503,7 @@ FROM Incorporaciones I
 INNER JOIN ResumenBienes RB ON I.id = RB.idIncorporacion
 INNER JOIN Dependencias D ON D.id = I.idDependencia
 INNER JOIN Personal P ON P.id = I.idPersonal
-INNER JOIN HistorialCargos HC ON P.id = HC.idPersonal
+INNER JOIN HistorialCargos HC ON P.id = HC.idPersonal AND HC.fechaSalida IS NULL
 INNER JOIN Cargos C ON C.id = HC.idCargo;
 
 CREATE OR REPLACE VIEW vistaGastosPorIncorporacion AS
@@ -515,7 +535,7 @@ CREATE OR REPLACE VIEW vistaResponsables AS
 SELECT D.id, D.nombre, D.tipo, D.direccion,
 P.id AS idr, CONCAT_WS(' ', P.nombres, P.apellidos) AS responsable, P.cedula
 FROM Dependencias AS D
-INNER JOIN HistorialCargos AS HC ON HC.idDependencia = D.id
+INNER JOIN HistorialCargos AS HC ON HC.idDependencia = D.id AND HC.fechaSalida IS NULL
 INNER JOIN Personal AS P ON HC.idPersonal = P.id
 INNER JOIN Cargos AS C ON HC.idCargo = C.id
 WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración';
@@ -546,6 +566,22 @@ LEFT JOIN LATERAL (
 GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;
 
 
+CREATE OR REPLACE VIEW vistaHistorialCargos AS
+SELECT 
+  P.cedula, CONCAT_WS(' ', P.nombres, P.apellidos) AS empleado,
+  C.nombre AS cargo, C.tipo AS tipo_cargo, D.nombre AS dependencia,
+  HC.fechaIngreso AS fecha_ingreso_raw,
+  TO_CHAR(HC.fechaIngreso, 'DD/MM/YYYY') AS fecha_ingreso,
+  TO_CHAR(HC.fechaSalida, 'DD/MM/YYYY') AS fecha_salida,
+  CASE 
+    WHEN HC.fechaSalida IS NULL THEN 'Actual'
+    ELSE 'Anterior'
+  END AS estado_cargo,
+  AGE(COALESCE(HC.fechaSalida, CURRENT_DATE), HC.fechaIngreso) AS tiempo_en_cargo
+FROM HistorialCargos HC
+INNER JOIN Personal P ON HC.idPersonal = P.id
+INNER JOIN Cargos C ON HC.idCargo = C.id
+INNER JOIN Dependencias D ON HC.idDependencia = D.id;
 
 
 --- VISTAS PARA LOS KPI Y DASHBOARD ---
@@ -1016,7 +1052,7 @@ INSERT INTO Desincorporaciones (id, fechaSalida, descripcion, idDependencia, idP
 INSERT INTO DetallesDesincorporacion (id, tipo, idDesincorporacion, idBien) VALUES
 (1, 'Obsolescencia / Daño Irreparable', 1, 4);
 
-UPDATE Bienes SET estatus = 'Desincorporado' WHERE id = 4;
+UPDATE Bienes SET estatus = 'Desincorporado', idPersonal = null, idDependencia = null WHERE id = 4;
 
 --- ==========================================
 --- 8. REINICIAR LAS SECUENCIAS
@@ -1033,6 +1069,7 @@ SELECT setval(pg_get_serial_sequence('Mantenimientos', 'id'), coalesce(max(id),0
 SELECT setval(pg_get_serial_sequence('Gastos', 'id'), coalesce(max(id),0) + 1, false) FROM Gastos;
 SELECT setval(pg_get_serial_sequence('Movimientos', 'id'), coalesce(max(id),0) + 1, false) FROM Movimientos;
 SELECT setval(pg_get_serial_sequence('Desincorporaciones', 'id'), coalesce(max(id),0) + 1, false) FROM Desincorporaciones;
+SELECT setval(pg_get_serial_sequence('DetallesDesincorporacion', 'id'), coalesce(max(id),0) + 1, false) FROM DetallesDesincorporacion;
 
 
 
