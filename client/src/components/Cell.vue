@@ -25,6 +25,8 @@ defineProps({
       'En proceso': 'info',
       'Finalizado': 'secondary',
       'Cancelado': 'danger',
+      'Actual': 'success',
+      'Anterior': 'secondary',
     }[valor] || 'secondary'"
     class="ring-1 ring-inset ring-current/10"
   />
@@ -39,7 +41,7 @@ defineProps({
   <!-- FECHAS -->
   <span v-else-if="tipo === 'fecha'" class="flex items-center gap-2 whitespace-nowrap">
     <i class="fi-rr-calendar text-slate-400/70 dark:text-slate-500/90"></i>
-    {{ valor }}
+    {{ valor || '-' }}
   </span>
 
 

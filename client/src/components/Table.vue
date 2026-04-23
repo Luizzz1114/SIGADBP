@@ -12,6 +12,8 @@ const props = defineProps({
 
 const emit = defineEmits(['view', 'edit', 'delete']);
 const optionView = inject('optionView', true);
+const showAcciones = inject('showAcciones', true);
+const usuario = inject('userData', null);
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -72,11 +74,15 @@ const options = computed(() => [
     icon: 'fi-rr-pencil', 
     command: () => emit('edit', selectedItem.value) 
   },
-  { separator: true },
+  { 
+    separator: true,
+    visible: usuario?.rol === 'Administrador'
+  },
   { 
     label: 'Eliminar', 
     icon: 'fi-rr-trash',
     class: 'menu-item-danger',
+    visible: usuario?.rol === 'Administrador',
     command: () => emit('delete', selectedItem.value) 
   }
 ]);
@@ -188,7 +194,7 @@ const options = computed(() => [
       </template>
     </Column>
 
-    <Column header="Acciones">
+    <Column header="Acciones" v-if="showAcciones">
       <template #body="props">
         <button @click="toggleMenu($event, props.data)" type="button" class="h-7 w-7 rounded-md hover:bg-slate-100 duration-300 ease-in-out cursor-pointer dark:hover:bg-slate-800">
           <i class="fi-rr-menu-dots text-[0.95rem]"></i>

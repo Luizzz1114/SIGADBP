@@ -160,6 +160,7 @@ i, span::before, span::after {
 
 .p-datatable-tbody > tr > td {
   padding: 0.35rem 1rem !important;
+  height: 40px !important;
 }
 
 .p-datatable-tbody > tr > td:first-child {

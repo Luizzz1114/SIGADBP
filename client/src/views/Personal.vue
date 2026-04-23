@@ -142,6 +142,7 @@ onMounted(async () => {
       </div>
       <div class="flex items-center gap-4">
         <Button as="router-link" to="/personal/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
+        <Button as="router-link" to="/personal/historial" label="Historial" icon="fi-rr-time-past" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" type="button" label="Agregar Personal" icon="fi-sr-plus-small" />
       </div>
     </div>
