@@ -10,6 +10,15 @@ class PersonalController {
     }
   }
 
+  async historialCargos(req, res) {
+    try {
+      const historial = await PersonalService.historialCargos();
+      res.status(200).json(historial);
+    } catch (error) {
+      res.status(500).json({ message: "Error al listar historial.", error: error.message });
+    }
+  }
+
   async listarSinUsuario(req, res) {
     try {
       const personal = await PersonalService.listarSinUsuario();

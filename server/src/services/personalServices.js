@@ -6,6 +6,10 @@ class PersonalService {
     return await PersonalRepositorio.listar();
   }
 
+  async historialCargos() {
+    return await PersonalRepositorio.historialCargos();
+  }
+
   async listarSinUsuario() {
     return await PersonalRepositorio.listarSinUsuario();
   }
@@ -48,10 +52,16 @@ class PersonalService {
 
       await PersonalRepositorio.actualizar(client, personal);
 
-      const resultado = await PersonalRepositorio.actualizarCargo(client, personal)
+      const cargoActual = await PersonalRepositorio.obtenerCargoActivo(client, personal.id);
+
+      if (!cargoActual || cargoActual.idcargo != personal.cargo || cargoActual.iddependencia != personal.dependencia) {
+        await PersonalRepositorio.crearCargo(client, personal.id, personal);
+      } else {
+        await PersonalRepositorio.actualizarCargo(client, personal);
+      }
 
       await client.query('COMMIT');
-      return resultado;
+      return true;
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;     

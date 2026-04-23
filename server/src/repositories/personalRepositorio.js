@@ -7,6 +7,12 @@ class Personal {
     return resultado.rows;
   }
 
+  async historialCargos() {
+    const sql = 'SELECT * FROM vistaHistorialCargos ORDER BY fecha_ingreso_raw DESC;';
+    const resultado = await pool.query(sql);
+    return resultado.rows;
+  }
+
   async listarSinUsuario() {
     const sql = `SELECT id, cedula, nombres, apellidos FROM vistaPersonal
       WHERE --tipo_cargo = 'Personal de la Unidad de Administración' AND
@@ -14,6 +20,18 @@ class Personal {
       AND estatus = 'Activo';`;
     const resultado = await pool.query(sql);
     return resultado.rows;
+  }
+
+  async obtenerCargoActivo(client, idPersonal) {
+    const sql = `
+      SELECT idCargo, idDependencia 
+      FROM HistorialCargos 
+      WHERE idPersonal = $1 AND fechaSalida IS NULL 
+      ORDER BY fechaIngreso DESC 
+      LIMIT 1;
+    `;
+    const resultado = await client.query(sql, [idPersonal]);
+    return resultado.rows[0];
   }
 
   async validarCedulaUnica(validar) {

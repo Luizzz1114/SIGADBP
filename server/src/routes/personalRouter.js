@@ -4,6 +4,7 @@ import PersonalController from '../controllers/personalController.js';
 const PersonalRouter = express.Router();
 
 PersonalRouter.get('/', PersonalController.listar);
+PersonalRouter.get('/historial', PersonalController.historialCargos);
 PersonalRouter.get('/sin-usuario', PersonalController.listarSinUsuario);
 PersonalRouter.post('/validar-cedula', PersonalController.validarCedulaUnica);
 PersonalRouter.get('/:id', PersonalController.obtenerPorId);

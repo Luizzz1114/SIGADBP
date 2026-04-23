@@ -17,6 +17,11 @@ export default {
     return res.data;
   },
 
+  async obtenerHistorial() {
+    const res = await api.get('personal/historial/');
+    return res.data;
+  },
+
   async actualizar(personal) {
     const res = await api.put(`/personal`, personal);
     return res.data;
