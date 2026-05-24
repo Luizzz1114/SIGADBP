@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { formatearFecha, formatearMonto, obtenerHoy, obtenerFinAnio } from '@/utils/formatters';
-import { mantenimientoSchema, tiposMantenimiento, estatusMantenimiento, estadosPosteriores } from '@/utils/mantenimiento.utils.js';
+import { crearMantenimientoSchema, tiposMantenimiento, estatusMantenimiento, estadosPosteriores } from '@/utils/mantenimiento.utils.js';
 import presupuestosServices from '@/services/presupuestos.services';
 
 const visible = defineModel('visible');
@@ -30,11 +30,9 @@ const initialValues = computed(() => {
   };
 });
 
-const resolver = ({ values }) => {
-  return zodResolver(mantenimientoSchema)({
-    values: { ...values, id: props.mantenimiento?.id }
-  });
-};
+const resolver = computed(() => {
+  return zodResolver(crearMantenimientoSchema(presupuestos.value, props.mantenimiento));
+});
 
 const onEstatusChange = (event, form) => {
   if (event.value === 'En proceso') {

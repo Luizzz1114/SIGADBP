@@ -1,14 +1,14 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { formatearMonto, obtenerHoy, obtenerFinAnio } from '@/utils/formatters';
-import { mantenimientoSchema, tiposMantenimiento } from '@/utils/mantenimiento.utils.js';
+import { crearMantenimientoSchema, tiposMantenimiento } from '@/utils/mantenimiento.utils.js';
 import bienesServices from '@/services/bienes.services';
 import presupuestosServices from '@/services/presupuestos.services';
 
 const visible = defineModel('visible');
 const emit = defineEmits(['register']);
-const resolver = ref(zodResolver(mantenimientoSchema));
+const resolver = computed(() => zodResolver(crearMantenimientoSchema(presupuestos.value)));
 const minDate = obtenerHoy();
 const maxDate = obtenerFinAnio();
 
