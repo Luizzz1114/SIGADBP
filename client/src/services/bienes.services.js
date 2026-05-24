@@ -40,6 +40,11 @@ export default {
   async validarNumero(numero, id = null) {
     const res = await api.post('/bienes/validar-numero', { numero, id });
     return res.data.esUnico;
-  }
+  },
+
+  async generarReporte(idDependencia) {
+    const res = await api.get(`/bienes/reporte/${idDependencia}`, { responseType: 'blob' });
+    return res.data;
+  } 
 
 }

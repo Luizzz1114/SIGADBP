@@ -10,6 +10,8 @@ BienesRouter.get('/metricas/dependencias', BienesController.obtenerMetricasPorDe
 BienesRouter.get('/metricas/no-identificados', BienesController.bienesNoIdentificados);
 BienesRouter.get('/metricas/disponibilidad-dependencia', BienesController.metricaDisponibilidadPorDependencia);
 
+BienesRouter.get('/reporte/:idDependencia', BienesController.generarReporte);  
+
 BienesRouter.get('/operativos', BienesController.listarOperativos);
 BienesRouter.get('/no-asignados', BienesController.listarNoAsignados);
 BienesRouter.post('/validar-numero', BienesController.validarNumeroBienUnico);

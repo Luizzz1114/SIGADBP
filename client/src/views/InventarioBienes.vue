@@ -7,6 +7,7 @@ import DrawerRegister from '@/components/InventarioBienes/BienesRegister.vue';
 import DrawerView from '@/components/InventarioBienes/BienesView.vue';
 import DrawerEdit from '@/components/InventarioBienes/BienesEdit.vue';
 import DialogDelete from '@/components/DialogDelete.vue';
+import ExportarDialog from '@/components/InventarioBienes/ExportarDialog.vue';
 import bienesServices from '@/services/bienes.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showSuccess, showError } = useNotificaciones();
@@ -42,6 +43,7 @@ const filtros = [
 const isDrawerRegisterOpen = ref(false);
 const isDrawerViewOpen = ref(false);
 const isDrawerEditOpen = ref(false);
+const isExportarDialogOpen = ref(false);
 const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
@@ -143,6 +145,7 @@ onMounted(async () => {
       </div>
       <div class="flex items-center flex-wrap gap-4">
         <Button as="router-link" to="/inventario/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
+        <Button @click="isExportarDialogOpen = true" label="Exportar" icon="fi-rr-file-export" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" label="Agregar Bien" icon="fi-sr-plus-small" class="h-9" />
       </div>
     </div>
@@ -170,5 +173,6 @@ onMounted(async () => {
   <DrawerView v-model:visible="isDrawerViewOpen" :bien="selectedBien" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :bien="selectedBien" @confirmEdit="actualizarBien" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarBien" />
+  <ExportarDialog v-model:visible="isExportarDialogOpen" />
 
 </template>

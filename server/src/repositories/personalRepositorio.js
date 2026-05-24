@@ -73,6 +73,35 @@ class Personal {
     return resultado.rows[0];
   }
 
+  async responsableDependencia(idDependencia) {
+    const sql = `SELECT responsable, cedula, cargo, nivel_profesional, nombre as dependencia, direccion
+      FROM vistaResponsables
+      WHERE id = $1
+      LIMIT 1;`;
+    const resultado = await pool.query(sql, [idDependencia]);
+    return resultado.rows[0];
+  }
+
+  async obtenerSupervisor() {
+    const sql = `SELECT DISTINCT ON (cargo) 
+      empleado, cedula, cargo, nivel_profesional
+      FROM vistaPersonal 
+      WHERE cargo IN ('Supervisor de Bienes')
+      ORDER BY cargo, fechaIngreso DESC;`;
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
+  async obtenerJefe() {
+    const sql = `SELECT DISTINCT ON (cargo) 
+      empleado, cedula, cargo, nivel_profesional
+      FROM vistaPersonal 
+      WHERE cargo IN ('Jefe Estadal')
+      ORDER BY cargo, fechaIngreso DESC;`;
+    const resultado = await pool.query(sql);
+    return resultado.rows[0];
+  }
+
   async crear(client, personal) {
     const { cedula, nombres, apellidos, fechanacimiento, genero, telefono, nivelprofesional } = personal;
     const sql = 'INSERT INTO Personal (cedula, nombres, apellidos, fechaNacimiento, genero, telefono, nivelProfesional) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;';

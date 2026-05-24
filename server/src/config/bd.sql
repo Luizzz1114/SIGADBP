@@ -65,7 +65,6 @@ CREATE TABLE Usuarios (
   rol VARCHAR(50) NOT NULL,
   fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fechaActualizacion TIMESTAMP DEFAULT NULL,
-  ultimoAcceso TIMESTAMP DEFAULT NULL,
   pregunta TEXT,
   respuesta VARCHAR(255),
   idPersonal INT REFERENCES Personal(id)
@@ -368,7 +367,7 @@ WITH count_bienes AS (
 	FROM Bienes
 	GROUP BY idPersonal
 )
-SELECT P.id, P.cedula, P.nombres, P.apellidos, CONCAT_WS(' ', nombres, apellidos) AS empleado,
+SELECT P.id, P.cedula, P.nombres, P.apellidos, CONCAT_WS(' ', nombres, apellidos) AS empleado, P.nivelProfesional AS nivel_profesional,
 	TO_CHAR(P.fechaNacimiento, 'DD/MM/YYYY') AS fechaNacimiento, DATE_PART('YEAR', AGE(P.fechaNacimiento)) AS edad,
 	P.genero, P.telefono, P.nivelProfesional, P.estatus,
 	C.id idc, C.nombre AS cargo, C.tipo AS tipo_cargo, D.id idd, D.nombre dependencia,
@@ -532,14 +531,22 @@ LEFT JOIN Dependencias D ON B.idDependencia = D.id;
 
 -- 10. RESPONSABLES Y DEPENDENCIAS
 CREATE OR REPLACE VIEW vistaResponsables AS
-SELECT D.id, D.nombre, D.tipo, D.direccion,
-P.id AS idr, CONCAT_WS(' ', P.nombres, P.apellidos) AS responsable, P.cedula
+SELECT DISTINCT ON (D.id) 
+  D.id, 
+  D.nombre, 
+  D.tipo, 
+  D.direccion,
+  P.id AS idr, 
+  CONCAT_WS(' ', P.nombres, P.apellidos) AS responsable, 
+  P.cedula,
+  P.nivelProfesional AS nivel_profesional,
+  C.nombre as cargo
 FROM Dependencias AS D
 INNER JOIN HistorialCargos AS HC ON HC.idDependencia = D.id AND HC.fechaSalida IS NULL
 INNER JOIN Personal AS P ON HC.idPersonal = P.id
 INNER JOIN Cargos AS C ON HC.idCargo = C.id
-WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración';
-
+WHERE C.tipo IS DISTINCT FROM 'Personal de la Unidad de Administración'
+ORDER BY D.id, HC.fechaIngreso DESC;
 
 -- 11. VISTA GENERAL PARA LOS KPI
 CREATE OR REPLACE VIEW vistaIndicadores AS 

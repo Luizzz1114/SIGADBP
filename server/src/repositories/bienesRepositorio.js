@@ -13,6 +13,18 @@ class Bienes {
     return resultado.rows;
   }
 
+  async listarPorDependencia(idDependencia) { 
+    const sql = `SELECT numero, descripcion, serial, estatus
+      FROM vistaBienes WHERE idd = $1
+      ORDER BY 
+      CASE estatus
+        WHEN 'Operativo' THEN 1
+        WHEN 'En mantenimiento' THEN 2
+      END, numero;`;
+    const resultado = await pool.query(sql, [idDependencia]);
+    return resultado.rows;
+  }
+
   async listarOperativos() {
     const sql = "SELECT * FROM vistaBienes WHERE estatus = 'Operativo' ORDER BY numero;";
     const resultado = await pool.query(sql);
