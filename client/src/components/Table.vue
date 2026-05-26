@@ -10,8 +10,9 @@ const props = defineProps({
   headerFilters: { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(['view', 'edit', 'delete']);
+const emit = defineEmits(['view', 'edit', 'export', 'delete']);
 const optionView = inject('optionView', true);
+const optionExport = inject('optionExport', false);
 const showAcciones = inject('showAcciones', true);
 const usuario = inject('userData', null);
 
@@ -73,6 +74,12 @@ const options = computed(() => [
     label: 'Actualizar', 
     icon: 'fi-rr-pencil', 
     command: () => emit('edit', selectedItem.value) 
+  },
+  { 
+    label: 'Exportar Excel', 
+    icon: 'fi-rr-file-export', 
+    command: () => emit('export', selectedItem.value),
+    visible: optionExport
   },
   { 
     separator: true,

@@ -27,4 +27,9 @@ export default {
     return res.data;
   },
 
+  async exportar(id) {
+    const res = await api.get(`/desincorporaciones/reporte/${id}`, { responseType: 'blob' });
+    return res.data;
+  },
+
 }

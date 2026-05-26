@@ -3,6 +3,8 @@ import DesincorporacionesController from '../controllers/desincorporacionesContr
 
 const DesincorporacionesRouter = express.Router();
 
+DesincorporacionesRouter.get('/reporte/:idDesincorporacion', DesincorporacionesController.generarReporte);  
+
 DesincorporacionesRouter.route('/')
   .get(DesincorporacionesController.listar)
   .post(DesincorporacionesController.crear)

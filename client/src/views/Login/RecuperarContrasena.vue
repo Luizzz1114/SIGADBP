@@ -126,9 +126,7 @@ onUnmounted(() => {
         </div>
         <div class="flex items-center gap-3 mt-6">
           <Button as="router-link" to="/login" label="Volver" severity="secondary" outlined class="grow h-9!" />
-          <Button label="Verificar y recuperar" type="submit" class="grow h-9! whitespace-nowrap" :disabled="cargando">
-            <i class="fi-rr-loading text-lg animate-[spin_5s_linear_infinite] text-white!" v-if="cargando"></i>
-          </Button>
+          <Button label="Verificar y recuperar" type="submit" class="grow h-9! whitespace-nowrap" :loading="cargando" />
         </div>
       </Form>
     </template>
@@ -179,9 +177,7 @@ onUnmounted(() => {
         </div>
         <div class="flex items-center gap-3 mt-6">
           <Button @click="cancelarCambio" label="Cancelar" severity="secondary" outlined class="grow h-9!" type="button" />
-          <Button label="Guardar contraseña" type="submit" class="grow h-9! whitespace-nowrap" :disabled="cargando">
-            <i class="fi-rr-loading text-lg animate-[spin_5s_linear_infinite] text-white!" v-if="cargando"></i>
-          </Button>
+          <Button label="Guardar contraseña" type="submit" class="grow h-9! whitespace-nowrap" :loading="cargando" />
         </div>
       </Form>
     </template>

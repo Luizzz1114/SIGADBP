@@ -466,7 +466,7 @@ WITH resumen_bienes AS (
   GROUP BY DD.idDesincorporacion
 )
 SELECT D.id, TO_CHAR(D.fechaSalida, 'DD/MM/YYYY') AS fecha_salida, D.descripcion,
-  P.id AS idp, P.cedula, CONCAT(P.nombres, ' ', P.apellidos) AS responsable, C.nombre AS cargo,
+  P.id AS idp, P.cedula, CONCAT(P.nombres, ' ', P.apellidos) AS responsable, C.nombre AS cargo, P.nivelProfesional AS nivel_profesional,
   DP.id AS idd, DP.nombre AS dependencia,
   RB.cantidad_bienes
 FROM Desincorporaciones D

@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, provide, ref } from 'vue';
+import { saveAs } from 'file-saver';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
@@ -13,6 +14,7 @@ const { showSuccess, showError } = useNotificaciones();
 
 
 // --- Configuración de la vista
+provide('optionExport', true);
 const items = [{ label: 'Desincorporaciones', route: '/desincorporaciones' }];
 
 const columns = [
@@ -44,6 +46,10 @@ const handleEditRequest = async (item) => {
   }
 }
 
+const handleExportRequest = (item) => {
+  exportarDesincorporacion(item);
+}
+
 const handleDeleteRequest = (item) => {
   const info = {
     'Descripcion': item.descripcion || 'Sin descripción',
@@ -59,6 +65,7 @@ const handleDeleteRequest = (item) => {
 // --- Operaciones con la API ---
 const desincorporaciones = ref([]);
 const selectedDesincorporacion = ref(null);
+const exportando = ref(false);
 
 async function listarDesincorporaciones() {
   try {
@@ -112,6 +119,20 @@ async function eliminarDesincorporacion(id) {
   }
 }
 
+async function exportarDesincorporacion(item) {
+  exportando.value = true;
+  try {
+    const blob = await desincorporacionesServices.exportar(item.id);
+    saveAs(blob, `desincorporacion - ${item.dependencia}.xlsx`);
+    showSuccess('Reporte Excel generado exitosamente');
+  } catch (error) {
+    showError(error.response?.data?.message || 'Error al exportar desincorporación');
+    console.error('Error al exportar desincorporación: ', error);
+  } finally {
+    exportando.value = false;
+  }
+}
+
 const desincorporacionesMesActual = computed(() => {
   const hoy = new Date();
   const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
@@ -156,13 +177,14 @@ onMounted(async() => {
       :globalFilterFields="['fecha_salida', 'descripcion', 'dependencia', 'responsable']"
       @view="handleViewRequest"
       @edit="handleEditRequest"
+      @export="handleExportRequest"
       @delete="handleDeleteRequest"
     />
 
   </div>
 
   <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearDesincorporacion" />
-  <DrawerView v-model:visible="isDrawerViewOpen" :desincorporacion="selectedDesincorporacion" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :desincorporacion="selectedDesincorporacion" :exportando="exportando" @export="handleExportRequest" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :desincorporacion="selectedDesincorporacion" @confirmEdit="actualizarDesincorporacion" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarDesincorporacion" />
 

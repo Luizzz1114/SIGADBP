@@ -84,9 +84,7 @@ async function login(values) {
       </div>
       <div class="flex flex-col gap-4 mt-4">
         <router-link to="/recuperar-contrasena" class="self-end text-blue-500 hover:opacity-60 duration-300 ease-in-out dark:text-blue-400">¿Olvidó su contraseña?</router-link>
-        <Button label="Iniciar sesión" type="submit" class="w-full h-9!" :disabled="cargando">
-          <i class="fi-rr-loading text-lg animate-[spin_5s_linear_infinite] text-white!" v-if="cargando"></i>
-        </Button>
+        <Button label="Iniciar sesión" type="submit" class="w-full h-9!" :loading="cargando" />
       </div>
     </Form>
   </div>

@@ -70,6 +70,26 @@ class DesincorporacionesController {
       res.status(500).json({ message: 'Error al deshacer la desincorporacion.', error: error.message });
     }
   }
+
+  async generarReporte(req, res) {
+    try {
+      const { idDesincorporacion } = req.params;
+      const buffer = await DesincorporacionesServices.generarReporte(idDesincorporacion);
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=reporte_desincorporacion.xlsx",
+      );
+      res.send(buffer);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error al generar reporte.", error: error.message });
+    }
+  }
 }
 
 export default new DesincorporacionesController();

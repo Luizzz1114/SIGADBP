@@ -156,7 +156,7 @@ class BienesServices {
     const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
     const anio = fecha.getFullYear();
     
-    worksheet.getCell("F3").value = `${dia} / ${mes} / ${anio}`;
+    worksheet.getCell("F3").value = `${dia}/${mes}/${anio}`;
 
     // 3. Inyectar el Total y asegurar su borde derecho (que ahora es la columna F)
     const filaTotal = 29 + filasExtra;

@@ -1,6 +1,12 @@
 <script setup>
 const visible = defineModel('visible');
-defineProps({ desincorporacion: Object });
+const props = defineProps({ desincorporacion: Object, exportando: Boolean });
+
+const emit = defineEmits(['export']);
+
+const generarReporte = () => {
+  emit('export', props.desincorporacion);
+};
 </script>
 
 <template>
@@ -83,5 +89,19 @@ defineProps({ desincorporacion: Object });
         <span class="font-semibold! text-slate-700 dark:text-slate-200">{{ desincorporacion.cantidad_bienes }}</span>
       </div>
     </div>
+
+    <template #footer>
+      <div class="flex justify-end p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button 
+          label="Exportar Excel" 
+          icon="fi-rr-file-export"
+          severity="secondary" 
+          outlined
+          :loading="exportando"
+          @click="generarReporte"
+          class="w-full sm:w-auto"
+        />
+      </div>
+    </template>
   </Drawer>
 </template>

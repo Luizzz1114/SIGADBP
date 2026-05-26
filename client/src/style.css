@@ -321,6 +321,10 @@ i, span::before, span::after {
   border-inline-start-width: 0px !important;
 }
 
+.p-drawer-footer {
+  padding: 0px !important;
+}
+
 @media (min-width: 768px) {
   .p-drawer-right .p-drawer {
     border-inline-start-width: 1px !important;
