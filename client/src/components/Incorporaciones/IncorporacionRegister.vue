@@ -16,6 +16,7 @@ const initialFormState = {
   motivo: '',
   fecha_entrada: '',
   orden_compra: '',
+  nota_entrega: '',
   factura: '',
   proveedor: '',
   dependencia: null,
@@ -149,6 +150,13 @@ watch(visible, async(isOpen) => {
           <InputText name="orden_compra" id="orden_compra" maxlength="25" autocomplete="off" size="small" fluid />
           <Message v-if="$form.orden_compra?.invalid" severity="error" size="small" variant="simple">
             {{ $form.orden_compra.error?.message }}
+          </Message>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="nota_entrega">Nota de entrega</label>
+          <InputText name="nota_entrega" id="nota_entrega" maxlength="100" autocomplete="off" size="small" fluid />
+          <Message v-if="$form.nota_entrega?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.nota_entrega.error?.message }}
           </Message>
         </div>
         <div class="flex flex-col gap-1">

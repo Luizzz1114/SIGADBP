@@ -91,6 +91,7 @@ CREATE TABLE Incorporaciones (
   fechaEntrada DATE NOT NULL,
   ordenCompra VARCHAR(100),
   factura VARCHAR(100),
+  notaEntrega VARCHAR(100),
   proveedor VARCHAR(150),
   motivo VARCHAR(100) NOT NULL,
   idDependencia INT REFERENCES Dependencias(id),
@@ -494,8 +495,8 @@ WITH ResumenBienes AS (
   LEFT JOIN Gastos G ON B.id = G.idBien
   GROUP BY B.idIncorporacion
 )
-SELECT I.id, TO_CHAR(I.fechaEntrada, 'DD/MM/YYYY') AS fecha_entrada, I.motivo, I.ordenCompra AS orden_compra, I.factura, I.proveedor,
-  P.id AS idp, P.cedula, CONCAT(P.nombres, ' ', P.apellidos) AS responsable, C.nombre AS cargo,
+SELECT I.id, TO_CHAR(I.fechaEntrada, 'DD/MM/YYYY') AS fecha_entrada, I.motivo, I.ordenCompra AS orden_compra, I.notaEntrega AS nota_entrega, I.factura, I.proveedor,
+  P.id AS idp, P.cedula, CONCAT(P.nombres, ' ', P.apellidos) AS responsable, C.nombre AS cargo, P.nivelProfesional AS nivel_profesional,
   D.id AS idd, D.nombre AS dependencia,
   RB.total_gasto, RB.cantidad_bienes
 FROM Incorporaciones I

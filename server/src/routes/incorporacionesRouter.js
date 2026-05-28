@@ -3,6 +3,9 @@ import IncorporacionesController from '../controllers/incorporacionesController.
 
 const IncorporacionesRouter = express.Router();
 
+IncorporacionesRouter.get('/reporte/:idIncorporacion', IncorporacionesController.generarReporte);  
+
+
 IncorporacionesRouter.route('/')
   .get(IncorporacionesController.listar)
   .post(IncorporacionesController.crear)

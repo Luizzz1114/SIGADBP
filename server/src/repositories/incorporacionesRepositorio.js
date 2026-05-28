@@ -14,16 +14,16 @@ class Incorporaciones {
   }
 
   async crear(client, payload) {
-    const { dependencia, factura, fecha_entrada, motivo, orden_compra, proveedor, responsable } = payload;
-    const sql = 'INSERT INTO incorporaciones (fechaEntrada, ordenCompra, factura, proveedor, motivo, idDependencia, idPersonal) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id';
-    const resultado = await client.query(sql, [fecha_entrada, orden_compra, factura, proveedor, motivo, dependencia, responsable]);
+    const { dependencia, factura, fecha_entrada, motivo, orden_compra, proveedor, nota_entrega, responsable } = payload;
+    const sql = 'INSERT INTO incorporaciones (fechaEntrada, ordenCompra, factura, proveedor, motivo, notaEntrega, idDependencia, idPersonal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id';
+    const resultado = await client.query(sql, [fecha_entrada, orden_compra, factura, proveedor, motivo, nota_entrega, dependencia, responsable]);
     return resultado.rows[0].id;
   }
 
   async actualizar(client, payload) {
-    const { id, factura, fecha_entrada, motivo, orden_compra, proveedor } = payload;
-    const sql = 'UPDATE Incorporaciones SET fechaEntrada = $1, ordenCompra = $2, factura = $3, proveedor = $4, motivo = $5 WHERE id = $6 RETURNING id';
-    const resultado = await client.query(sql, [fecha_entrada, orden_compra, factura, proveedor, motivo, id]);
+    const { id, factura, fecha_entrada, motivo, orden_compra, proveedor, nota_entrega } = payload;
+    const sql = 'UPDATE Incorporaciones SET fechaEntrada = $1, ordenCompra = $2, factura = $3, proveedor = $4, motivo = $5, notaEntrega = $6 WHERE id = $7 RETURNING id';
+    const resultado = await client.query(sql, [fecha_entrada, orden_compra, factura, proveedor, motivo, nota_entrega, id]);
     return resultado.rows[0].id;
   }
 

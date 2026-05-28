@@ -2,7 +2,13 @@
 import { formatearMonto } from '@/utils/formatters.js';
 
 const visible = defineModel('visible');
-defineProps({ incorporacion: Object });
+const props = defineProps({ incorporacion: Object, exportando: Boolean });
+
+const emit = defineEmits(['export']);
+
+const generarReporte = () => {
+  emit('export', props.incorporacion);
+};
 </script>
 
 <template>
@@ -67,6 +73,10 @@ defineProps({ incorporacion: Object });
         <span class="font-medium! text-right">{{ incorporacion.orden_compra || 'N/A' }}</span>
       </div>
       <div class="flex justify-between gap-3">
+        <span class="text-slate-500 dark:text-slate-400">Nota de entrega</span>
+        <span class="font-medium! text-right">{{ incorporacion.nota_entrega || 'N/A' }}</span>
+      </div>
+      <div class="flex justify-between gap-3">
         <span class="text-slate-500 dark:text-slate-400">Factura</span>
         <span class="font-medium! text-right">{{ incorporacion.factura || 'N/A' }}</span>
       </div>
@@ -113,6 +123,20 @@ defineProps({ incorporacion: Object });
         <span class="font-semibold! text-slate-700 dark:text-slate-200">{{ incorporacion.cantidad_bienes }}</span>
       </div>
     </div>
+
+    <template #footer>
+      <div class="flex justify-end p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button 
+          label="Exportar Excel" 
+          icon="fi-rr-file-export"
+          severity="secondary" 
+          outlined
+          :loading="exportando"
+          @click="generarReporte"
+          class="w-full sm:w-auto"
+        />
+      </div>
+    </template>
 
   </Drawer>
 </template>

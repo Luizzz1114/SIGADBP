@@ -61,6 +61,26 @@ class IncorporacionesController {
       res.status(500).json({ message: 'Error al eliminar la incorporación', error: error.message });
     }
   }
+
+  async generarReporte(req, res) {
+    try {
+      const { idIncorporacion } = req.params;
+      const buffer = await IncorporacionesServices.generarReporte(idIncorporacion);
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=reporte_incorporacion.xlsx",
+      );
+      res.send(buffer);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error al generar reporte.", error: error.message });
+    }
+  }
 }
 
 export default new IncorporacionesController();

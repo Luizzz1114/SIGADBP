@@ -155,6 +155,13 @@ watch(visible, async(isOpen) => {
           </Message>
         </div>
         <div class="flex flex-col gap-1">
+          <label for="nota_entrega">Nota de entrega</label>
+          <InputText name="nota_entrega" id="nota_entrega" maxlength="100" autocomplete="off" size="small" fluid />
+          <Message v-if="$form.nota_entrega?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.nota_entrega.error?.message }}
+          </Message>
+        </div>
+        <div class="flex flex-col gap-1">
           <label for="factura">Factura</label>
           <InputText name="factura" id="factura" maxlength="30" autocomplete="off" size="small" fluid />
           <Message v-if="$form.factura?.invalid" severity="error" size="small" variant="simple">

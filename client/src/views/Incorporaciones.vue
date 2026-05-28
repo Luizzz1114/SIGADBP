@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, provide } from 'vue';
+import { saveAs } from 'file-saver';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
@@ -13,6 +14,7 @@ const { showSuccess, showError } = useNotificaciones();
 
 
 // --- Configuración de la vista ---
+provide('optionExport', true);
 const items = [{ label: 'Incorporaciones', route: '/incorporaciones' }];
 
 const columns = [
@@ -29,6 +31,7 @@ const isDrawerRegisterOpen = ref(false);
 const isDrawerViewOpen = ref(false);
 const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
+const exportando = ref(false);
 
 const handleViewRequest = async (item) => {
   selectedIncorporacion.value = await obtenerIncorporacion(item.id);
@@ -42,6 +45,10 @@ const handleEditRequest = async (item) => {
   if (selectedIncorporacion.value) {
     isDrawerEditOpen.value = true;  
   }
+}
+
+const handleExportRequest = (item) => {
+  exportarIncorporacion(item);
 }
 
 const handleDeleteRequest = (item) => {
@@ -111,6 +118,20 @@ async function eliminarIncorporacion(id) {
   }
 }
 
+async function exportarIncorporacion(item) {
+  exportando.value = true;
+  try {
+    const blob = await incorporacionesServices.exportar(item.id);
+    saveAs(blob, `incorporacion - ${item.dependencia}.xlsx`);
+    showSuccess('Reporte Excel generado exitosamente');
+  } catch (error) {
+    showError(error.response?.data?.message || 'Error al exportar incorporación');
+    console.error('Error al exportar incorporación: ', error);
+  } finally {
+    exportando.value = false;
+  }
+}
+
 const incorporacionesMesActual = computed(() => {
   const hoy = new Date();
   const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
@@ -152,13 +173,14 @@ onMounted(async () => {
       :globalFilterFields="['fecha_entrada', 'motivo', 'dependencia', 'responsable']"
       @view="handleViewRequest"
       @edit="handleEditRequest"
+      @export="handleExportRequest"
       @delete="handleDeleteRequest"
     />
 
   </div>
 
   <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearIncorporacion" />
-  <DrawerView v-model:visible="isDrawerViewOpen" :incorporacion="selectedIncorporacion" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :incorporacion="selectedIncorporacion" :exportando="exportando" @export="handleExportRequest" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :incorporacion="selectedIncorporacion" @confirmEdit="actualizarIncorporacion" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarIncorporacion" />
 

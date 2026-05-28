@@ -15,6 +15,7 @@ export const incorporacionSchema = z.object({
   dependencia: z.any()
     .refine((val) => val !== null && val !== undefined && val !== '', 'Seleccione una dependencia'),
   orden_compra: z.string().trim().optional(),
+  nota_entrega: z.string().trim().optional(),
   proveedor: z.string().trim().optional(),
   factura: z.string().trim().optional(),
   bienes: z.array(z.any())
