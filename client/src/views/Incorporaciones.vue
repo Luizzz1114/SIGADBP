@@ -31,7 +31,6 @@ const isDrawerRegisterOpen = ref(false);
 const isDrawerViewOpen = ref(false);
 const isDrawerEditOpen = ref(false);
 const confirmDialogRef = ref(null);
-const exportando = ref(false);
 
 const handleViewRequest = async (item) => {
   selectedIncorporacion.value = await obtenerIncorporacion(item.id);
@@ -45,10 +44,6 @@ const handleEditRequest = async (item) => {
   if (selectedIncorporacion.value) {
     isDrawerEditOpen.value = true;  
   }
-}
-
-const handleExportRequest = (item) => {
-  exportarIncorporacion(item);
 }
 
 const handleDeleteRequest = (item) => {
@@ -66,6 +61,7 @@ const handleDeleteRequest = (item) => {
 // --- Operaciones con la API ---
 const incorporaciones = ref([]);
 const selectedIncorporacion = ref(null);
+const exportando = ref(false);
 
 async function listarIncorporaciones() {
   try {
@@ -173,14 +169,14 @@ onMounted(async () => {
       :globalFilterFields="['fecha_entrada', 'motivo', 'dependencia', 'responsable']"
       @view="handleViewRequest"
       @edit="handleEditRequest"
-      @export="handleExportRequest"
+      @export="exportarIncorporacion"
       @delete="handleDeleteRequest"
     />
 
   </div>
 
   <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearIncorporacion" />
-  <DrawerView v-model:visible="isDrawerViewOpen" :incorporacion="selectedIncorporacion" :exportando="exportando" @export="handleExportRequest" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :incorporacion="selectedIncorporacion" :exportando="exportando" @export="exportarIncorporacion" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :incorporacion="selectedIncorporacion" @confirmEdit="actualizarIncorporacion" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarIncorporacion" />
 
