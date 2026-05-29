@@ -15,8 +15,6 @@
   Sistema de información basado en KPIs para la gestión de bienes públicos en la Unidad de Administración de Mercal - Estado Sucre
 </p>
 
-
-
 ## Tabla de Contenidos
 
 - [Características Principales](#características-principales)
@@ -30,6 +28,8 @@
 - [API REST — Referencia de Endpoints](#api-rest--referencia-de-endpoints)
 - [WebSockets](#websockets)
 - [Módulos del Sistema](#módulos-del-sistema)
+- [Generación de Reportes](#generación-de-reportes)
+- [Seguridad](#seguridad)
 - [Roles y Permisos](#roles-y-permisos)
 - [Tareas Programadas (Cron Jobs)](#tareas-programadas-cron-jobs)
 - [Indicadores de Gestión (KPIs)](#indicadores-de-gestión-kpis)
@@ -49,12 +49,14 @@
 - **Presupuestos semestrales** — partidas presupuestarias con control de gastos, disponibilidad y desactivación automática al cierre del semestre.
 - **Gestión de personal** — datos personales, historial de cargos, antigüedad, evaluaciones de capacitación y satisfacción.
 - **Indicadores de gestión (KPIs)** — cálculo automatizado mensual y semestral con historial de métricas y visualización gráfica para la toma de decisiones.
+- **Generación de reportes en Excel** — exportación de inventarios, incorporaciones, desincorporaciones y movimientos en formato .xlsx con formato profesional.
 - **Autenticación JWT** con recuperación de contraseña por pregunta de seguridad y cronómetro de expiración.
 - **Notificaciones en tiempo real** vía WebSocket (Socket.io) — expulsión de sesión, alertas del sistema.
 - **Modo oscuro** con persistencia en localStorage.
 - **Interfaz responsive** — funcional en escritorio y dispositivos móviles con sidebar colapsable.
 - **Validación de formularios** con Zod en el frontend.
 - **Auto-inicialización de base de datos** — el sistema crea y configura la BD automáticamente en el primer arranque.
+- **Seguridad mejorada** — rate limiting para endpoints de autenticación, protección con Helmet, validación robusta de datos.
 
 
 
@@ -72,10 +74,13 @@
 | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) | 9.x | Generación y verificación de tokens JWT |
 | [bcrypt](https://github.com/kelektiv/node.bcrypt.js) | 6.x | Hashing seguro de contraseñas |
 | [node-cron](https://github.com/node-cron/node-cron) | 4.x | Programación de tareas periódicas |
+| [ExcelJS](https://github.com/exceljs/exceljs) | 4.x | Generación de reportes en formato Excel |
 | [pg](https://node-postgres.com/) | 8.x | Cliente PostgreSQL para Node.js |
 | [cors](https://github.com/expressjs/cors) | 2.x | Manejo de Cross-Origin Resource Sharing |
 | [cookie-parser](https://github.com/expressjs/cookie-parser) | 1.x | Parseo de cookies HTTP |
 | [dotenv](https://github.com/motdotla/dotenv) | 17.x | Carga de variables de entorno |
+| [express-rate-limit](https://github.com/expressjs/express-rate-limit) | 8.x | Protección contra ataques de fuerza bruta |
+| [helmet](https://github.com/helmetjs/helmet) | 8.x | Headers HTTP de seguridad |
 | [nodemon](https://nodemon.io/) | 3.x | Recarga automática en desarrollo |
 
 ### Frontend
@@ -86,11 +91,14 @@
 | [Vite](https://vite.dev/) | 7.x | Bundler ultrarrápido y servidor de desarrollo |
 | [Vue Router](https://router.vuejs.org/) | 4.x | Enrutamiento SPA con guards de navegación |
 | [PrimeVue](https://primevue.org/) | 4.x | Librería de componentes UI |
+| [@primeuix/themes](https://primevue.org/themes) | 2.x | Temas de PrimeVue (Aura, Lara, etc.) |
+| [@primevue/forms](https://primevue.org/forms) | 4.x | Integración de Zod con PrimeVue |
 | [TailwindCSS](https://tailwindcss.com/) | 4.x | Framework de estilos utilitarios |
 | [Axios](https://axios-http.com/) | 1.x | Cliente HTTP con interceptores |
 | [Socket.io Client](https://socket.io/docs/v4/client-api/) | 4.x | Cliente WebSocket |
 | [Zod](https://zod.dev/) | 4.x | Validación y tipado de esquemas |
 | [NProgress](https://ricostacruz.com/nprogress/) | 0.2.x | Barra de progreso de carga HTTP |
+| [file-saver](https://github.com/eligrey/FileSaver.js/) | 2.x | Descarga de archivos desde el navegador |
 
 
 
@@ -122,10 +130,11 @@ SIGADBP/
 │   │   ├── config/              # Conexión a BD y scripts DDL (tablas, triggers, vistas)
 │   │   ├── controllers/         # Controladores HTTP (1 por entidad)
 │   │   ├── jobs/                # Tareas programadas (Cron jobs para KPIs y cierres)
-│   │   ├── middlewares/         # Capa de seguridad (Verificación JWT HTTP/Sockets)
+│   │   ├── middlewares/         # Capa de seguridad (Verificación JWT HTTP/Sockets, Rate Limit)
 │   │   ├── repositories/        # Capa de acceso a datos (Queries SQL parametrizados)
 │   │   ├── routes/              # Definición de rutas y sub-rutas Express
 │   │   ├── services/            # Lógica de negocio y cálculos complejos
+│   │   ├── templates/           # Plantillas Excel para reportes
 │   │   └── index.js             # Punto de entrada (Express + Socket.io + Cron)
 │   └── package.json
 │
@@ -422,6 +431,7 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 | `GET` | `/bienes/metricas/dependencias` | Distribución de bienes por dependencia |
 | `GET` | `/bienes/metricas/no-identificados` | Bienes sin número de identificación |
 | `GET` | `/bienes/metricas/disponibilidad-dependencia` | Disponibilidad operativa por dependencia |
+| `GET` | `/bienes/reporte/:idDependencia` | Generar reporte Excel de bienes por dependencia |
 
 ### Personal (`/personal`)
 
@@ -434,6 +444,7 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 | `DELETE` | `/personal/:id` | Eliminar empleado |
 | `GET` | `/personal/sin-usuario` | Listar empleados que no tienen cuenta de usuario |
 | `POST` | `/personal/validar-cedula` | Validar que la cédula sea única |
+| `GET` | `/personal/historial` | Listar historial completo de cargos por empleado |
 
 ### Dependencias (`/dependencias`)
 
@@ -481,6 +492,7 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 | `POST` | `/incorporaciones` | Registrar incorporación con bienes y gastos |
 | `PUT` | `/incorporaciones` | Actualizar incorporación |
 | `DELETE` | `/incorporaciones/:id` | Eliminar incorporación |
+| `GET` | `/incorporaciones/reporte/:idIncorporacion` | Generar reporte Excel de incorporación |
 
 ### Desincorporaciones (`/desincorporaciones`)
 
@@ -491,6 +503,7 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 | `POST` | `/desincorporaciones` | Registrar desincorporación con bienes |
 | `PUT` | `/desincorporaciones` | Actualizar desincorporación |
 | `DELETE` | `/desincorporaciones/:id` | Eliminar desincorporación |
+| `GET` | `/desincorporaciones/reporte/:idDesincorporacion` | Generar reporte Excel de desincorporación |
 
 ### Movimientos (`/movimientos`)
 
@@ -501,6 +514,7 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 | `POST` | `/movimientos` | Registrar movimiento de bienes |
 | `PUT` | `/movimientos` | Actualizar movimiento |
 | `DELETE` | `/movimientos/:id` | Eliminar movimiento |
+| `GET` | `/movimientos/reporte/:idMovimiento` | Generar reporte Excel de movimiento |
 
 ### Mantenimientos (`/mantenimientos`)
 
@@ -582,6 +596,92 @@ Cada usuario autenticado se une automáticamente a una sala privada `sala_usuari
 | **Cargos** | Catálogo de cargos laborales con tipo de responsabilidad patrimonial | — |
 | **Personal** | Gestión de empleados con datos personales, historial de cargos, antigüedad calculada, bienes asignados y evaluaciones semestrales | Sí |
 | **Usuarios** | Administración de cuentas de acceso. Asignación de roles, pregunta de seguridad, y flujo de recuperación de contraseña con token temporal | — |
+
+### Vistas especializadas del Personal
+
+El módulo de Personal incluye funcionalidades adicionales para el seguimiento del ciclo de vida laboral de los empleados:
+
+| Vista | Descripción |
+|---|---|
+| **Historial de Cargos** | Consulta del historial completo de asignaciones de cargo y dependencia por empleado, con fechas de inicio y fin, y datos del cargo asignado |
+
+
+
+## Generación de Reportes
+
+El sistema permite exportar información en **formato Excel (.xlsx)** para múltiples módulos, facilitando la generación de informes y la documentación oficial.
+
+### Módulos con exportación
+
+| Módulo | Descripción del reporte |
+|---|---|
+| **Inventario de Bienes** | Listado completo de bienes nacionales con categoría, estatus, responsable, dependencia, especificaciones técnicas y seriales |
+| **Incorporaciones** | Reporte de bienes incorporados al patrimonio con orden de compra, factura, proveedor, monto gastado y fecha de incorporación |
+| **Desincorporaciones** | Reporte de bienes desincorporados con tipo de desincorporación, motivo, responsable y fecha de retiro |
+| **Movimientos** | Reporte de transferencias entre dependencias con cedente, receptor, bienes transferidos, origen y destino |
+
+### Implementación técnica
+
+Los reportes se generan usando la librería **ExcelJS** en el backend. Cada módulo tiene un endpoint dedicado que construye el libro Excel con múltiples hojas, formato profesional, encabezados estilizados y datos organizados en tablas.
+
+```
+server/
+└── src/
+    └── templates/                 # Plantillas base para formato Excel
+        ├── formato_inventario.xlsx
+        ├── formato_incorporacion.xlsx
+        ├── formato_desincorporacion.xlsx
+        └── formato_movimiento.xlsx
+```
+
+Los reportes se envían directamente al cliente como descarga de archivo con el tipo MIME `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
+
+
+
+## Seguridad
+
+El sistema implementa múltiples capas de protección para garantizar la seguridad de los datos y el acceso:
+
+### Rate Limiting
+
+Se aplica **rate limiting** a los endpoints de autenticación para prevenir ataques de fuerza bruta:
+
+| Endpoint | Límite | Ventana |
+|---|---|---|
+| `POST /usuarios/login` | 5 solicitudes | 15 minutos |
+| `POST /usuarios/recuperar-contrasena` | 3 solicitudes | 15 minutos |
+
+Al superar el límite, el servidor responde con código `429 Too Many Requests`.
+
+### Helmet
+
+Se utiliza **Helmet** para configurar headers HTTP de seguridad:
+- `contentSecurityPolicy` — Control del contenido que puede cargar la página
+- `crossOriginEmbedderPolicy` — Protección contra ataques tipo MIME sniffing
+- `crossOriginOpenerPolicy` — Aislamiento del contexto de navegación
+- `crossOriginResourcePolicy` — Control de recursos cross-origin
+- `dnsPrefetchControl` — Prevención de prefetch DNS en enlaces externos
+- `frameguard` — Protección contra clickjacking (X-Frame-Options)
+- `hidePoweredBy` — Oculta el header X-Powered-By
+- `hsts` — HTTP Strict Transport Security
+- `ieNoOpen` — Protección para IE8+
+- `noSniff` — Previene MIME type sniffing
+- `originAgentCluster` — Configuración del cluster de agentes de origen
+- `permissionsPolicy` — Control de características del navegador
+
+### Validación de datos
+
+- **Zod** en el frontend para validación de formularios
+- **Esquemas de validación** en cada servicio del backend
+- **Queries parametrizados** en los repositorios para prevenir inyección SQL
+- **Validación de uniqueness** en endpoints críticos (cédula, username, email, número de bien, código de partida)
+
+### Autenticación y sesiones
+
+- Tokens JWT con expiración configurable
+- Tokens temporales de 10 minutos para recuperación de contraseña
+- Expulsión de sesiones vía WebSocket cuando se elimina un usuario
+- Cookies httpOnly para almacenamiento de tokens en el cliente
 
 
 
