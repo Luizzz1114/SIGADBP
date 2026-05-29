@@ -23,7 +23,12 @@ const mantenimiento = ref({
 
 const onFormSubmit = ({ valid, values, reset }) => {
   if (valid) {
-    emit('register', values);
+    const payload = {
+      ...values,
+      presupuesto: values.presupuesto ? values.presupuesto.id : null
+    }
+    console.log('Formulario válido, valores:', values);
+    emit('register', payload);
     visible.value = false;
     reset();
   }
@@ -140,14 +145,34 @@ watch(visible, async(isOpen) => {
         />
         <div class="flex flex-col gap-1">
           <span>Partida presupuestaria</span>
-          <Select name="presupuesto" :options="presupuestos" optionLabel="tipo" optionValue="id" placeholder="Seleccione" size="small" fluid showClear>
+          <Select 
+            name="presupuesto" 
+            :options="presupuestos" 
+            optionLabel="tipo" 
+            :optionDisabled="(option) => Number(option.total_disponible) <= 0" 
+            placeholder="Seleccione" 
+            size="small" 
+            fluid 
+            showClear
+          >
             <template #option="slotProps">
-              <div class="flex flex-col">
+              <div class="flex flex-col" :class="{ 'opacity-50': Number(slotProps.option.total_disponible) <= 0 }">
                 <span>{{ slotProps.option.tipo }}</span>
-                <span class="text-xs! opacity-80">Disponible: ${{ formatearMonto(slotProps.option.total_disponible) }}</span>
+                <span class="text-xs! opacity-80" :class="{ 'text-red-500': Number(slotProps.option.total_disponible) <= 0 }">
+                  Disponible: ${{ formatearMonto(slotProps.option.total_disponible) }}
+                </span>
               </div>
             </template>
+            
+            <template #value="slotProps">
+              <div v-if="slotProps.value" class="flex flex-col">
+                <span>{{ slotProps.value.tipo }}</span>
+                <span class="text-xs! opacity-80">Disponible: ${{ formatearMonto(slotProps.value.total_disponible) }}</span>
+              </div>
+              <span v-else>{{ slotProps.placeholder }}</span>
+            </template>
           </Select>
+          
           <Message v-if="$form.presupuesto?.invalid" severity="error" size="small" variant="simple">
             {{ $form.presupuesto.error?.message }}
           </Message>

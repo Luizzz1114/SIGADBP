@@ -23,22 +23,29 @@ export const crearMantenimientoSchema = (presupuestosList = [], mantenimientoOri
     presupuesto: z.any().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.gasto > 0 && !data.presupuesto) {
-      ctx.addIssue({ code: 'custom', message: 'El presupuesto es obligatorio cuando existe un gasto', path: ['presupuesto'] });
-    }
-    if (data.gasto > 0 && data.presupuesto) {
-      const presupuestoSeleccionado = presupuestosList.find(p => p.id === data.presupuesto);
-      if (presupuestoSeleccionado) {
-        let disponibleReal = parseFloat(presupuestoSeleccionado.total_disponible);
-        if (mantenimientoOriginal && mantenimientoOriginal.id_presupuesto === data.presupuesto) {
-          disponibleReal += parseFloat(mantenimientoOriginal.gasto || 0);
-        }
-        if (data.gasto > disponibleReal) {
-          ctx.addIssue({
-            code: 'custom',
-            message: `El gasto excede el monto disponible ($${disponibleReal})`,
-            path: ['gasto'],
-          });
+    if (data.presupuesto) {
+      if (data.gasto <= 0) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'El gasto debe ser mayor a 0,00 al usar un presupuesto',
+          path: ['gasto'],
+        });
+      } else {
+        const presupuestoSeleccionado = presupuestosList.find(p => p.id === data.presupuesto.id);
+        if (presupuestoSeleccionado) {
+          let disponibleReal = parseFloat(presupuestoSeleccionado.total_disponible);
+          
+          if (mantenimientoOriginal && mantenimientoOriginal.id_presupuesto === data.presupuesto.id) {
+            disponibleReal += parseFloat(mantenimientoOriginal.gasto || 0);
+          }
+          
+          if (data.gasto > disponibleReal) {
+            ctx.addIssue({
+              code: 'custom',
+              message: `El gasto excede el monto disponible ($${disponibleReal.toFixed(2)}) para el presupuesto seleccionado`,
+              path: ['gasto'],
+            });
+          }
         }
       }
     }

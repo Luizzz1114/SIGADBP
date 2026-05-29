@@ -411,17 +411,33 @@ LEFT JOIN resumen_gastos RG ON P.id = RG.idPresupuesto;
 
 -- 5. MANTENIMIENTOS
 CREATE OR REPLACE VIEW vistaMantenimiento AS
-SELECT M.id AS id, M.tipo, TO_CHAR(M.fechaInicio, 'DD/MM/YYYY') AS fecha_inicio, TO_CHAR(M.fechaFin, 'DD/MM/YYYY') AS fecha_fin,
-  M.estatus AS estatus, M.estadoPosterior AS estado_posterior, M.descripcion AS descripcion,
+SELECT 
+  M.id AS id, 
+  M.tipo, 
+  TO_CHAR(M.fechaInicio, 'DD/MM/YYYY') AS fecha_inicio, 
+  TO_CHAR(M.fechaFin, 'DD/MM/YYYY') AS fecha_fin,
+  M.estatus AS estatus, 
+  M.estadoPosterior AS estado_posterior, 
+  M.descripcion AS descripcion,
   (COALESCE(m.fechaFin, CURRENT_DATE) - m.fechaInicio) + 1 AS dias_duracion,
-  b.id AS id_bien, b.numeroBien AS numero_bien, b.descripcion AS descripcion_bien, b.categoria AS categoria_bien,
-  COALESCE(g.monto, 0) AS gasto, p.id AS id_presupuesto, p.codigoPartida AS codigo_partida, p.tipo AS tipo_presupuesto,
-  p.montoUsd AS monto, p.anioFiscal AS anio_fiscal,
-  D.nombre AS dependencia, PE.cedula, CONCAT_WS(' ', PE.nombres, PE.apellidos) AS responsable
+  b.id AS id_bien, 
+  b.numeroBien AS numero_bien, 
+  b.descripcion AS descripcion_bien, 
+  b.categoria AS categoria_bien,
+  COALESCE(g.monto, 0) AS gasto, 
+  VP.id AS id_presupuesto, 
+  VP.codigo AS codigo_partida, 
+  VP.tipo AS tipo_presupuesto,
+  VP.montoUsd AS monto, 
+  VP.anio AS anio_fiscal,
+  VP.total_disponible AS total_disponible,
+  D.nombre AS dependencia, 
+  PE.cedula, 
+  CONCAT_WS(' ', PE.nombres, PE.apellidos) AS responsable
 FROM Mantenimientos M
 INNER JOIN Bienes B ON M.idBien = B.id
 LEFT JOIN Gastos G ON M.id = G.idMantenimiento
-LEFT JOIN Presupuestos P ON G.idPresupuesto = P.id
+LEFT JOIN vistaPresupuestos VP ON G.idPresupuesto = VP.id
 LEFT JOIN Dependencias D ON B.idDependencia = D.id
 LEFT JOIN Personal PE ON B.idPersonal = PE.id;
 
