@@ -3,6 +3,8 @@ import MovimientosController from '../controllers/movimientosController.js';
 
 const MovimientoRouter = express.Router();
 
+MovimientoRouter.get('/reporte/:idMovimiento', MovimientosController.generarReporte);  
+
 MovimientoRouter.route('/')
   .get(MovimientosController.listar)
   .post(MovimientosController.crear)

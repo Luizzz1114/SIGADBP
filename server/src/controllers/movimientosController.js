@@ -61,6 +61,26 @@ class MovimientosControllers {
       res.status(500).json({ message: 'Error al eliminar el movimiento', error: error.message });
     }
   }
+
+  async generarReporte(req, res) {
+    try {
+      const { idMovimiento } = req.params;
+      const buffer = await MovimientosServices.generarReporte(idMovimiento);
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=reporte_Movimiento.xlsx",
+      );
+      res.send(buffer);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error al generar reporte.", error: error.message });
+    }
+  }
 }
 
 export default new MovimientosControllers();

@@ -25,6 +25,11 @@ export default {
   async eliminar(id) {
     const res = await api.delete(`/movimientos/${id}`);
     return res.data;
-  }
+  },
+
+  async exportar(id) {
+    const res = await api.get(`/movimientos/reporte/${id}`, { responseType: 'blob' });
+    return res.data;
+  },
 
 }

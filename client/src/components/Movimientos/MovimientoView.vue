@@ -1,6 +1,12 @@
 <script setup>
 const visible = defineModel('visible');
-defineProps({ movimiento: Object });
+const props = defineProps({ movimiento: Object, exportando: Boolean });
+
+const emit = defineEmits(['export']);
+
+const generarReporte = () => {
+  emit('export', props.movimiento);
+};
 </script>
 
 <template>
@@ -91,7 +97,7 @@ defineProps({ movimiento: Object });
         </Column>
         <Column header="Descripción">
           <template #body="{ data }">
-            <div class="flex flex-col items-start gap-1 whitespace-nowrap">
+            <div class="flex flex-col items-start gap-0.5 whitespace-nowrap">
               <span class="text-sm dark:text-slate-200">{{ data.descripcion }}</span>
               <span class="text-xs! text-slate-500 dark:text-slate-400">
                 {{ data.marca || 'S/M' }} - {{ data.modelo || 'S/M' }}
@@ -105,5 +111,20 @@ defineProps({ movimiento: Object });
         <span class="font-semibold! text-slate-700 dark:text-slate-200">{{ movimiento?.cantidad_bienes }}</span>
       </div>
     </div>
+
+    <template #footer>
+      <div class="flex justify-end p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button 
+          label="Exportar Excel" 
+          icon="fi-rr-file-export"
+          severity="secondary" 
+          outlined
+          :loading="exportando"
+          @click="generarReporte"
+          class="w-full sm:w-auto"
+        />
+      </div>
+    </template>
+
   </Drawer>
 </template>

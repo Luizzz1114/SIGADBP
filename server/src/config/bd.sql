@@ -440,23 +440,39 @@ SELECT
   P_ced.id AS id_cedente, 
   P_ced.cedula AS cedula_cedente, 
   CONCAT(P_ced.nombres, ' ', P_ced.apellidos) AS cedente,
+  VP_ced.nivelProfesional AS nivel_profesional_cedente, -- NUEVO
+  VP_ced.cargo AS cargo_cedente,                        -- NUEVO
   D_dest.id AS id_destino, 
   D_dest.nombre AS dependencia_destino,
   P_rec.id AS id_receptor, 
   P_rec.cedula AS cedula_receptor, 
   CONCAT(P_rec.nombres, ' ', P_rec.apellidos) AS receptor,
+  VP_rec.nivelProfesional AS nivel_profesional_receptor, -- NUEVO
+  VP_rec.cargo AS cargo_receptor,                        -- NUEVO
   COALESCE(RB.cantidad_bienes, 0) AS cantidad_bienes
 FROM Movimientos M
 LEFT JOIN resumen_bienes RB ON M.id = RB.idMovimiento
 INNER JOIN Dependencias D_orig ON D_orig.id = M.idOrigen
 INNER JOIN Dependencias D_dest ON D_dest.id = M.idDestino
 INNER JOIN Personal P_ced ON P_ced.id = M.idCedente
-INNER JOIN Personal P_rec ON P_rec.id = M.idReceptor;
+INNER JOIN Personal P_rec ON P_rec.id = M.idReceptor
+LEFT JOIN vistaPersonal VP_ced ON VP_ced.id = P_ced.id
+LEFT JOIN vistaPersonal VP_rec ON VP_rec.id = P_rec.id;
 
-CREATE VIEW vistaBienesPorMovimiento AS
-SELECT B.id, B.numeroBien AS numero, B.descripcion, B.marca, B.modelo, B.categoria, DM.idMovimiento
+CREATE OR REPLACE VIEW vistaBienesPorMovimiento AS
+SELECT 
+  B.id AS id, 
+  B.numeroBien AS numero, 
+  B.descripcion, 
+  B.marca, 
+  B.modelo, 
+  B.categoria,
+  COALESCE(T.serial, V.serialCarroceria, 'S/S') AS serial,
+  DM.idMovimiento
 FROM Bienes B
-INNER JOIN DetallesMovimientos DM ON B.id = DM.idBien;
+INNER JOIN DetallesMovimientos DM ON B.id = DM.idBien
+LEFT JOIN Tecnologicos T ON B.id = T.idTecnologico
+LEFT JOIN Vehiculos V ON B.id = V.idVehiculo;
 
 
 -- 7. DESINCORPORACIONES

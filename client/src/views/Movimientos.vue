@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, provide } from 'vue';
+import { saveAs } from 'file-saver';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import Table from '@/components/Table.vue';
@@ -13,6 +14,7 @@ const { showSuccess, showError } = useNotificaciones();
 
 
 // --- Configuración de la vista
+provide('optionExport', true);
 const items = [{ label: 'Movimientos', route: '/movimientos' }];
 
 const columns = [
@@ -69,6 +71,7 @@ const handleDeleteRequest = (item) => {
 // --- Operaciones con la API ---
 const movimientos = ref([]);
 const selectedMovimiento = ref(null);
+const exportando = ref(false);
 
 async function listarMovimientos() {
   try {
@@ -121,6 +124,20 @@ async function eliminarMovimiento(id) {
   }
 }
 
+async function exportarMovimiento(item) {
+  exportando.value = true;
+  try {
+    const blob = await movimientosServices.exportar(item.id);
+    saveAs(blob, `movimiento - ${item.dependencia_destino}.xlsx`);
+    showSuccess('Reporte Excel generado exitosamente');
+  } catch (error) {
+    showError(error.response?.data?.message || 'Error al exportar movimiento');
+    console.error('Error al exportar movimiento: ', error);
+  } finally {
+    exportando.value = false;
+  }
+}
+
 const totalMes = computed(() => {
   const hoy = new Date();
   const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
@@ -149,7 +166,7 @@ onMounted(async() => {
           <span class="-mt-1 text-xs text-slate-400">Traslado de bienes y reasignación de responsables</span>
         </div>
       </div>
-      <Button @click="isDrawerRegisterOpen = true" type="button" label="Nuevo Movimento" icon="fi-sr-plus-small"  />
+      <Button @click="isDrawerRegisterOpen = true" type="button" label="Nuevo Movimiento" icon="fi-sr-plus-small"  />
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
@@ -163,13 +180,14 @@ onMounted(async() => {
       :headerFilters="filtros"
       @view="handleViewRequest"
       @edit="handleEditRequest"
+      @export="exportarMovimiento"
       @delete="handleDeleteRequest"
     />
 
   </div>
 
   <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearMovimiento" />
-  <DrawerView v-model:visible="isDrawerViewOpen" :movimiento="selectedMovimiento" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :movimiento="selectedMovimiento" :exportando="exportando" @export="exportarMovimiento" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :movimiento="selectedMovimiento" @confirmEdit="actualizarMovimiento" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarMovimiento" />
 
