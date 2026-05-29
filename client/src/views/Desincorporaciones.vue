@@ -46,10 +46,6 @@ const handleEditRequest = async (item) => {
   }
 }
 
-const handleExportRequest = (item) => {
-  exportarDesincorporacion(item);
-}
-
 const handleDeleteRequest = (item) => {
   const info = {
     'Descripcion': item.descripcion || 'Sin descripción',
@@ -177,14 +173,14 @@ onMounted(async() => {
       :globalFilterFields="['fecha_salida', 'descripcion', 'dependencia', 'responsable']"
       @view="handleViewRequest"
       @edit="handleEditRequest"
-      @export="handleExportRequest"
+      @export="exportarDesincorporacion"
       @delete="handleDeleteRequest"
     />
 
   </div>
 
   <DrawerRegister v-model:visible="isDrawerRegisterOpen" @register="crearDesincorporacion" />
-  <DrawerView v-model:visible="isDrawerViewOpen" :desincorporacion="selectedDesincorporacion" :exportando="exportando" @export="handleExportRequest" />
+  <DrawerView v-model:visible="isDrawerViewOpen" :desincorporacion="selectedDesincorporacion" :exportando="exportando" @export="exportarDesincorporacion" />
   <DrawerEdit v-model:visible="isDrawerEditOpen" :desincorporacion="selectedDesincorporacion" @confirmEdit="actualizarDesincorporacion" />
   <DialogDelete ref="confirmDialogRef" @confirmDelete="eliminarDesincorporacion" />
 
