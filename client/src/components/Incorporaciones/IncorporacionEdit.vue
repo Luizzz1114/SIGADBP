@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { formatearMonto, formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
+import { formatearMonto, formatearFecha, obtenerFinAnio, parsearMonto } from '@/utils/formatters.js';
 import { listarBienesNoAsignados, listarPresupuestosActivos } from '@/utils/fetch.utils.js';
 import { incorporacionSchema, motivos } from '@/utils/incorporaciones.utils.js';
 import MoneyInput from '@/components/MoneyInput.vue';
@@ -16,15 +16,15 @@ const props = defineProps({
   }
 });
 
-const resolver = ({ values }) => {
-  return zodResolver(incorporacionSchema)({
+const resolver = computed(() => {
+  return zodResolver(incorporacionSchema(presupuestos.value))({
     values: {
-      ...values,
+      ...incorporacion.value,
       bienes: bienesSeleccionados.value,
       dependencia: props.incorporacion.idd
     }
   });
-};
+});
 
 const maxDate = obtenerFinAnio();
 const minDate = computed(()=> {
@@ -43,9 +43,77 @@ const eliminarBien = (id) => {
   }
 };
 
+// --- Validación en tiempo real ---
+const erroresValidacion = computed(() => {
+  const errores = {};
+  
+  // Agrupar gastos por presupuesto
+  const gastosPorPresupuesto = {};
+  
+  bienesSeleccionados.value.forEach(bien => {
+    const gasto = parsearMonto(bien.gasto);
+    
+    if (bien.id_presupuesto && gasto > 0) {
+      if (!gastosPorPresupuesto[bien.id_presupuesto]) {
+        gastosPorPresupuesto[bien.id_presupuesto] = 0;
+      }
+      gastosPorPresupuesto[bien.id_presupuesto] += gasto;
+    }
+  });
+  
+  // Validar cada presupuesto
+  Object.entries(gastosPorPresupuesto).forEach(([idPresupuesto, totalGasto]) => {
+    const presupuesto = presupuestos.value.find(p => p.id === parseInt(idPresupuesto));
+    if (presupuesto) {
+      const disponible = parseFloat(presupuesto.total_disponible);
+      if (totalGasto > disponible) {
+        bienesSeleccionados.value.forEach(bien => {
+          if (bien.id_presupuesto === parseInt(idPresupuesto)) {
+            errores[bien.id] = 'Excede disponible';
+          }
+        });
+      }
+    }
+  });
+  
+  // Validar: presupuesto sin gasto > 0
+  bienesSeleccionados.value.forEach(bien => {
+    const gasto = parsearMonto(bien.gasto);
+    if (bien.id_presupuesto && gasto <= 0 && !errores[bien.id]) {
+      errores[bien.id] = 'El gasto debe ser mayor a 0,00';
+    }
+  });
+  
+  return errores;
+});
+
+const puedeEnviar = computed(() => {
+  return Object.keys(erroresValidacion.value).length === 0;
+});
+
+// Calcular disponible dinámico para cada presupuesto considerando gastos en bienes anteriores
+const getDisponibleReal = (presupuestoId, bienIdActual) => {
+  const presupuesto = presupuestos.value.find(p => p.id === presupuestoId);
+  if (!presupuesto) return 0;
+  
+  let usado = 0;
+  bienesSeleccionados.value.forEach(bien => {
+    if (bien.id_presupuesto === presupuestoId && bien.id !== bienIdActual) {
+      usado += parsearMonto(bien.gasto);
+    }
+  });
+  
+  return Math.max(0, parseFloat(presupuesto.total_disponible) - usado);
+};
+
+// Verificar si un presupuesto está agotado
+const estaAgotado = (presupuestoId, bienIdActual) => {
+  return getDisponibleReal(presupuestoId, bienIdActual) <= 0;
+};
+
 const onFormSubmit = (e) => {
   
-  if (!e.valid) return;
+  if (!e.valid || !puedeEnviar.value) return;
 
   const payload = {
     ...e.values,
@@ -206,9 +274,6 @@ watch(visible, async(isOpen) => {
               </div>
             </template>
           </MultiSelect>
-          <Message v-if="$form.bienes?.invalid" severity="error" size="small" variant="simple">
-            {{ $form.bienes.error?.message }}
-          </Message>
         </div>
 
         <div v-if="bienesSeleccionados.length > 0" class="sm:col-span-2">
@@ -228,21 +293,31 @@ watch(visible, async(isOpen) => {
                 </div>
               </template>
             </Column>
-            <Column header="Gasto (Opcional)" style="max-width: 10rem">
+            <Column header="Gasto (Opcional)" style="min-width: 12rem; max-width: 14rem">
               <template #body="{ data }">
-                <MoneyInput v-model="data.gasto" currency="USD" />
+                <div class="flex flex-col gap-1">
+                  <MoneyInput v-model="data.gasto" currency="USD" />
+                  <span v-if="erroresValidacion[data.id]" class="text-xs! text-red-500">{{ erroresValidacion[data.id] }}</span>
+                </div>
               </template>
             </Column>
             <Column header="Partida Presupuestaria" style="max-width: 15rem">
               <template #body="{ data }">
-                <Select v-model="data.id_presupuesto" :options="presupuestos" optionLabel="tipo" optionValue="id" placeholder="Seleccione" size="small" class="w-full" showClear>
-                  <template #option="slotProps">
-                    <div class="flex flex-col">
-                      <span>{{ slotProps.option.tipo }}</span>
-                      <span class="text-xs! opacity-80">Disponible: ${{ formatearMonto(slotProps.option.total_disponible) }}</span>
-                    </div>
-                  </template>
-                </Select>
+                <div class="flex flex-col gap-1">
+                  <Select v-model="data.id_presupuesto" :options="presupuestos" optionLabel="tipo" optionValue="id" placeholder="Seleccione" size="small" class="w-full" showClear showChangeIcon>
+                    <template #option="slotProps">
+                      <div class="flex flex-col">
+                        <span>{{ slotProps.option.tipo }}</span>
+                        <span class="text-xs! opacity-80" :class="{ 'text-red-500': estaAgotado(slotProps.option.id, data.id) }">
+                          Disponible: ${{ formatearMonto(getDisponibleReal(slotProps.option.id, data.id)) }}
+                        </span>
+                      </div>
+                    </template>
+                  </Select>
+                  <span v-if="data.id_presupuesto" class="text-xs! text-slate-400 dark:text-slate-500">
+                    Disponible: ${{ formatearMonto(getDisponibleReal(data.id_presupuesto, data.id)) }}
+                  </span>
+                </div>
               </template>
             </Column>
             <Column header="">
