@@ -681,7 +681,6 @@ Se utiliza **Helmet** para configurar headers HTTP de seguridad:
 - Tokens JWT con expiración configurable
 - Tokens temporales de 10 minutos para recuperación de contraseña
 - Expulsión de sesiones vía WebSocket cuando se elimina un usuario
-- Cookies httpOnly para almacenamiento de tokens en el cliente
 
 
 
