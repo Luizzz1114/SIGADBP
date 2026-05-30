@@ -16,14 +16,22 @@ const props = defineProps({
   }
 });
 
+// 1. CORRECCIÓN DEL RESOLVER: Retornamos una función para que PrimeVue la ejecute,
+// e inyectamos la dependencia y los bienes reactivos que el esquema de Zod exige.
 const resolver = computed(() => {
-  return zodResolver(incorporacionSchema(presupuestos.value))({
-    values: {
-      ...incorporacion.value,
-      bienes: bienesSeleccionados.value,
-      dependencia: props.incorporacion.idd
-    }
-  });
+  const schemaValidation = zodResolver(incorporacionSchema(presupuestos.value));
+  
+  return (formContext) => {
+    return schemaValidation({
+      ...formContext,
+      values: {
+        ...formContext.values,
+        // Inyectamos la dependencia para que el schema de Zod pase (ya que el Select está deshabilitado y no envía name)
+        dependencia: props.incorporacion?.idd || 'omitido', 
+        bienes: bienesSeleccionados.value
+      }
+    });
+  };
 });
 
 const maxDate = obtenerFinAnio();
@@ -46,13 +54,10 @@ const eliminarBien = (id) => {
 // --- Validación en tiempo real ---
 const erroresValidacion = computed(() => {
   const errores = {};
-  
-  // Agrupar gastos por presupuesto
   const gastosPorPresupuesto = {};
   
   bienesSeleccionados.value.forEach(bien => {
     const gasto = parsearMonto(bien.gasto);
-    
     if (bien.id_presupuesto && gasto > 0) {
       if (!gastosPorPresupuesto[bien.id_presupuesto]) {
         gastosPorPresupuesto[bien.id_presupuesto] = 0;
@@ -61,7 +66,6 @@ const erroresValidacion = computed(() => {
     }
   });
   
-  // Validar cada presupuesto
   Object.entries(gastosPorPresupuesto).forEach(([idPresupuesto, totalGasto]) => {
     const presupuesto = presupuestos.value.find(p => p.id === parseInt(idPresupuesto));
     if (presupuesto) {
@@ -76,7 +80,6 @@ const erroresValidacion = computed(() => {
     }
   });
   
-  // Validar: presupuesto sin gasto > 0
   bienesSeleccionados.value.forEach(bien => {
     const gasto = parsearMonto(bien.gasto);
     if (bien.id_presupuesto && gasto <= 0 && !errores[bien.id]) {
@@ -91,7 +94,6 @@ const puedeEnviar = computed(() => {
   return Object.keys(erroresValidacion.value).length === 0;
 });
 
-// Calcular disponible dinámico para cada presupuesto considerando gastos en bienes anteriores
 const getDisponibleReal = (presupuestoId, bienIdActual) => {
   const presupuesto = presupuestos.value.find(p => p.id === presupuestoId);
   if (!presupuesto) return 0;
@@ -106,13 +108,11 @@ const getDisponibleReal = (presupuestoId, bienIdActual) => {
   return Math.max(0, parseFloat(presupuesto.total_disponible) - usado);
 };
 
-// Verificar si un presupuesto está agotado
 const estaAgotado = (presupuestoId, bienIdActual) => {
   return getDisponibleReal(presupuestoId, bienIdActual) <= 0;
 };
 
 const onFormSubmit = (e) => {
-  
   if (!e.valid || !puedeEnviar.value) return;
 
   const payload = {
@@ -123,7 +123,7 @@ const onFormSubmit = (e) => {
     bienes: bienesSeleccionados.value.map(b => ({
       id_bien: b.id,
       id_presupuesto: b.id_presupuesto ?? null,
-      gasto: Number(b.gasto) || 0,
+      gasto: Number(parsearMonto(b.gasto)) || 0,
     }))
   };
 
@@ -134,15 +134,28 @@ const onFormSubmit = (e) => {
 
 watch(visible, async(isOpen) => {
   if (isOpen) {
-   
     const [bs, pres] = await Promise.all([
       listarBienesNoAsignados(),
       listarPresupuestosActivos()
     ]);
     
-    presupuestos.value = pres;
-    
     const bienesActuales = props.incorporacion.bienes || [];
+    
+    // 2. CORRECCIÓN DEL PRESUPUESTO: Reintegramos el gasto original para evaluar correctamente la capacidad
+    presupuestos.value = pres.map(p => {
+      let reintegro = 0;
+      bienesActuales.forEach(b => {
+        // Asumiendo que la BD envía idpresupuesto
+        if (b.idpresupuesto === p.id) {
+           reintegro += parsearMonto(b.gasto) || 0;
+        }
+      });
+      return {
+        ...p,
+        total_disponible: parseFloat(p.total_disponible) + reintegro
+      };
+    });
+    
     bienesSeleccionados.value = bienesActuales.map(b => ({
       ...b,
       id: b.id,

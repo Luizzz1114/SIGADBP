@@ -33,8 +33,12 @@ const resetForm = () => {
 };
 
 const eliminarBien = (id) => {
-  bienesSeleccionados.value = bienesSeleccionados.value.filter(b => b.id !== id);
-};
+  const index = bienesSeleccionados.value.findIndex(b => b.id === id);
+  if (index !== -1) {
+    // Mutamos el array original en memoria
+    bienesSeleccionados.value.splice(index, 1);
+  }
+}
 
 // --- Validación en tiempo real ---
 const erroresValidacion = computed(() => {
@@ -322,7 +326,7 @@ watch(visible, async(isOpen) => {
             </Column>
             <Column header="">
               <template #body="{ data }">
-                <Button  @click="eliminarBien(data.id)" icon="fi-rr-trash" severity="danger" outlined size="small" class="size-8!" />
+                <Button type="button" @click="eliminarBien(data.id)" icon="fi-rr-trash" severity="danger" outlined size="small" class="size-8!" />
               </template>
             </Column>
           </DataTable>
@@ -337,7 +341,7 @@ watch(visible, async(isOpen) => {
         </div>
       </div>
       <div class="pt-6 flex justify-end gap-3">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
         <Button label="Registrar" type="submit" />
       </div>
     </Form>
