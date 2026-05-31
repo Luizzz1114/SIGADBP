@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
+import { obtenerHoy, obtenerInicioMes } from '@/utils/formatters.js';
 import { listarBienesOperativos } from '@/utils/fetch.utils.js';
 import { movimientoSchema, tiposMovimiento } from '@/utils/movimientos.utils.js';
 
@@ -15,9 +15,9 @@ const props = defineProps({
   }
 });
 
-const maxDate = obtenerFinAnio();
+const maxDate = obtenerHoy();
 const minDate = computed(()=> {
-  return formatearFecha(props.movimiento?.fecha);
+  return obtenerInicioMes(props.movimiento?.fecha);
 });
 
 const resolver = ({ values }) => {

@@ -1,15 +1,15 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { obtenerHoy, obtenerFinAnio } from '@/utils/formatters.js';
+import { obtenerHoy, obtenerInicioMes } from '@/utils/formatters.js';
 import { listarDependenciasConResponsables, listarBienesOperativos, listarPersonal } from '@/utils/fetch.utils.js';
 import { movimientoSchema, tiposMovimiento } from '@/utils/movimientos.utils.js';
 
 const visible = defineModel('visible');
 const emit = defineEmits(['register']);
 const resolver = zodResolver(movimientoSchema);
-const minDate = obtenerHoy();
-const maxDate = obtenerFinAnio();
+const minDate = obtenerInicioMes();
+const maxDate = obtenerHoy();
 
 const initialFormState = {
   tipo: '',
@@ -131,6 +131,7 @@ const personalDisponible = computed(() => {
             :manualInput="false"
             size="small"
             fluid showIcon
+            showButtonBar
           />
           <Message v-if="$form.fecha?.invalid" severity="error" size="small" variant="simple">
             {{ $form.fecha.error?.message }}

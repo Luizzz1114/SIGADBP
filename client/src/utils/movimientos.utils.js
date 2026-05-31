@@ -9,7 +9,10 @@ export const tiposMovimiento = ['Traslado', 'Cambio de responsable'];
 export const movimientoSchema = z.object({
   
   tipo: z.string().min(1, 'Debe seleccionar un tipo de movimiento'),
-  fecha: z.string().min(1, 'La fecha es obligatoria'),
+  fecha: z.preprocess(
+      (val) => (val === null || val === undefined ? '' : val), // Convierte null/undefined a string vacío
+      z.string().trim().min(1, 'La fecha es obligatoria')
+    ),
 
   origen: z.any().refine((val) => val !== null && val !== undefined && val !== '', {
     message: 'Debe seleccionar una dependencia de origen (Cedente)'
