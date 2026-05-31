@@ -1,15 +1,15 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { obtenerHoy, obtenerFinAnio, formatearMonto, parsearMonto } from '@/utils/formatters.js';
+import { obtenerHoy, obtenerInicioMes, formatearMonto, parsearMonto } from '@/utils/formatters.js';
 import { listarDependenciasConResponsables, listarBienesNoAsignados, listarPresupuestosActivos } from '@/utils/fetch.utils.js';
 import { incorporacionSchema, motivos } from '@/utils/incorporaciones.utils.js';
 import MoneyInput from '@/components/MoneyInput.vue';
 
 const visible = defineModel('visible');
 const emit = defineEmits(['register']);
-const minDate = obtenerHoy();
-const maxDate = obtenerFinAnio();
+const minDate = obtenerInicioMes();
+const maxDate = obtenerHoy();
 
 const resolver = computed(() => zodResolver(incorporacionSchema(presupuestos.value)));
 
@@ -206,6 +206,7 @@ watch(visible, async(isOpen) => {
             :maxDate="maxDate"
             size="small"
             fluid showIcon
+            showButtonBar
           />
           <Message v-if="$form.fecha_entrada?.invalid" severity="error" size="small" variant="simple">
             {{ $form.fecha_entrada.error?.message }}

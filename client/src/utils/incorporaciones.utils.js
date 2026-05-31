@@ -10,8 +10,10 @@ export const motivos = ['Compra', 'Donación', 'Permuta', 'Reposición', 'Sobran
 export const incorporacionSchema = (presupuestosList = []) => z.object({
   motivo: z.string().trim()
     .min(1, 'El motivo es obligatorio'),
-  fecha_entrada: z.string().trim()
-    .min(1, 'La fecha de entrada es obligatoria'),
+  fecha_entrada: z.preprocess(
+      (val) => (val === null || val === undefined ? '' : val), // Convierte null/undefined a string vacío
+      z.string().trim().min(1, 'La fecha de entrada es obligatoria')
+    ),
   dependencia: z.any()
     .refine((val) => val !== null && val !== undefined && val !== '', 'Seleccione una dependencia'),
   orden_compra: z.string().trim().optional(),

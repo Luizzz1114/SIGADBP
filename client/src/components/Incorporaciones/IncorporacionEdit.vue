@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { formatearMonto, formatearFecha, obtenerFinAnio, parsearMonto } from '@/utils/formatters.js';
+import { formatearMonto, parsearMonto, obtenerHoy, obtenerInicioMes } from '@/utils/formatters.js';
 import { listarBienesNoAsignados, listarPresupuestosActivos } from '@/utils/fetch.utils.js';
 import { incorporacionSchema, motivos } from '@/utils/incorporaciones.utils.js';
 import MoneyInput from '@/components/MoneyInput.vue';
@@ -34,9 +34,9 @@ const resolver = computed(() => {
   };
 });
 
-const maxDate = obtenerFinAnio();
+const maxDate = obtenerHoy();
 const minDate = computed(()=> {
-  return formatearFecha(props.incorporacion?.fecha_entrada);
+  return obtenerInicioMes(props.incorporacion?.fecha_entrada);
 });
 
 // --- Estados
