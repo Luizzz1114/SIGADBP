@@ -123,6 +123,7 @@ watch(visible, async(isOpen) => {
             :manualInput="false" 
             size="small"
             fluid showIcon
+            showButtonBar
           />
           <Message v-if="$form.fecha_inicio?.invalid" severity="error" size="small" variant="simple">
             {{ $form.fecha_inicio.error?.message }}
