@@ -92,6 +92,9 @@ export function setupPrimeVue(app) {
       medium: 'Medio',
       strong: 'Fuerte',
       passwordPrompt: 'Ingrese una contraseña',
+      today: 'Hoy',
+      clear: 'Limpiar',
+      weekHeader: 'Sm',
     },
   });
   app.use(ConfirmationService);

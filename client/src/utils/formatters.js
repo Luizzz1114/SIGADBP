@@ -56,6 +56,28 @@ export const obtenerHoy = () => {
   return hoy;
 };
 
+export const obtenerInicioMes = (fecha = null) => {
+  console.log('Fecha recibida para obtener inicio de mes:', fecha);
+  let hoy;
+  if (fecha) {
+    if (typeof fecha === 'string' && fecha.includes('/')) {
+      const [dia, mes, anio] = fecha.split('/');
+      hoy = new Date(anio, mes - 1, dia);
+    } else {
+      hoy = new Date(fecha);
+    }
+  } else {
+    hoy = new Date();
+  }
+  if (isNaN(hoy.getTime())) {
+    console.log('Error: La fecha proporcionada es inválida');
+    return null;
+  }
+  const fechaa = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  console.log('Fecha de inicio del mes:', fechaa);
+  return fechaa;
+};
+
 
 
 // --- Formatear dinero ---

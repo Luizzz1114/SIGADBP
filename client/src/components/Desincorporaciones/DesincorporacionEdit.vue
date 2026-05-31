@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { formatearFecha, obtenerFinAnio } from '@/utils/formatters.js';
+import { obtenerHoy, obtenerInicioMes } from '@/utils/formatters.js';
 import { listarBienesOperativos } from '@/utils/fetch.utils.js';
 import { desincorporacionSchema, tiposDesincorporacion } from '@/utils/desincorporaciones.utils.js';
 
@@ -25,9 +25,9 @@ const resolver = ({ values }) => {
   });
 };
 
-const maxDate = obtenerFinAnio();
+const maxDate = obtenerHoy();
 const minDate = computed(()=> {
-  return formatearFecha(props.desincorporacion?.fecha_salida);
+  return obtenerInicioMes(props.desincorporacion?.fecha_salida);
 });
 
 // --- Estados ---

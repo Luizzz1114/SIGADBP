@@ -9,8 +9,10 @@ export const tiposDesincorporacion = ['Desuso', 'Deterioro', 'Donación', 'Obsol
 export const desincorporacionSchema = z.object({
   dependencia: z.any()
     .refine((val) => val !== null && val !== undefined && val !== '', 'Seleccione una dependencia'),
-  fecha_salida: z.string().trim()
-    .min(1, 'La fecha de salida es obligatoria'),
+  fecha_salida: z.preprocess(
+      (val) => (val === null || val === undefined ? '' : val),
+      z.string().trim().min(1, 'La fecha de salida es obligatoria')
+    ),
   descripcion: z.string().trim()
     .max(150, 'La descripción debe tener máximo 150 caracteres')
     .optional(),
