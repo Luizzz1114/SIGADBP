@@ -1,9 +1,13 @@
 import express from 'express';
 import PersonalController from '../controllers/personalController.js';
+import { verificarRolAdmin } from '../middlewares/authMiddleware.js'; 
 
 const PersonalRouter = express.Router();
 
 PersonalRouter.get('/', PersonalController.listar);
+
+PersonalRouter.use(verificarRolAdmin);
+
 PersonalRouter.get('/historial', PersonalController.historialCargos);
 PersonalRouter.get('/sin-usuario', PersonalController.listarSinUsuario);
 PersonalRouter.post('/validar-cedula', PersonalController.validarCedulaUnica);

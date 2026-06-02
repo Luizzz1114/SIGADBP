@@ -83,13 +83,13 @@ const options = computed(() => [
   },
   { 
     separator: true,
-    visible: usuario?.rol === 'Administrador'
+    visible: usuario.value?.rol === 'Administrador'
   },
   { 
     label: 'Eliminar', 
     icon: 'fi-rr-trash',
     class: 'menu-item-danger',
-    visible: usuario?.rol === 'Administrador',
+    visible: usuario.value?.rol === 'Administrador',
     command: () => emit('delete', selectedItem.value) 
   }
 ]);

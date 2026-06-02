@@ -1,5 +1,6 @@
 import express from 'express';
 import IncorporacionesController from '../controllers/incorporacionesController.js';
+import { verificarRolAdmin } from '../middlewares/authMiddleware.js';
 
 const IncorporacionesRouter = express.Router();
 
@@ -13,6 +14,6 @@ IncorporacionesRouter.route('/')
 
 IncorporacionesRouter.route('/:id')
   .get(IncorporacionesController.obtenerPorId)
-  .delete(IncorporacionesController.eliminar);
+  .delete(verificarRolAdmin, IncorporacionesController.eliminar);
 
 export default IncorporacionesRouter;

@@ -4,8 +4,16 @@ import Header from '@/components/Header.vue';
 import Sidebar from '@/components/Sidebar.vue';
 
 // --- Información del Usuario ---
-const usuario = JSON.parse(localStorage.getItem('user_session'))?.usuario;
-provide('userData', usuario);
+const userData = ref(JSON.parse(localStorage.getItem('user_session'))?.usuario || {});
+provide('userData', userData);
+
+const actualizarUserData = (nuevosDatos) => {
+  userData.value = nuevosDatos;
+  const session = JSON.parse(localStorage.getItem('user_session')) || {};
+  session.usuario = nuevosDatos;
+  localStorage.setItem('user_session', JSON.stringify(session));
+};
+provide('actualizarUserData', actualizarUserData);
 
 // --- Lógica de Modo Oscuro ---
 const isDark = ref(false);

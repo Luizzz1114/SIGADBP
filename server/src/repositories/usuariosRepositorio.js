@@ -77,6 +77,30 @@ class usuarios {
     return resultado.rowCount === 1;
   }
 
+  async actualizarPerfil (user) {
+    const { id, username, correo, contrasena, pregunta, respuesta } = user;
+
+    let sql = 'UPDATE Usuarios SET fechaActualizacion = CURRENT_TIMESTAMP';
+    const params = [];
+    let paramIndex = 1;
+
+    const camposOpcionales = { username, correo, contrasena, pregunta, respuesta };
+
+    for (const [columna, valor] of Object.entries(camposOpcionales)) {
+      if (valor !== undefined && valor !== null && valor !== '') {
+        sql += `, ${columna} = $${paramIndex}`;
+        params.push(valor);
+        paramIndex++;
+      }
+    }
+
+    sql += ` WHERE id = $${paramIndex};`;
+    params.push(id);
+    
+    const resultado = await pool.query(sql, params);
+    return resultado.rowCount === 1;
+  }
+
   async cambiarContrasena (user) {
     const { id, contrasena } = user;
     const sql = 'UPDATE Usuarios SET contrasena = $1, fechaActualizacion = CURRENT_TIMESTAMP WHERE id = $2;';

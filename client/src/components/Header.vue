@@ -22,7 +22,7 @@ const isProfileOpen = ref(false);
 const dataUsuario = ref({});
 
 const handleProfileRequest = async () => {
-  dataUsuario.value = await obtenerUsuario(usuario.id);
+  dataUsuario.value = await obtenerUsuario(usuario.value?.id);
   if (dataUsuario.value) {
     isProfileOpen.value = true;
   }
@@ -62,7 +62,7 @@ const confirmLogout = () => {
 };
 
 onMounted(() => {
-  isDialogEncuestaOpen.value = !usuario.encuestaRespondida;
+  isDialogEncuestaOpen.value = !usuario.value.encuestaRespondida;
 });
 </script>
 

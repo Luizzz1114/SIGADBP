@@ -8,7 +8,7 @@ defineProps({
 });
 
 const emit = defineEmits(['close-mobile', 'toggle-theme']);
-const userRole = inject('userData')?.rol;
+const userRole = inject('userData').value?.rol;
 
 const menuGroups = [
   {

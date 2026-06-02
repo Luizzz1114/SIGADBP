@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { createPerfilSchema, preguntasSeguridad } from '@/utils/usuarios.utils';
 import usuariosServices from '@/services/usuarios.services';
@@ -14,6 +14,9 @@ const props = defineProps({
     default: () => ({})
   }
 });
+
+const actualizarUserData = inject('actualizarUserData');
+const cargando = ref(false);
 
 const initialValues = computed(() => {
   const usuario = props.usuario;
@@ -39,13 +42,24 @@ const resolver = (options) => {
 
 const onFormSubmit = async ({ valid, values, reset }) => {
   if(!valid) return;
+  cargando.value = true;
   try {
-    const resultado = await usuariosServices.actualizar(values);
+    const resultado = await usuariosServices.actualizarPerfil(values);
+    const session = JSON.parse(localStorage.getItem('user_session'));
+    session.usuario = {
+      ...session.usuario,
+      correo: values.correo,
+      username: values.username,
+    };
+    if (actualizarUserData) {
+      actualizarUserData(session.usuario);
+    }
     showSuccess(resultado.message);
   } catch(error) {
     showError(error.response?.data?.message);
     console.log('Error al actualizar usuario: ', error);
   } finally {
+    cargando.value = false;
     visible.value = false;
     reset();
   }
@@ -236,7 +250,7 @@ const onFormSubmit = async ({ valid, values, reset }) => {
                   </div>
                 </div>
                 <div class="flex pt-6 justify-end gap-4 mt-0">
-                  <Button label="Actualizar" type="submit" />
+                  <Button :loading="cargando" label="Actualizar" type="submit" />
                 </div>
               </Form>
             </TabPanel>

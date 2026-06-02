@@ -47,4 +47,9 @@ export default {
     return res.data;
   },
 
+  async actualizarPerfil(usuario) {
+    const res = await api.put('/usuarios/perfil', usuario);
+    return res.data;
+  },
+
 }

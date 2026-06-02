@@ -121,6 +121,26 @@ class UsuariosService {
     return await UsuariosRepositorio.actualizar(user);
   }
 
+  async actualizarPerfil(usuario) {
+    let { id, username, correo, contrasena, pregunta, respuesta } = usuario;
+
+    if (contrasena && contrasena.trim() !== '') {
+      contrasena = await bcrypt.hash(contrasena, 10);
+    }
+    if (respuesta && respuesta.trim() !== '') {
+      respuesta = await bcrypt.hash(respuesta, 10);
+    }
+    const user = {
+      id,
+      username,
+      correo,
+      contrasena,
+      pregunta,
+      respuesta,
+    };
+    return await UsuariosRepositorio.actualizarPerfil(user);
+  }
+
   async cambiarContrasena(usuario) {
     let { id, contrasena } = usuario;    
     contrasena = await bcrypt.hash(contrasena, 10);

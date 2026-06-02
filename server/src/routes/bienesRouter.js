@@ -1,5 +1,6 @@
 import express from 'express';
 import BienesController from '../controllers/bienesController.js';
+import { verificarRolAdmin } from '../middlewares/authMiddleware.js'; 
 
 const BienesRouter = express.Router();
 
@@ -23,6 +24,6 @@ BienesRouter.route('/')
 
 BienesRouter.route('/:id')
   .get(BienesController.obtenerPorId)
-  .delete(BienesController.eliminar);
+  .delete(verificarRolAdmin, BienesController.eliminar);
 
 export default BienesRouter;

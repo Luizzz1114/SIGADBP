@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { verificarToken } from '../middlewares/authMiddleware.js'; 
 import CargosRouter from './cargosRouter.js';
 import PersonalRouter from './personalRouter.js';
 import DependenciasRouter from './dependenciasRouter.js';
@@ -19,11 +20,14 @@ router.get('/', (req, res) => {
   res.send('API funcionando correctamente');
 });
 
+router.use('/usuarios', UsuariosRouter);
+
+router.use(verificarToken);
+
 router.use('/cargos', CargosRouter);
 router.use('/personal', PersonalRouter);
 router.use('/dependencias', DependenciasRouter);
 router.use('/ubicacion', UbicacionRouter);
-router.use('/usuarios', UsuariosRouter);
 router.use('/bienes', BienesRouter);
 router.use('/presupuestos', PresupuestosRouter);
 router.use('/incorporaciones', IncorporacionesRouter);

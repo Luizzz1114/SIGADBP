@@ -1,7 +1,10 @@
 import express from 'express';
 import CargosController from '../controllers/cargosController.js';
+import { verificarRolAdmin } from '../middlewares/authMiddleware.js'; 
 
 const CargosRouter = express.Router();
+
+CargosRouter.use(verificarRolAdmin);
 
 CargosRouter.get('/', CargosController.listar);
 CargosRouter.post('/validar-nombre', CargosController.validarNombreUnico);

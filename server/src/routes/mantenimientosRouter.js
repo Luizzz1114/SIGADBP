@@ -1,5 +1,6 @@
 import express from 'express';
 import MantenimientosController from '../controllers/mantenimientosController.js';
+import { verificarRolAdmin } from '../middlewares/authMiddleware.js'; 
 
 const MantenimientosRouter = express.Router();
 
@@ -16,6 +17,6 @@ MantenimientosRouter.route('/promedio-mantenimiento')
 
 MantenimientosRouter.route('/:id')
   .get(MantenimientosController.obtenerPorId)
-  .delete(MantenimientosController.eliminar);  
+  .delete(verificarRolAdmin, MantenimientosController.eliminar);  
 
 export default MantenimientosRouter;

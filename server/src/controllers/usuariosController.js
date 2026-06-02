@@ -78,6 +78,20 @@ class UsuariosController {
     }
   }
 
+  async actualizarPerfil(req, res) {
+    try {
+      const usuario = req.body;
+      const resultado = await UsuariosService.actualizarPerfil(usuario);
+      if (resultado) {
+        res.status(200).json({ message: 'Usuario actualizado exitosamente.' });
+      } else {
+        res.status(400).json({ message: 'Error al actualizar usuario.' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Error al actualizar usuario.', error: error.message });
+    }
+  }
+
   async cambiarContrasena(req, res) {
     try {
       const data = req.body;

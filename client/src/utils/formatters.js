@@ -57,7 +57,6 @@ export const obtenerHoy = () => {
 };
 
 export const obtenerInicioMes = (fecha = null) => {
-  console.log('Fecha recibida para obtener inicio de mes:', fecha);
   let hoy;
   if (fecha) {
     if (typeof fecha === 'string' && fecha.includes('/')) {
@@ -70,11 +69,9 @@ export const obtenerInicioMes = (fecha = null) => {
     hoy = new Date();
   }
   if (isNaN(hoy.getTime())) {
-    console.log('Error: La fecha proporcionada es inválida');
     return null;
   }
   const fechaa = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-  console.log('Fecha de inicio del mes:', fechaa);
   return fechaa;
 };
 

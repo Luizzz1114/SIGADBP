@@ -54,3 +54,23 @@ export const verificarTokenSocket = async (socket, next) => {
     return next(new Error("INVALID_TOKEN"));
   }
 };
+
+export const verificarRolAdmin = (req, res, next) => {
+  if (req.user && req.user.rol === 'Administrador') {
+    next();
+  } else {
+    return res.status(403).json({ 
+      mensaje: 'Acceso denegado. Se requieren permisos de administrador.' 
+    });
+  }
+};
+
+export const verificarRolAdminSup = (req, res, next) => {
+  if (req.user && req.user.rol === 'Administrador' || req.user.rol === 'Supervisor') {
+    next();
+  } else {
+    return res.status(403).json({ 
+      mensaje: 'Acceso denegado. Se requieren permisos de administrador o supervisor.' 
+    });
+  }
+};
