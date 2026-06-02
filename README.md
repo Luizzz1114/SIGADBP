@@ -400,20 +400,23 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 
 ### Autenticación (`/usuarios`)
 
-| Método | Ruta | Descripción | Autenticación |
-|---|---|---|---|
-| `POST` | `/usuarios/login` | Iniciar sesión — devuelve token JWT | No |
-| `POST` | `/usuarios/recuperar-contrasena` | Verificar identidad por pregunta de seguridad | No |
-| `PUT` | `/usuarios/cambiar-contrasena` | Cambiar contraseña (con token temporal de 10 min) | Sí (token temporal) |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `POST` | `/usuarios/login` | Iniciar sesión — devuelve token JWT | No | — |
+| `POST` | `/usuarios/recuperar-contrasena` | Verificar identidad por pregunta de seguridad | No | — |
+| `PUT` | `/usuarios/cambiar-contrasena` | Cambiar contraseña (token temporal 10 min) | Sí (temporal) | — |
 
-### Usuarios (`/usuarios`)
+### Gestión de Usuarios (`/usuarios`)
 
-| Método | Ruta | Descripción | Autenticación |
-|---|---|---|---|
-| `GET` | `/usuarios` | Listar todos los usuarios | Sí |
-| `POST` | `/usuarios` | Crear nuevo usuario | Sí |
-| `PUT` | `/usuarios` | Actualizar usuario | Sí |
-| `POST` | `/usuarios/username-correo` | Validar que username y correo sean únicos | Sí |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/usuarios` | Listar todos los usuarios | Sí | Admin |
+| `POST` | `/usuarios` | Crear nuevo usuario | Sí | Admin |
+| `PUT` | `/usuarios` | Actualizar usuario | Sí | Admin |
+| `PUT` | `/usuarios/perfil` | Actualizar perfil propio (username, correo, contraseña) | Sí | Admin, Supervisor, Analista |
+| `GET` | `/usuarios/:id` | Obtener usuario por ID | Sí | Admin |
+| `DELETE` | `/usuarios/:id` | Eliminar usuario | Sí | Admin |
+| `POST` | `/usuarios/username-correo` | Validar username y correo únicos | Sí | Admin |
 
 ### Bienes (`/bienes`)
 
