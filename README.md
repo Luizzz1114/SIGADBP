@@ -51,6 +51,8 @@
 - **Indicadores de gestión (KPIs)** — cálculo automatizado mensual y semestral con historial de métricas y visualización gráfica para la toma de decisiones.
 - **Generación de reportes en Excel** — exportación de inventarios, incorporaciones, desincorporaciones y movimientos en formato .xlsx con formato profesional.
 - **Autenticación JWT** con recuperación de contraseña por pregunta de seguridad y cronómetro de expiración.
+- **Perfil de usuario** — visualización de información personal y laboral, edición de datos (username, correo, contraseña, pregunta de seguridad).
+- **Control de acceso basado en roles (RBAC)** — middleware de autenticación en backend con verificación de token y permisos por rol en todas las rutas protegidas.
 - **Notificaciones en tiempo real** vía WebSocket (Socket.io) — expulsión de sesión, alertas del sistema.
 - **Modo oscuro** con persistencia en localStorage.
 - **Interfaz responsive** — funcional en escritorio y dispositivos móviles con sidebar colapsable.
@@ -415,140 +417,141 @@ El sistema utiliza **23 tablas** organizadas en 9 dominios, con 2 triggers y 21 
 
 ### Bienes (`/bienes`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/bienes` | Listar todos los bienes |
-| `GET` | `/bienes/:id` | Obtener bien por ID |
-| `POST` | `/bienes` | Registrar nuevo bien |
-| `PUT` | `/bienes` | Actualizar bien existente |
-| `DELETE` | `/bienes/:id` | Eliminar bien |
-| `GET` | `/bienes/operativos` | Listar bienes con estatus operativo |
-| `GET` | `/bienes/no-asignados` | Listar bienes sin asignar a personal/dependencia |
-| `POST` | `/bienes/validar-numero` | Validar que el número de bien sea único |
-| `GET` | `/bienes/metricas/resumen` | Resumen general de métricas de bienes |
-| `GET` | `/bienes/metricas/categorias` | Distribución de bienes por categoría |
-| `GET` | `/bienes/metricas/estatus` | Distribución de bienes por estatus |
-| `GET` | `/bienes/metricas/dependencias` | Distribución de bienes por dependencia |
-| `GET` | `/bienes/metricas/no-identificados` | Bienes sin número de identificación |
-| `GET` | `/bienes/metricas/disponibilidad-dependencia` | Disponibilidad operativa por dependencia |
-| `GET` | `/bienes/reporte/:idDependencia` | Generar reporte Excel de bienes por dependencia |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/bienes` | Listar todos los bienes | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/:id` | Obtener bien por ID | Sí | Admin, Supervisor, Analista |
+| `POST` | `/bienes` | Registrar nuevo bien | Sí | Admin, Supervisor |
+| `PUT` | `/bienes` | Actualizar bien existente | Sí | Admin, Supervisor |
+| `DELETE` | `/bienes/:id` | Eliminar bien | Sí | Admin |
+| `GET` | `/bienes/operativos` | Listar bienes con estatus operativo | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/no-asignados` | Listar bienes sin asignar | Sí | Admin, Supervisor, Analista |
+| `POST` | `/bienes/validar-numero` | Validar número de bien único | Sí | Admin, Supervisor |
+| `GET` | `/bienes/metricas/resumen` | Resumen de métricas de bienes | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/metricas/categorias` | Distribución por categoría | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/metricas/estatus` | Distribución por estatus | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/metricas/dependencias` | Distribución por dependencia | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/metricas/no-identificados` | Bienes sin identificación | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/metricas/disponibilidad-dependencia` | Disponibilidad operativa | Sí | Admin, Supervisor, Analista |
+| `GET` | `/bienes/reporte/:idDependencia` | Generar reporte Excel | Sí | Admin, Supervisor |
 
 ### Personal (`/personal`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/personal` | Listar todo el personal |
-| `GET` | `/personal/:id` | Obtener empleado por ID |
-| `POST` | `/personal` | Registrar nuevo empleado |
-| `PUT` | `/personal` | Actualizar datos del empleado |
-| `DELETE` | `/personal/:id` | Eliminar empleado |
-| `GET` | `/personal/sin-usuario` | Listar empleados que no tienen cuenta de usuario |
-| `POST` | `/personal/validar-cedula` | Validar que la cédula sea única |
-| `GET` | `/personal/historial` | Listar historial completo de cargos por empleado |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/personal` | Listar todo el personal | Sí | Admin, Supervisor, Analista |
+| `GET` | `/personal/:id` | Obtener empleado por ID | Sí | Admin, Supervisor, Analista |
+| `POST` | `/personal` | Registrar nuevo empleado | Sí | Admin |
+| `PUT` | `/personal` | Actualizar datos del empleado | Sí | Admin, Supervisor |
+| `DELETE` | `/personal/:id` | Eliminar empleado | Sí | Admin |
+| `GET` | `/personal/sin-usuario` | Empleados sin cuenta de usuario | Sí | Admin |
+| `POST` | `/personal/validar-cedula` | Validar cédula única | Sí | Admin, Supervisor |
+| `GET` | `/personal/historial` | Historial completo de cargos | Sí | Admin, Supervisor |
 
 ### Dependencias (`/dependencias`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/dependencias` | Listar dependencias |
-| `GET` | `/dependencias/:id` | Obtener dependencia por ID |
-| `POST` | `/dependencias` | Crear nueva dependencia |
-| `PUT` | `/dependencias` | Actualizar dependencia |
-| `DELETE` | `/dependencias/:id` | Eliminar dependencia |
-| `GET` | `/dependencias/responsables` | Listar responsables patrimoniales por dependencia |
-| `POST` | `/dependencias/validar-nombre` | Validar que el nombre sea único |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/dependencias` | Listar dependencias | Sí | Admin, Supervisor, Analista |
+| `GET` | `/dependencias/:id` | Obtener dependencia por ID | Sí | Admin, Supervisor, Analista |
+| `POST` | `/dependencias` | Crear nueva dependencia | Sí | Admin |
+| `PUT` | `/dependencias` | Actualizar dependencia | Sí | Admin |
+| `DELETE` | `/dependencias/:id` | Eliminar dependencia | Sí | Admin |
+| `GET` | `/dependencias/responsables` | Responsables patrimoniales | Sí | Admin, Supervisor, Analista |
+| `POST` | `/dependencias/validar-nombre` | Validar nombre único | Sí | Admin |
 
 ### Cargos (`/cargos`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/cargos` | Listar todos los cargos |
-| `GET` | `/cargos/:id` | Obtener cargo por ID |
-| `POST` | `/cargos` | Crear cargo |
-| `PUT` | `/cargos` | Actualizar cargo |
-| `DELETE` | `/cargos/:id` | Eliminar cargo |
-| `POST` | `/cargos/validar-nombre` | Validar que el nombre sea único |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/cargos` | Listar todos los cargos | Sí | Admin, Supervisor, Analista |
+| `GET` | `/cargos/:id` | Obtener cargo por ID | Sí | Admin, Supervisor, Analista |
+| `POST` | `/cargos` | Crear cargo | Sí | Admin |
+| `PUT` | `/cargos` | Actualizar cargo | Sí | Admin |
+| `DELETE` | `/cargos/:id` | Eliminar cargo | Sí | Admin |
+| `POST` | `/cargos/validar-nombre` | Validar nombre único | Sí | Admin
 
 ### Presupuestos (`/presupuestos`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/presupuestos` | Listar todos los presupuestos |
-| `GET` | `/presupuestos/:id` | Obtener presupuesto por ID |
-| `POST` | `/presupuestos` | Crear partida presupuestaria |
-| `PUT` | `/presupuestos` | Actualizar presupuesto |
-| `DELETE` | `/presupuestos/:id` | Eliminar presupuesto |
-| `GET` | `/presupuestos/activos` | Listar presupuestos activos del semestre actual |
-| `GET` | `/presupuestos/activos-mantenimiento` | Presupuestos activos con disponibilidad para gastos de mantenimiento |
-| `POST` | `/presupuestos/validar-codigo` | Validar que el código de partida sea único |
-| `GET` | `/presupuestos/metricas/resumen` | Resumen de ejecución presupuestaria |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/presupuestos` | Listar todos los presupuestos | Sí | Admin, Supervisor |
+| `GET` | `/presupuestos/:id` | Obtener presupuesto por ID | Sí | Admin, Supervisor |
+| `POST` | `/presupuestos` | Crear partida presupuestaria | Sí | Admin |
+| `PUT` | `/presupuestos` | Actualizar presupuesto | Sí | Admin |
+| `DELETE` | `/presupuestos/:id` | Eliminar presupuesto | Sí | Admin |
+| `GET` | `/presupuestos/activos` | Presupuestos activos del semestre | Sí | Admin, Supervisor |
+| `GET` | `/presupuestos/activos-mantenimiento` | Disponibles para mantenimiento | Sí | Admin, Supervisor |
+| `POST` | `/presupuestos/validar-codigo` | Validar código de partida único | Sí | Admin |
+| `GET` | `/presupuestos/metricas/resumen` | Resumen de ejecución presupuestaria | Sí | Admin, Supervisor |
 
 ### Incorporaciones (`/incorporaciones`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/incorporaciones` | Listar incorporaciones |
-| `GET` | `/incorporaciones/:id` | Obtener incorporación por ID con bienes asociados |
-| `POST` | `/incorporaciones` | Registrar incorporación con bienes y gastos |
-| `PUT` | `/incorporaciones` | Actualizar incorporación |
-| `DELETE` | `/incorporaciones/:id` | Eliminar incorporación |
-| `GET` | `/incorporaciones/reporte/:idIncorporacion` | Generar reporte Excel de incorporación |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/incorporaciones` | Listar incorporaciones | Sí | Admin, Supervisor, Analista |
+| `GET` | `/incorporaciones/:id` | Incorporación con bienes asociados | Sí | Admin, Supervisor, Analista |
+| `POST` | `/incorporaciones` | Registrar con bienes y gastos | Sí | Admin, Supervisor |
+| `PUT` | `/incorporaciones` | Actualizar incorporación | Sí | Admin, Supervisor |
+| `DELETE` | `/incorporaciones/:id` | Eliminar incorporación | Sí | Admin |
+| `GET` | `/incorporaciones/reporte/:id` | Generar reporte Excel | Sí | Admin, Supervisor |
 
 ### Desincorporaciones (`/desincorporaciones`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/desincorporaciones` | Listar desincorporaciones |
-| `GET` | `/desincorporaciones/:id` | Obtener desincorporación por ID con bienes |
-| `POST` | `/desincorporaciones` | Registrar desincorporación con bienes |
-| `PUT` | `/desincorporaciones` | Actualizar desincorporación |
-| `DELETE` | `/desincorporaciones/:id` | Eliminar desincorporación |
-| `GET` | `/desincorporaciones/reporte/:idDesincorporacion` | Generar reporte Excel de desincorporación |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/desincorporaciones` | Listar desincorporaciones | Sí | Admin, Supervisor, Analista |
+| `GET` | `/desincorporaciones/:id` | Desincorporación con bienes | Sí | Admin, Supervisor, Analista |
+| `POST` | `/desincorporaciones` | Registrar con bienes | Sí | Admin, Supervisor |
+| `PUT` | `/desincorporaciones` | Actualizar desincorporación | Sí | Admin, Supervisor |
+| `DELETE` | `/desincorporaciones/:id` | Eliminar desincorporación | Sí | Admin |
+| `GET` | `/desincorporaciones/reporte/:id` | Generar reporte Excel | Sí | Admin, Supervisor |
 
 ### Movimientos (`/movimientos`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/movimientos` | Listar movimientos |
-| `GET` | `/movimientos/:id` | Obtener movimiento por ID con bienes transferidos |
-| `POST` | `/movimientos` | Registrar movimiento de bienes |
-| `PUT` | `/movimientos` | Actualizar movimiento |
-| `DELETE` | `/movimientos/:id` | Eliminar movimiento |
-| `GET` | `/movimientos/reporte/:idMovimiento` | Generar reporte Excel de movimiento |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/movimientos` | Listar movimientos | Sí | Admin, Supervisor, Analista |
+| `GET` | `/movimientos/:id` | Movimiento con bienes transferidos | Sí | Admin, Supervisor, Analista |
+| `POST` | `/movimientos` | Registrar transferencia | Sí | Admin, Supervisor |
+| `PUT` | `/movimientos` | Actualizar movimiento | Sí | Admin, Supervisor |
+| `DELETE` | `/movimientos/:id` | Eliminar movimiento | Sí | Admin |
+| `GET` | `/movimientos/reporte/:id` | Generar reporte Excel | Sí | Admin, Supervisor |
 
 ### Mantenimientos (`/mantenimientos`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/mantenimientos` | Listar mantenimientos |
-| `GET` | `/mantenimientos/:id` | Obtener mantenimiento por ID |
-| `POST` | `/mantenimientos` | Registrar mantenimiento con gasto opcional |
-| `PUT` | `/mantenimientos` | Actualizar mantenimiento |
-| `DELETE` | `/mantenimientos/:id` | Eliminar mantenimiento |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/mantenimientos` | Listar mantenimientos | Sí | Admin, Supervisor, Analista |
+| `GET` | `/mantenimientos/:id` | Obtener mantenimiento por ID | Sí | Admin, Supervisor, Analista |
+| `POST` | `/mantenimientos` | Registrar con gasto opcional | Sí | Admin, Supervisor |
+| `PUT` | `/mantenimientos` | Actualizar mantenimiento | Sí | Admin, Supervisor |
+| `DELETE` | `/mantenimientos/:id` | Eliminar mantenimiento | Sí | Admin |
 
 ### Evaluaciones (`/evaluaciones`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/evaluaciones` | Listar evaluaciones del personal |
-| `POST` | `/evaluaciones` | Registrar evaluación de capacitación y satisfacción |
-| `PUT` | `/evaluaciones` | Actualizar evaluación |
-| `DELETE` | `/evaluaciones/:id` | Eliminar evaluación |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/evaluaciones` | Listar evaluaciones del personal | Sí | Admin, Supervisor |
+| `POST` | `/evaluaciones` | Registrar evaluación | Sí | Admin, Supervisor |
+| `PUT` | `/evaluaciones` | Actualizar evaluación | Sí | Admin, Supervisor |
+| `DELETE` | `/evaluaciones/:id` | Eliminar evaluación | Sí | Admin |
 
 ### Indicadores / Métricas (`/metricas`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/metricas` | Listar todos los indicadores de gestión con historial |
-| `GET` | `/metricas/:id` | Obtener indicador específico con métricas históricas |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/metricas` | Listar indicadores con historial | Sí | Admin, Supervisor |
+| `GET` | `/metricas/:id` | Indicador específico con métricas | Sí | Admin, Supervisor |
 
 ### Ubicación Geográfica (`/ubicacion`)
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/ubicacion/estados` | Listar estados |
-| `GET` | `/ubicacion/municipios/:idEstado` | Listar municipios de un estado |
-| `GET` | `/ubicacion/parroquias/:idMunicipio` | Listar parroquias de un municipio |
+| Método | Ruta | Descripción | JWT | Roles |
+|---|---|---|---|---|
+| `GET` | `/ubicacion` | Listar ubicaciones geográficas | Sí | Admin, Supervisor, Analista |
+| `GET` | `/ubicacion/estados` | Listar estados | Sí | Admin, Supervisor, Analista |
+| `GET` | `/ubicacion/municipios/:idEstado` | Municipios de un estado | Sí | Admin, Supervisor, Analista |
+| `GET` | `/ubicacion/parroquias/:idMunicipio` | Parroquias de un municipio | Sí | Admin, Supervisor, Analista |
 
 
 
@@ -676,11 +679,16 @@ Se utiliza **Helmet** para configurar headers HTTP de seguridad:
 - **Queries parametrizados** en los repositorios para prevenir inyección SQL
 - **Validación de uniqueness** en endpoints críticos (cédula, username, email, número de bien, código de partida)
 
+### Control de acceso basado en roles (RBAC)
+
+El sistema implementa un middleware de autenticación en el backend que verifica el token JWT y los permisos del usuario en todas las rutas protegidas. Los roles se asignan a nivel de usuario y determinan qué acciones pueden realizar.
+
 ### Autenticación y sesiones
 
 - Tokens JWT con expiración configurable
 - Tokens temporales de 10 minutos para recuperación de contraseña
 - Expulsión de sesiones vía WebSocket cuando se elimina un usuario
+- Middleware de autenticación en todas las rutas del backend que requieren un token válido
 
 
 
@@ -695,7 +703,41 @@ El sistema implementa 3 roles con diferentes niveles de acceso. El menú lateral
 | **Supervisor** | Panel de Control, Inventario, Incorporaciones, Desincorporaciones, Movimientos, Mantenimiento |
 | **Analista** | Panel de Control, Inventario, Incorporaciones, Mantenimiento |
 
-> **Nota:** El control de acceso por roles se aplica actualmente a nivel del frontend mediante guards del Vue Router. Las rutas del backend no tienen restricción por rol, sin embargo se prevee su implementación.
+El control de acceso se aplica tanto en el **frontend** (guards del Vue Router) como en el **backend** (middleware de autenticación) para garantizar la seguridad en todos los niveles.
+
+### Protección de rutas en el Backend
+
+Todas las rutas del backend (excepto `/usuarios` para login y recuperación de contraseña) están protegidas con el middleware `verificarToken` que:
+
+1. Extrae el token JWT del header `Authorization: Bearer <token>`
+2. Verifica la validez del token contra `JWT_SECRET`
+3. Confirma que el usuario aún existe en la base de datos
+4. Adjunta los datos del usuario decoded a `req.user`
+
+```javascript
+// server/src/routes/index.js
+router.use(verificarToken); // Aplica a todas las rutas debajo
+
+router.use('/cargos', CargosRouter);
+router.use('/personal', PersonalRouter);
+router.use('/bienes', BienesRouter);
+// ... demás rutas
+```
+
+Además, rutas sensibles como `DELETE /bienes/:id` tienen protección adicional por rol:
+
+```javascript
+// server/src/routes/bienesRouter.js
+.delete(verificarRolAdmin, BienesController.eliminar);
+```
+
+Middlewares de rol disponibles:
+
+| Middleware | Descripción |
+|---|---|
+| `verificarToken` | Verifica token JWT válido |
+| `verificarRolAdmin` | Restringe a rol Administrador |
+| `verificarRolAdminSup` | Restringe a roles Administrador o Supervisor |
 
 
 
