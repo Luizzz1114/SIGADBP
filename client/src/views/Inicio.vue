@@ -9,7 +9,7 @@ import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
 const metricas = ref([]);
-const userRole = inject('userData').rol;
+const userRole = inject('userData').value.rol;
 
 const enlaces = [
   { name: 'Inventario de bienes', path: '/inventario/estadisticas', icon: 'fi-rr-boxes' },
