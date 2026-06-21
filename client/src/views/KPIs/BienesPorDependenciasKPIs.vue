@@ -44,14 +44,14 @@ const chartData = computed(() => {
 const statusDisponibilidad = computed(() => {
   const porcentaje = parseFloat(currentData.value.porcentaje_operativos);
   if (porcentaje >= 90) return 'success';
-  if (porcentaje >= 80) return 'warning';
+  if (porcentaje >= 80) return 'warn';
   return 'danger';
 });
 
 const statusMantenimiento = computed(() => {
   const porcentaje = parseFloat(currentData.value.porcentaje_mantenimiento);
   if (porcentaje <= 5) return 'success';
-  if (porcentaje <= 15) return 'warning';
+  if (porcentaje <= 15) return 'warn';
   return 'danger';
 });
 
