@@ -9,16 +9,15 @@
         role="img"
       >
         <defs>
-          <clipPath id="bars-base-clip">
+          <clipPath :id="`bars-base-clip-${chartId}`">
             <rect x="0" y="0" width="100%" :height="margins.top + chartHeight" />
           </clipPath>
           
-          <pattern id="stripes_bar" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <pattern :id="`stripes_bar-${chartId}`" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
             <rect width="2" height="8" class="fill-slate-200/60 dark:fill-slate-700/30" />
           </pattern>
         </defs>
 
-        <!-- Eje Y -->
         <g class="y-axis" aria-hidden="true">
           <template v-for="(tick, index) in computedYTicks" :key="'tick-' + index">
             <line 
@@ -35,13 +34,11 @@
               text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
             >
-              <!-- Solo añade % si el prop está activo -->
               {{ tick.value }}{{ isPercentage ? '%' : '' }}
             </text>
           </template>
         </g>
 
-        <!-- Grupos de Barras -->
         <g 
           v-for="(item, index) in processedData" 
           :key="index"
@@ -53,7 +50,6 @@
           @mouseleave="onMouseLeave"
           @touchstart.passive="onTouchStart($event, item)"
         >
-          <!-- Área de hover -->
           <rect 
             :x="item.x - (spacePerBar / 2)" 
             :y="margins.top" 
@@ -63,7 +59,6 @@
             class="transition-colors duration-200 group-hover:fill-slate-200/30 dark:group-hover:fill-slate-800/50"
           />
 
-          <!-- Fondo gris de la barra -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="margins.top"
@@ -73,24 +68,22 @@
             class="fill-slate-100/50 dark:fill-slate-800/50"
           />
           
-          <!-- Patrón de rayas -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="margins.top"
             :width="barWidth"
             :height="chartHeight"
             rx="10"
-            fill="url(#stripes_bar)"
+            :fill="`url(#stripes_bar-${chartId})`"
           />
 
-          <!-- Barra de valor (Animada) -->
           <rect
             :x="item.x - (barWidth / 2)"
             :y="isMounted ? item.yAnimated : item.yStatic"
             :width="barWidth"
             :height="isMounted ? item.height + 15 : 15"
             rx="10"
-            clip-path="url(#bars-base-clip)"
+            :clip-path="`url(#bars-base-clip-${chartId})`"
             :class="item.color || 'fill-blue-400 dark:fill-blue-400'" 
             :style="{ 
               transitionProperty: 'height, y', 
@@ -100,7 +93,6 @@
             }"
           />
 
-          <!-- Label del eje X -->
           <text
             :x="item.x"
             :y="item.yStatic + 25"
@@ -118,7 +110,6 @@
       </svg>
     </div>
 
-    <!-- Tooltip -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -258,7 +249,9 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CONFIGURACIÓN BASE (RESTAURADA) ---
+// --- CONFIGURACIÓN BASE ---
+// Generamos un ID único al instanciar el componente
+const chartId = Math.random().toString(36).substring(2, 9); 
 const svgHeight = 250; 
 const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
 const ticksCount = 4;
