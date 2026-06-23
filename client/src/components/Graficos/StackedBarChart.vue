@@ -88,7 +88,7 @@
         <div class="px-3 pt-2 pb-1.5 border-b border-slate-200 bg-slate-100 text-xs text-slate-500 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800 font-medium">
           {{ tooltipData.label }}
         </div>
-        <div class="px-3 pb-3 pt-2 flex flex-col gap-2 text-[13px]">
+        <div class="px-3 pb-3 pt-3 flex flex-col gap-2 text-[13px]">
           
           <div class="flex items-center justify-between gap-6">
             <div class="flex items-center gap-2">
