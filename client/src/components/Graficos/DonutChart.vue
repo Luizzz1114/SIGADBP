@@ -179,7 +179,7 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-const radius = 70; 
+const radius = 65; 
 const strokeWidth = 45; 
 const circumference = 2 * Math.PI * radius;
 const defaultColors = ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe']; 

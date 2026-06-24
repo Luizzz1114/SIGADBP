@@ -164,7 +164,13 @@ onMounted(async() => {
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
-      <Card label="Desincorporaciones este mes" :value="desincorporacionesMesActual" icon="fi-rr-apps-delete" color="red" />
+      <Card
+        label="Desincorporaciones"
+        :value="desincorporacionesMesActual"
+        icon="fi-rr-apps-delete"
+        color="red"
+        message="Este mes"
+      />
     </div>
 
     <Table 

@@ -142,21 +142,23 @@ onMounted(async () => {
       />
     </div>
     
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex flex-col rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-bars-progress"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Disponibilidad actual de los bienes</span>
           </div>
-          <Button @click="opInfoKPIs.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+          <Button @click="opInfoKPIs.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opInfoKPIs">
             <div class="flex flex-col p-1">
               <div class="flex flex-col gap-2">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                  <i class="fi-br-info text-blue-500"></i>
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
                   Tasa de Disponibilidad
                 </span>
                 <div class="flex items-center gap-2 flex-wrap text-xs">
@@ -168,7 +170,9 @@ onMounted(async () => {
               <Divider class="my-4!" />
               <div class="flex flex-col gap-2">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                  <i class="fi-br-info text-blue-500"></i>
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
                   Índice de Mantenimiento
                 </span>
                 <div class="flex items-center gap-2 flex-wrap text-xs">
@@ -180,7 +184,7 @@ onMounted(async () => {
             </div>
           </Popover>
         </div>
-        <div class="flex flex-col flex-1 p-6 gap-4 w-full">
+        <div class="flex flex-col flex-1 p-5 gap-4 w-full">
           <div v-for="(item, index) in barrasData" :key="index" class="flex flex-col gap-1 w-full">
             <div class="flex justify-between items-center text-sm">
               <span class="font-medium text-slate-600 dark:text-slate-200">
@@ -204,7 +208,7 @@ onMounted(async () => {
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 mt-2">
-            <div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
+            <div class="flex flex-col gap-1.5 p-2 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
               <div class="flex items-center gap-2">
                 <div class="grid place-items-center size-7 text-sm rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 ring-1 ring-inset ring-emerald-400/20">
                   <i class="fi-sr-check-circle text-sm"></i>
@@ -215,7 +219,7 @@ onMounted(async () => {
                 Mide el porcentaje de bienes que están operativos en la dependencia, garantizando la continuidad de las operaciones.
               </p>
             </div>
-            <div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
+            <div class="flex flex-col gap-1.5 p-2 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-750 shadow-xs">
               <div class="flex items-center gap-2">
                 <div class="grid place-items-center size-7 text-sm rounded-lg bg-slate-100 dark:bg-slate-900/30 text-slate-500 dark:text-slate-400 ring-1 ring-inset ring-slate-400/20">
                   <i class="fi-sr-tools text-sm"></i>
@@ -223,22 +227,22 @@ onMounted(async () => {
                 <span class="font-bold text-sm text-slate-700 dark:text-slate-200">Índice de Mantenimiento</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-4">
-                Indica la proporción de bienes que se encuentran actualmente inoperativos debido a reparaciones preventivas o correctivas en curso.
+                Indica la proporción de bienes que se encuentran actualmente inoperativos debido a mantenimientos en curso.
               </p>
             </div>
           </div>
         </div>
       </div>
-      <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+      <div class="flex flex-col flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-time-forward"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Histórico de disponibilidad de bienes</span>
           </div>
         </div>
-        <div class="w-full p-5">
+        <div class="flex-1 flex items-center justify-center w-full p-5 min-h-0">
           <StackedBarChart 
             :data="chartData" 
             labelBottom="Bienes operativos"

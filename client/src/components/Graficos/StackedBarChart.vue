@@ -21,7 +21,7 @@
               class="stroke-slate-200 dark:stroke-slate-700" stroke-width="1"
             />
             <text 
-              :x="margins.left - 12" :y="tick.y + 4" text-anchor="end"
+              :x="margins.left - 8" :y="tick.y + 4" text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px]"
             >
               {{ tick.value }}%
@@ -69,7 +69,7 @@
           />
 
           <text
-            :x="item.x" :y="item.yStatic + 25" text-anchor="middle"
+            :x="item.x" :y="item.yStatic + 20" text-anchor="middle"
             class="fill-slate-500 dark:fill-slate-400 text-[13px] group-hover:fill-slate-700 dark:group-hover:fill-slate-200"
             :class="{ 'font-semibold fill-slate-700 dark:fill-slate-200!': index === processedData.length - 1 }"
           >
@@ -144,7 +144,7 @@ const isResizing = ref(false);
 const chartWrapper = ref(null);
 const containerWidth = ref(400);
 
-// --- TOOLTIP LOGIC (DISEÑO ORIGINAL + FIX TÁCTIL) ---
+// --- TOOLTIP LOGIC ---
 const tooltipVisible = ref(false);
 const tooltipData = ref(null);
 const tooltipStyle = ref({ left: '0px', top: '0px', transform: 'translate(-50%, -100%)', whiteSpace: 'nowrap' });
@@ -173,7 +173,7 @@ const handleOutsideInteraction = (event) => {
   if (tooltipVisible.value && !event.target.closest('.chart-bar-group')) tooltipVisible.value = false;
 };
 
-// --- RESPONSIVE LOGIC (OPTIMIZADO PARA NO REBOTAR) ---
+// --- RESPONSIVE LOGIC ---
 let resizeTimeout = null;
 let resizeObserver = null;
 
@@ -198,18 +198,26 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CÁLCULOS ORIGINALES ---
-const svgHeight = 250; 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
+// --- CÁLCULOS ESTANDARIZADOS CON LOS OTROS GRÁFICOS ---
+const svgHeight = 180; 
+const margins = { top: 15, right: 15, bottom: 28, left: 32 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
-const minSpacePerBar = 90; 
 const maxValue = 100;
 
-const svgWidth = computed(() => Math.max(containerWidth.value, margins.left + margins.right + (props.data.length * minSpacePerBar), 400));
+// Mismo minSpacePerBar dinámico que el gráfico de barras sencillo
+const minSpacePerBar = computed(() => containerWidth.value < 600 ? 60 : 65);
+
+const svgWidth = computed(() => {
+  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar.value);
+  return Math.max(containerWidth.value, minRequiredWidth);
+});
+
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
-const barWidth = computed(() => Math.min(spacePerBar.value * 0.40, 32));
+
+// Barras delgadas (máximo 20px)
+const barWidth = computed(() => Math.min(spacePerBar.value * 0.35, 20));
 
 const computedYTicks = computed(() => {
   return Array.from({ length: ticksCount + 1 }, (_, i) => ({

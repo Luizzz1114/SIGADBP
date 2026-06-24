@@ -33,7 +33,6 @@
           </linearGradient>
         </defs>
 
-        <!-- Eje Y -->
         <g class="y-axis" aria-hidden="true">
           <template v-for="(tick, index) in computedYTicks" :key="'tick-' + index">
             <line 
@@ -45,7 +44,7 @@
               stroke-width="1"
             />
             <text 
-              :x="margins.left - 12"
+              :x="margins.left - 8"
               :y="tick.y + 4" 
               text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
@@ -55,7 +54,6 @@
           </template>
         </g>
 
-        <!-- Área y Líneas -->
         <g clip-path="url(#chart-reveal-clip)">
           <path :d="areaPath" fill="url(#areaGradient)" />
           <path :d="areaPath" fill="url(#diagonalHatch)" />
@@ -69,7 +67,6 @@
             stroke-linejoin="round"
           />
 
-          <!-- Línea vertical del último dato -->
           <line
             v-if="processedData.length"
             :x1="processedData[processedData.length - 1].x"
@@ -82,7 +79,6 @@
           />
         </g>
 
-        <!-- Interacción y Puntos -->
         <g 
           v-for="(item, index) in processedData" 
           :key="index"
@@ -121,7 +117,7 @@
 
           <text
             :x="item.x"
-            :y="margins.top + chartHeight + 25"
+            :y="margins.top + chartHeight + 20"
             text-anchor="middle"
             class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300 group-hover:fill-slate-700 dark:group-hover:fill-slate-200!"
             :class="{ 'font-semibold fill-slate-700 dark:fill-slate-200!': index === processedData.length - 1 }"
@@ -133,7 +129,6 @@
       </svg>
     </div>
 
-    <!-- Tooltip -->
     <Teleport to="body">
       <div 
         v-if="tooltipData"
@@ -278,12 +273,11 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CÁLCULOS BASE ---
-const svgHeight = 250; 
-const margins = { top: 20, right: 20, bottom: 40, left: 45 }; 
+// --- CÁLCULOS BASE (Iguales al gráfico de barras) ---
+const svgHeight = 180; 
+const margins = { top: 15, right: 15, bottom: 28, left: 32 }; 
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
-const minSpacePerBar = 90; 
 
 const maxValue = computed(() => {
   if (!props.data || props.data.length === 0) return 100;
@@ -294,9 +288,12 @@ const maxValue = computed(() => {
   return Math.min(roundedMax, 100);
 });
 
+// Misma lógica de espacio dinámico que el gráfico de barras
+const minSpacePerBar = computed(() => containerWidth.value < 600 ? 60 : 65);
+
 const svgWidth = computed(() => {
-  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar);
-  return Math.max(containerWidth.value, minRequiredWidth, 400);
+  const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar.value);
+  return Math.max(containerWidth.value, minRequiredWidth);
 });
 
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);

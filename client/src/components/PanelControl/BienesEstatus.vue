@@ -26,11 +26,11 @@ onMounted(async() => {
 
 <template>
   <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-    <div class="flex items-center justify-between gap-x-4 px-4 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+    <div class="flex items-center justify-between gap-x-4 px-4 py-2.5 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
       <span class="font-bold text-base leading-tight dark:text-slate-50">Estado de los bienes</span>
     </div>
     <div class="flex flex-wrap p-4 gap-3">
-      <div v-for="card in stats" :key="card.key" class="flex flex-col flex-1 min-w-32 sm:min-w-40 gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl ring-2 ring-inset ring-white dark:ring-slate-900/65 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+      <div v-for="card in stats" :key="card.key" class="flex flex-col flex-1 min-w-32 sm:min-w-40 gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
         <div class="flex items-start justify-between gap-2">
           <div class="grid place-items-center size-8 text-base rounded-lg bg-white border border-slate-200 dark:bg-slate-850 dark:border-slate-700 dark:text-slate-100">
             <i :class="card.icono"></i>
@@ -44,7 +44,7 @@ onMounted(async() => {
             {{ card.label }}
           </span>
           <div class="flex items-baseline gap-3 mt-0.5">
-            <span class="text-2xl font-bold leading-none text-slate-700 dark:text-white truncate">
+            <span class="text-[22px] font-bold leading-none text-slate-700 dark:text-white truncate">
               {{ card.value }}
             </span>
           </div>

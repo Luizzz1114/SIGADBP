@@ -68,7 +68,7 @@ onMounted(async() => {
       
       <div class="flex flex-col h-full rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
         <div class="flex items-center gap-3 p-3">
-          <div class="grid place-items-center size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+          <div class="grid place-items-center size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
             <i class="fi-rr-bolt"></i>
           </div>
           <div class="flex flex-col">

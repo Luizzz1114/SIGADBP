@@ -117,20 +117,22 @@ onMounted(async () => {
         :message="actualOperatividad.message"
       />
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-arrow-trend-up"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Crecimiento del inventario</span>
           </div>
-          <Button @click="opCrecimiento.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+          <Button @click="opCrecimiento.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opCrecimiento">
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
+                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                  <i class="fi-br-info text-xs"></i>
+                </div>
                 Rangos de alerta (Índice)
               </span>
               <div class="flex items-center gap-2 flex-wrap">
@@ -146,18 +148,20 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-check-circle"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad</span>
           </div>
-          <Button @click="opRangos.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+          <Button @click="opRangos.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opRangos" >
             <div class="flex flex-col gap-3 p-1">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <i class="fi-br-info text-blue-500"></i>
+                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                  <i class="fi-br-info text-xs"></i>
+                </div>
                 Rangos de alerta
               </span>
               <div class="flex items-center gap-2 flex-wrap">
@@ -180,11 +184,11 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex flex-col flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Bienes sin número asignado</span>
@@ -196,11 +200,13 @@ onMounted(async () => {
             />
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="opSinNumero.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+            <Button @click="opSinNumero.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opSinNumero">
               <div class="flex flex-col gap-3 p-1">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                  <i class="fi-br-info text-blue-500"></i>
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
@@ -217,9 +223,9 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
               <i class="fi-rr-tags"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de bienes sin número asignado</span>

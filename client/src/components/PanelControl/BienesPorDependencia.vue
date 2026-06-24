@@ -12,7 +12,7 @@ onMounted(async() => {
 <template>
   <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700">
     <div class="flex items-center gap-3 px-3 pt-3 pb-1">
-      <div class="grid place-items-center shrink-0 size-9 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+      <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-blue-100 border border-blue-200 text-blue-500 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
         <i class="fi-rr-building"></i>
       </div>
       <span class="font-bold text-base leading-tight dark:text-slate-50">Distribución de bienes por dependencia</span>

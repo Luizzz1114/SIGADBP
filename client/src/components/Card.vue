@@ -27,9 +27,9 @@ const iconClasses = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-1 p-2.5 min-w-0 snap-center rounded-xl ring-2 ring-inset ring-white dark:ring-slate-900/65 bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
+  <div class="flex flex-col gap-1 p-2.5 min-w-0 snap-center rounded-xl ring-2 ring-inset ring-white dark:ring-slate-900/55 bg-slate-50 border border-slate-200 dark:bg-slate-800/75 dark:border-slate-700 shadow-xs">
     <div class="flex items-start justify-between">
-      <div :class="iconClasses" class="grid place-items-center shrink-0 size-8 text-base rounded-lg border">
+      <div :class="iconClasses" class="grid place-items-center shrink-0 size-7.5 text-base rounded-lg border">
         <i :class="icon"></i>
       </div>
       <Tag 
@@ -43,7 +43,7 @@ const iconClasses = computed(() => {
       <span class="text-sm font-medium w-full leading-tight text-slate-500 dark:text-slate-200 truncate">
         {{ label }}
       </span>
-      <span class="text-2xl font-bold leading-none mt-0.5 text-slate-700 dark:text-white">
+      <span class="text-[22px] font-bold leading-none mt-0.5 text-slate-700 dark:text-white">
         {{ value }}
       </span>
       <span v-if="message" class="text-xs leading-none mt-1 text-slate-400">{{ message }}</span>

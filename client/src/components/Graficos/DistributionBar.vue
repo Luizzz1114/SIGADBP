@@ -98,8 +98,8 @@ const isMounted = ref(false);
 const chartWrapper = ref(null);
 const containerWidth = ref(0); 
 
-const svgHeight = 28; 
-const gapSizePx = 8; 
+const svgHeight = 25; 
+const gapSizePx = 6; 
 
 // --- ESTADO VACÍO (COMPUTADO) ---
 // Retorna true si el array no existe, está vacío o todos los valores son 0

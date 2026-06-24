@@ -138,6 +138,29 @@ const incorporacionesMesActual = computed(() => {
   ).length;
 });
 
+const comprasMesActual = computed(() => {
+  const hoy = new Date();
+  const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
+  const anioActual = hoy.getFullYear().toString();
+  const target = `${mesActual}/${anioActual}`;
+  
+  return incorporaciones.value.filter(inc => 
+    inc.fecha_entrada?.includes(`/${target}`) && 
+    inc.motivo?.toLowerCase().trim() === 'compra'
+  ).length;
+});
+
+const donacionesMesActual = computed(() => {
+  const hoy = new Date();
+  const mesActual = (hoy.getMonth() + 1).toString().padStart(2, '0');
+  const anioActual = hoy.getFullYear().toString();
+  const target = `${mesActual}/${anioActual}`;
+  return incorporaciones.value.filter(inc => 
+    inc.fecha_entrada?.includes(`/${target}`) && 
+    (inc.motivo?.toLowerCase().trim() === 'donación' || inc.motivo?.toLowerCase().trim() === 'donacion')
+  ).length;
+});
+
 onMounted(async () => {
   await listarIncorporaciones();
 });
@@ -160,7 +183,25 @@ onMounted(async () => {
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
-      <Card label="Incorporaciones este mes" :value="incorporacionesMesActual" icon="fi-rr-apps-add" color="blue" />
+      <Card 
+        label="Incorporaciones" 
+        :value="incorporacionesMesActual" 
+        icon="fi-rr-apps-add" 
+        color="blue"
+        message="Este mes"
+      />
+      <Card 
+        label="Por Compra" 
+        :value="comprasMesActual" 
+        icon="fi-rr-shopping-cart"
+        message="Este mes"
+      />
+      <Card 
+        label="Por Donación" 
+        :value="donacionesMesActual" 
+        icon="fi-rr-gift"
+        message="Este mes"
+      />
     </div>
 
     <Table

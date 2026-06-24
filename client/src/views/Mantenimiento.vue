@@ -153,15 +153,27 @@ const totalMes = computed(() => {
           <span class="-mt-1 text-xs text-slate-400">Gestión del mantenimiento de los bienes</span>
         </div>
       </div>
-      <div class="flex items-center flex-wrap gap-4">
+      <div class="flex items-center flex-wrap gap-2.5">
         <Button as="router-link" to="/mantenimiento/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" type="button" label="Programar Mantenimiento" icon="fi-rr-clock-three"  />
       </div>
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
-      <Card label="Total este mes" :value="totalMes" icon="fi-rr-screw-alt" color="blue" />
-      <Card label="Mantenimientos en proceso" :value="mantenimientos.filter(m => m.estatus === 'En proceso').length" icon="fi-rr-clock" color="sky" />
+      <Card
+        label="Mantenimientos"
+        :value="totalMes"
+        icon="fi-rr-screw-alt"
+        color="blue"
+        message="Este mes"
+      />
+      <Card
+        label="Mantenimientos en proceso"
+        :value="mantenimientos.filter(m => m.estatus === 'En proceso').length"
+        icon="fi-rr-clock"
+        color="sky"
+        message="En este momento"
+      />
     </div>
 
     <Table

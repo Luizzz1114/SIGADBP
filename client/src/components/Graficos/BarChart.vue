@@ -29,7 +29,7 @@
               stroke-width="1"
             />
             <text 
-              :x="margins.left - 12"
+              :x="margins.left - 8"
               :y="tick.y + 4" 
               text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
@@ -64,7 +64,7 @@
             :y="margins.top"
             :width="barWidth"
             :height="chartHeight"
-            rx="10"
+            rx="6"
             class="fill-slate-100/50 dark:fill-slate-800/50"
           />
           
@@ -73,7 +73,7 @@
             :y="margins.top"
             :width="barWidth"
             :height="chartHeight"
-            rx="10"
+            rx="6"
             :fill="`url(#stripes_bar-${chartId})`"
           />
 
@@ -82,7 +82,7 @@
             :y="isMounted ? item.yAnimated : item.yStatic"
             :width="barWidth"
             :height="isMounted ? item.height + 15 : 15"
-            rx="10"
+            rx="6"
             :clip-path="`url(#bars-base-clip-${chartId})`"
             :class="item.color || 'fill-blue-400 dark:fill-blue-400'" 
             :style="{ 
@@ -95,7 +95,7 @@
 
           <text
             :x="item.x"
-            :y="item.yStatic + 25"
+            :y="item.yStatic + 20"
             text-anchor="middle"
             :class="[
               'fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300',
@@ -249,11 +249,10 @@ onUnmounted(() => {
   document.removeEventListener('touchstart', handleOutsideInteraction);
 });
 
-// --- CONFIGURACIÓN BASE ---
-// Generamos un ID único al instanciar el componente
+// --- CONFIGURACIÓN BASE (Optimizada) ---
 const chartId = Math.random().toString(36).substring(2, 9); 
-const svgHeight = 250; 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }; 
+const svgHeight = 180;
+const margins = { top: 15, right: 15, bottom: 28, left: 32 };
 const ticksCount = 4;
 const chartHeight = svgHeight - margins.top - margins.bottom; 
 
@@ -272,7 +271,8 @@ const maxValue = computed(() => {
   return Math.ceil(targetMax / ticksCount) * ticksCount;
 });
 
-const minSpacePerBar = computed(() => containerWidth.value < 600 ? 70 : 90);
+// Espacio mínimo reducido para no forzar scroll en pantallas pequeñas tan rápido
+const minSpacePerBar = computed(() => containerWidth.value < 600 ? 60 : 65);
 const svgWidth = computed(() => {
   const minRequiredWidth = margins.left + margins.right + (props.data.length * minSpacePerBar.value);
   return Math.max(containerWidth.value, minRequiredWidth);
@@ -281,7 +281,8 @@ const svgWidth = computed(() => {
 const chartWidth = computed(() => svgWidth.value - margins.left - margins.right);
 const spacePerBar = computed(() => chartWidth.value / (props.data.length || 1));
 
-const barWidth = computed(() => Math.min(spacePerBar.value * 0.50, 32));
+// Barras más delgadas: máximo 20px de ancho y ocupando solo el 35% del espacio de su columna
+const barWidth = computed(() => Math.min(spacePerBar.value * 0.35, 24));
 
 const computedYTicks = computed(() => {
   const max = maxValue.value;

@@ -111,21 +111,23 @@ onMounted(async () => {
         :message="actualDeterioro.message"
       />
     </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <i class="fi-rr-ruler-combined"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones</span>
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="opTasaDesincorporacion.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+            <Button @click="opTasaDesincorporacion.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opTasaDesincorporacion">
               <div class="flex flex-col gap-3 p-1">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                  <i class="fi-br-info text-blue-500"></i>
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
@@ -149,19 +151,21 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
-        <div class="flex items-center justify-between gap-x-4 p-2.5 border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+        <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
           <div class="flex items-center gap-3">
-            <div class="grid place-items-center shrink-0 size-8 text-lg rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
+            <div class="grid place-items-center shrink-0 size-7 text-base rounded-lg bg-red-100 border border-red-200 text-red-500 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <i class="fi-rr-damage"></i>
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones por deterioro</span>
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="opDeterioro.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-8! shrink-0" />
+            <Button @click="opDeterioro.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opDeterioro">
               <div class="flex flex-col gap-3 p-1">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                  <i class="fi-br-info text-blue-500"></i>
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">

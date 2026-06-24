@@ -170,7 +170,12 @@ onMounted(async() => {
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
-      <Card label="Movimientos este mes" :value="totalMes" icon="fi-rr-priority-arrows rotate-90!" />
+      <Card
+        label="Movimientos"
+        :value="totalMes"
+        icon="fi-rr-priority-arrows rotate-90!"
+        message="Este mes"
+      />
     </div>
 
     <Table
