@@ -149,7 +149,7 @@ onMounted(async () => {
           <span class="-mt-1 text-xs text-slate-400">Control y seguimiento del presupuesto de bienes</span>
         </div>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
         <Button as="router-link" to="/presupuestos/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" type="button" label="Nueva Partida" icon="fi-sr-plus-small" />
       </div>

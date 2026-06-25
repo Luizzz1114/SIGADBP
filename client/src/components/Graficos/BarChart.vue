@@ -32,7 +32,7 @@
               :x="margins.left - 8"
               :y="tick.y + 4" 
               text-anchor="end"
-              class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"
+              class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300"
             >
               {{ tick.value }}{{ isPercentage ? '%' : '' }}
             </text>

@@ -180,7 +180,7 @@ onMounted(async () => {
               { label: 'Operativos', value: d.cantidad },
               { label: 'En inventario', value: d.total }
             ]"
-            />
+          />
         </div>
       </div>
     </div>
@@ -193,9 +193,9 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Bienes sin número asignado</span>
             <Tag
-              v-if="actualSinNumero.percentage !== undefined"
-              :value="evaluarEstatus(actualSinNumero.percentage).label"
-              :severity="evaluarEstatus(actualSinNumero.percentage).severity"
+              v-if="actualSinNumero[0]?.percentage !== undefined"
+              :value="evaluarEstatus(actualSinNumero[0].percentage).label"
+              :severity="evaluarEstatus(actualSinNumero[0].percentage).severity"
               class="ring-1 ring-inset ring-current/10"
             />
           </div>

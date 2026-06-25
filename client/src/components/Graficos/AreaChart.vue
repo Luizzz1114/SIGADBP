@@ -44,7 +44,7 @@
               stroke-width="1"
             />
             <text 
-              :x="margins.left - 8"
+              :x="margins.left - 5"
               :y="tick.y + 4" 
               text-anchor="end"
               class="fill-slate-400 dark:fill-slate-500 text-[13px] transition-colors duration-300"

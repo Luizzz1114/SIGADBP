@@ -157,7 +157,7 @@ onMounted(async() => {
           <span class="-mt-1 text-xs text-slate-400">Gestión de bajas y retiros del inventario</span>
         </div>
       </div>
-      <div class="flex items-center flex-wrap gap-4">
+      <div class="flex items-center flex-wrap gap-2.5">
         <Button as="router-link" to="/desincorporaciones/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" type="button" label="Nueva Desincorporación" icon="fi-sr-minus-small" severity="danger" />
       </div>

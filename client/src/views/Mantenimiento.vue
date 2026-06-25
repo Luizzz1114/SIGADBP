@@ -164,14 +164,12 @@ const totalMes = computed(() => {
         label="Mantenimientos"
         :value="totalMes"
         icon="fi-rr-screw-alt"
-        color="blue"
         message="Este mes"
       />
       <Card
         label="Mantenimientos en proceso"
         :value="mantenimientos.filter(m => m.estatus === 'En proceso').length"
         icon="fi-rr-clock"
-        color="sky"
         message="En este momento"
       />
     </div>

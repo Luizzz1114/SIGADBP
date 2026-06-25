@@ -21,8 +21,8 @@
               class="stroke-slate-200 dark:stroke-slate-700" stroke-width="1"
             />
             <text 
-              :x="margins.left - 8" :y="tick.y + 4" text-anchor="end"
-              class="fill-slate-400 dark:fill-slate-500 text-[13px]"
+              :x="margins.left - 5" :y="tick.y + 4" text-anchor="end"
+              class="fill-slate-500 dark:fill-slate-400 text-[13px]"
             >
               {{ tick.value }}%
             </text>
