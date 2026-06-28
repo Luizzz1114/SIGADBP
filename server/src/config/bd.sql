@@ -760,24 +760,26 @@ FROM dias_por_mantenimiento;
 
 CREATE OR REPLACE VIEW vistaMetricasDesincorporacion AS
 WITH count_desincorporacion AS (
-  SELECT COUNT(*) AS total,
-	COUNT(*) FILTER(WHERE DD.tipo = 'Deterioro') AS total_deterioro
+  SELECT 
+    COUNT(*) AS total,
+    COUNT(*) FILTER(WHERE DD.tipo = 'Deterioro') AS total_deterioro,
+    COUNT(*) FILTER(WHERE DD.tipo = 'Obsolescencia') AS total_obsolescencia
   FROM DetallesDesincorporacion AS DD
   INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
   WHERE D.fechaSalida >= DATE_TRUNC('month', CURRENT_DATE)
-  AND D.fechaSalida < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+    AND D.fechaSalida < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
 ),
 count_bienes AS (
   SELECT COUNT(*) FILTER(WHERE estatus <> 'Desincorporado') AS bienes_activos
   FROM Bienes 
 )
-SELECT total, total_deterioro,
-ROUND(COALESCE((total_deterioro * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_deterioro,
-(bienes_activos + total) AS bienes_inventario,
-ROUND(COALESCE((total * 100.00) / NULLIF(bienes_activos + total, 0), 0), 2) AS tasa_desincorporacion
+SELECT total, total_deterioro, total_obsolescencia,
+  ROUND(COALESCE((total_deterioro * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_deterioro,
+  ROUND(COALESCE((total_obsolescencia * 100.0) / NULLIF(total, 0), 0), 2) AS porcentaje_obsolescencia,
+  (bienes_activos + total) AS bienes_inventario,
+  ROUND(COALESCE((total * 100.00) / NULLIF(bienes_activos + total, 0), 0), 2) AS tasa_desincorporacion
 FROM count_desincorporacion
 CROSS JOIN count_bienes;
-
 
 CREATE OR REPLACE VIEW vistaBienesSinNumero AS
 WITH count_bienes AS (
@@ -1231,8 +1233,10 @@ INSERT INTO Indicadores (id, perspectiva, denominacion, meta, peligro, frecuenci
 (10, 'Procesos Internos', 'Tiempo Promedio de Mantenimiento de Bienes (ITPMB)', 5, 10, 'Mensual'),
 (11, 'Procesos Internos', '% Tasa de Desincorporación de Bienes (%ITDB)', 5, 10, 'Mensual'),
 (12, 'Procesos Internos', '% Desincorporaciones por Deterioro (%IDD)', 20, 30, 'Mensual'),
-(13, 'Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 75, 60, 'Semestral'),
-(14, 'Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 75, 60, 'Semestral');
+(13, 'Procesos Internos', '% Desincorporaciones por Obsolescencia (%IDO)', 20, 30, 'Mensual'),
+(14, 'Formación y Crecimiento', '% Capacitación del Personal (%ICP)', 75, 60, 'Semestral'),
+(15, 'Formación y Crecimiento', '% Personal Satisfecho (%IPS)', 75, 60, 'Semestral');
+
 
 --- ==============================================================================
 --- 12. MÉTRICAS DE INDICADORES (Historial Consistente - Enero a Mayo 2026)
@@ -1254,14 +1258,14 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 (3, 'I-2025', 20.00, '2025-06-30', '{"total": 500, "cantidad": 100}'),
 (3, 'II-2025', 50.00, '2025-12-31', '{"total": 500, "cantidad": 250}'),
 (3, 'I-2026', 70.00, '2026-06-15', '{"total": 500, "cantidad": 350}'),
--- 13. % Capacitación del Personal (%ICP) (Total Personal: 8)
-(13, 'I-2025', 50.00, '2025-06-30', '{"total": 8, "cantidad": 4}'),
-(13, 'II-2025', 62.50, '2025-12-31', '{"total": 8, "cantidad": 5}'),
-(13, 'I-2026', 75.00, '2026-06-15', '{"total": 8, "cantidad": 6}'),
--- 14. % Personal Satisfecho (%IPS) (Total Personal: 8)
-(14, 'I-2025', 62.50, '2025-06-30', '{"total": 8, "cantidad": 5}'),
-(14, 'II-2025', 75.00, '2025-12-31', '{"total": 8, "cantidad": 6}'),
-(14, 'I-2026', 87.50, '2026-06-15', '{"total": 8, "cantidad": 7}'),
+-- 14. % Capacitación del Personal (%ICP) (Total Personal: 8)
+(14, 'I-2025', 50.00, '2025-06-30', '{"total": 8, "cantidad": 4}'),
+(14, 'II-2025', 62.50, '2025-12-31', '{"total": 8, "cantidad": 5}'),
+(14, 'I-2026', 75.00, '2026-06-15', '{"total": 8, "cantidad": 6}'),
+-- 15. % Personal Satisfecho (%IPS) (Total Personal: 8)
+(15, 'I-2025', 62.50, '2025-06-30', '{"total": 8, "cantidad": 5}'),
+(15, 'II-2025', 75.00, '2025-12-31', '{"total": 8, "cantidad": 6}'),
+(15, 'I-2026', 87.50, '2026-06-15', '{"total": 8, "cantidad": 7}'),
 -- ==============================================================================
 -- INDICADORES MENSUALES (Enero 2026 a Mayo 2026)
 -- Crecimiento progresivo de 10 en 10 hasta los 50 bienes actuales.
@@ -1308,6 +1312,12 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 (12, '03-2026', 0.00, '2026-03-31', '{"total": 0, "cantidad": 0}'),
 (12, '04-2026', 0.00, '2026-04-30', '{"total": 0, "cantidad": 0}'),
 (12, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}');
+-- 13. % Desincorporaciones por Obsolescencia (%IDO)
+(13, '01-2026', 0.00, '2026-01-31', '{"total": 0, "cantidad": 0}'),
+(13, '02-2026', 0.00, '2026-02-28', '{"total": 0, "cantidad": 0}'),
+(13, '03-2026', 0.00, '2026-03-31', '{"total": 0, "cantidad": 0}'),
+(13, '04-2026', 0.00, '2026-04-30', '{"total": 0, "cantidad": 0}'),
+(13, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}');
 
 
 --- ==============================================================================

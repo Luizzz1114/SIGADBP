@@ -61,6 +61,12 @@ class Indicadores {
     return resultado.rows[0];
   }
 
+  async IDO(client) {
+    const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Desincorporaciones por Obsolescencia (%IDO)';";
+    const resultado = await client.query(sql);
+    return resultado.rows[0];
+  }
+
   async ITDB(client) {
     const sql = "SELECT * FROM Indicadores WHERE denominacion = '% Tasa de Desincorporación de Bienes (%ITDB)';";
     const resultado = await client.query(sql);

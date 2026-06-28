@@ -9,12 +9,13 @@ export const iniciarTareasProgramadas = () => {
     manana.setDate(manana.getDate() + 1);
     
     if (manana.getDate() === 1) {
-      console.log('Ejecutando tarea programada: IBEO, ICMI, IBODP, ITPMB, IDD, ITDB, IBNI, TDRB, IAOM');
+      console.log('Ejecutando tarea programada: IBEO, ICMI, IBODP, ITPMB, IDD, IDO, ITDB, IBNI, TDRB, IAOM');
       await IndicadoresServices.procesarKpiIBEO();
       await IndicadoresServices.procesarICMI();
       await IndicadoresServices.procesarKpiIBODP();
       await IndicadoresServices.procesarKpiITPMB();
       await IndicadoresServices.procesarKpiIDD();
+      await IndicadoresServices.procesarKpiIDO();
       await IndicadoresServices.procesarKpiITDB();
       await IndicadoresServices.procesarKpiIBNI();
       await IndicadoresServices.procesarKpiTDRB();

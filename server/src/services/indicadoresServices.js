@@ -40,6 +40,9 @@ class IndicadoresServices {
       case 'IDD':
         denominacion = '% Desincorporaciones por Deterioro (%IDD)';
         break;
+      case 'IDO':
+        denominacion = '% Desincorporaciones por Obsolescencia (%IDO)';
+        break;
       case 'ITDB':
         denominacion = '% Tasa de Desincorporación de Bienes (%ITDB)';
         break;
@@ -333,6 +336,34 @@ async procesarKpiIIMB() {
         detalles: {
           total: resultadosIDD.total,
           cantidad: resultadosIDD.total_deterioro 
+        }
+      };
+
+      await IndicadoresRepositorio.crearMetrica(client, metrica);
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async procesarKpiIDO() {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const IDO = await IndicadoresRepositorio.IDO(client);
+      const resultadosIDO = await DesincorporacionesRepositorio.desincorporacionMetricas();
+      
+      const metrica = {
+        valor: resultadosIDO.porcentaje_obsolescencia,
+        idIndicador: IDO.id,
+        detalles: {
+          total: resultadosIDO.total,
+          cantidad: resultadosIDO.total_obsolescencia 
         }
       };
 

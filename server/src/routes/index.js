@@ -21,6 +21,8 @@ router.get('/', (req, res) => {
 });
 
 router.use('/usuarios', UsuariosRouter);
+router.use('/desincorporaciones', DesincorporacionesRouter);
+router.use('/metricas', IndicadoresRouter);
 
 router.use(verificarToken);
 
@@ -31,10 +33,8 @@ router.use('/ubicacion', UbicacionRouter);
 router.use('/bienes', BienesRouter);
 router.use('/presupuestos', PresupuestosRouter);
 router.use('/incorporaciones', IncorporacionesRouter);
-router.use('/desincorporaciones', DesincorporacionesRouter);
 router.use('/mantenimientos', MantenimientosRouter);
 router.use('/movimientos', MovimientoRouter);
 router.use('/evaluaciones', EvaluacionesRouter);
-router.use('/metricas', IndicadoresRouter);
 
 export default router;
