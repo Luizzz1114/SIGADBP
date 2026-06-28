@@ -70,7 +70,7 @@ watch(visible, async(isOpen) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :resolver="resolver" :initialValues="dependencia" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-registrar-dependencia" v-slot="$form" :resolver="resolver" :initialValues="dependencia" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Información básica</span>
@@ -131,10 +131,12 @@ watch(visible, async(isOpen) => {
           </Message>
         </div>
       </div>
-      <div class="flex pt-6 justify-end gap-4 mt-0">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" type="button" />
-        <Button label="Registrar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Registrar" type="submit" form="form-registrar-dependencia" />
+      </div>
+    </template>
   </Drawer>
 </template>

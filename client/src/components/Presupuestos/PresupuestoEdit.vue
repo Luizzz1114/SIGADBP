@@ -78,7 +78,7 @@ watch([() => initialValues.value.montousd, () => initialValues.value.tasacambio]
         </div>
       </div>
     </template>
-    <Form :key="formKey" v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit">
+    <Form id="form-actualizar-presupuesto" :key="formKey" v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Datos del Registro</span>
@@ -165,11 +165,12 @@ watch([() => initialValues.value.montousd, () => initialValues.value.tasacambio]
           message="Calculado según la tasa de cambio"
         />
       </div>
-      
-      <div class="flex pt-6 justify-end gap-4 mt-0">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Actualizar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Actualizar" type="submit" form="form-actualizar-presupuesto" />
+      </div>
+    </template>
   </Drawer>
 </template>

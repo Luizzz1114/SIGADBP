@@ -60,7 +60,7 @@ watch(visible, async(isOpen) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :resolver="resolver" :initialValues="mantenimiento" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-registrar-mantenimiento" v-slot="$form" :resolver="resolver" :initialValues="mantenimiento" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Detalles del mantenimiento</span>
@@ -104,10 +104,10 @@ watch(visible, async(isOpen) => {
           <div class="flex justify-between items-center">
             <label for="descripcion">Descripción <span class="text-red-500">*</span></label>
             <span class="text-slate-400 dark:text-slate-500 text-xs!">
-              {{ $form.descripcion?.value?.length || 0 }}/50
+              {{ $form.descripcion?.value?.length || 0 }}/100
             </span>
           </div>
-          <Textarea name="descripcion" id="descripcion" maxlength="50" autocomplete="off" size="small" fluid class="h-20!" />
+          <Textarea name="descripcion" id="descripcion" maxlength="100" autocomplete="off" size="small" fluid class="h-20!" />
           <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
             {{ $form.descripcion.error?.message }}
           </Message>
@@ -179,11 +179,12 @@ watch(visible, async(isOpen) => {
           </Message>
         </div>
       </div>
-
-      <div class="flex pt-6 justify-end gap-4 mt-0">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Registrar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Registrar" type="submit" form="form-registrar-mantenimiento" />
+      </div>
+    </template>
   </Drawer>
 </template>

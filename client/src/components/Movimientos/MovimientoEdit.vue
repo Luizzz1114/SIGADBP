@@ -111,7 +111,7 @@ watch(visible, async(isOpen) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :initialValues="movimiento" :resolver="resolver" :key="movimiento?.id" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-actualizar-movimiento" v-slot="$form" :initialValues="movimiento" :resolver="resolver" :key="movimiento?.id" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Datos del Movimiento</span>
@@ -256,11 +256,12 @@ watch(visible, async(isOpen) => {
           <span class="text-sm">Seleccione los bienes a mover...</span>
         </div>
       </div>
-
-      <div class="pt-6 flex justify-end gap-3">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Actualizar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Actualizar" type="submit" form="form-actualizar-movimiento" />
+      </div>
+    </template>
   </Drawer>
 </template>

@@ -84,7 +84,7 @@ const onChangeDependencia = async (event) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :initialValues="desincorporacion" :resolver="resolver" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-registrar-desincorporacion" v-slot="$form" :initialValues="desincorporacion" :resolver="resolver" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-red-400"></i>
         <span class="font-semibold">Datos del Registro</span>
@@ -186,7 +186,7 @@ const onChangeDependencia = async (event) => {
         </div>
 
         <div v-if="bienesSeleccionados.length > 0" class="sm:col-span-2">
-          <DataTable :value="bienesSeleccionados" scrollable scrollHeight="300px" size="small" tableStyle="min-width: 100%" stripedRows>
+          <DataTable :value="bienesSeleccionados" size="small" tableStyle="min-width: 100%" stripedRows>
             <Column field="numeroBien" header="Número">
               <template #body="{ data }">
                 <span class="px-1 whitespace-nowrap rounded border border-slate-150 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -213,7 +213,7 @@ const onChangeDependencia = async (event) => {
               </template>
             </Column>
           </DataTable>
-          <div class="flex justify-between items-center py-2 px-4 text-slate-500 rounded-b-lg border border-t-0 border-slate-200 dark:border-slate-800">
+          <div class="flex justify-between items-center py-2 px-4 text-slate-500 rounded-b-lg border border-t-0 border-slate-200 dark:border-slate-750">
             <span class="text-xs! text-slate-500 dark:text-slate-400">Total de bienes a desincorporar</span>
             <span class="font-semibold! text-slate-700 dark:text-slate-200">{{ bienesSeleccionados.length }}</span>
           </div>
@@ -223,10 +223,12 @@ const onChangeDependencia = async (event) => {
           <span class="text-sm">Seleccione los bienes a incorporar...</span>
         </div>
       </div>
-      <div class="pt-6 flex justify-end gap-3">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Registrar" type="submit" severity="danger" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Registrar" type="submit" form="form-registrar-desincorporacion" />
+      </div>
+    </template>
   </Drawer>
 </template>

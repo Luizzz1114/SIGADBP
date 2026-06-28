@@ -26,7 +26,13 @@ const initialValues = computed(() => {
   return {
     ...mantenimiento,
     bien: mantenimiento.id_bien,
-    presupuesto: { id: mantenimiento.id_presupuesto, tipo: mantenimiento.tipo_presupuesto, total_disponible: mantenimiento.total_disponible }
+    presupuesto: mantenimiento.id_presupuesto 
+      ? { 
+          id: mantenimiento.id_presupuesto, 
+          tipo: mantenimiento.tipo_presupuesto, 
+          total_disponible: mantenimiento.total_disponible 
+        } 
+      : null
   };
 });
 
@@ -85,7 +91,7 @@ const estatusDisponibles = computed(() => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-actualizar-mantenimiento" v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Detalles del mantenimiento</span>
@@ -115,10 +121,10 @@ const estatusDisponibles = computed(() => {
           <div class="flex justify-between items-center">
             <label for="descripcion">Descripción <span class="text-red-500">*</span></label>
             <span class="text-slate-400 dark:text-slate-500 text-xs!">
-              {{ $form.descripcion?.value?.length || 0 }}/50
+              {{ $form.descripcion?.value?.length || 0 }}/100
             </span>
           </div>
-          <Textarea name="descripcion" id="descripcion" maxlength="50" autocomplete="off" size="small" fluid class="h-20!" />
+          <Textarea name="descripcion" id="descripcion" maxlength="100" autocomplete="off" size="small" fluid class="h-20!" />
           <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
             {{ $form.descripcion.error?.message }}
           </Message>
@@ -191,7 +197,7 @@ const estatusDisponibles = computed(() => {
         />
         <div class="flex flex-col gap-1">
           <span>Partida presupuestaria</span>
-          <Select name="presupuesto" :options="presupuestos" optionLabel="tipo" placeholder="Seleccione" size="small" fluid showClear>
+          <Select name="presupuesto" :options="presupuestos" placeholder="Seleccione" size="small" fluid showClear>
             <template #option="slotProps">
               <div class="flex flex-col">
                 <span>{{ slotProps.option.tipo }}</span>
@@ -211,11 +217,12 @@ const estatusDisponibles = computed(() => {
           </Message>
         </div>
       </div>
-
-      <div class="flex pt-6 justify-end gap-4 mt-0">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Actualizar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Actualizar" type="submit" form="form-actualizar-mantenimiento" />
+      </div>
+    </template>
   </Drawer>
 </template>

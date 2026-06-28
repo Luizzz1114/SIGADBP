@@ -34,7 +34,7 @@ const onFormSubmit = ({ valid, values, reset }) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :resolver="resolver" :initialValues="cargo" @submit="onFormSubmit">
+    <Form id="form-registrar-cargo" v-slot="$form" :resolver="resolver" :initialValues="cargo" @submit="onFormSubmit">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
         <div class="flex flex-col gap-1">
           <label for="nombre-cargo">Nombre del cargo <span class="text-red-500">*</span></label>
@@ -51,10 +51,12 @@ const onFormSubmit = ({ valid, values, reset }) => {
           </Message>
         </div>
       </div>
-      <div class="flex pt-6 justify-end gap-4 mt-0">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" type="button" />
-        <Button label="Registrar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Registrar" type="submit" form="form-registrar-cargo" />
+      </div>
+    </template>
   </Drawer>
 </template>

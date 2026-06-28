@@ -187,7 +187,7 @@ watch(visible, async(isOpen) => {
         </div>
       </div>
     </template>
-    <Form v-slot="$form" :initialValues="incorporacion" :resolver="resolver" :key="incorporacion?.id" @submit="onFormSubmit" class="flex flex-col">
+    <Form id="form-actualizar-incorporacion" v-slot="$form" :initialValues="incorporacion" :resolver="resolver" :key="incorporacion?.id" @submit="onFormSubmit" class="flex flex-col">
       <div class="flex items-center gap-2">
         <i class="fi-sr-circle-1 text-xl text-blue-500"></i>
         <span class="font-semibold">Datos del Registro</span>
@@ -290,7 +290,7 @@ watch(visible, async(isOpen) => {
         </div>
 
         <div v-if="bienesSeleccionados.length > 0" class="sm:col-span-2">
-          <DataTable :value="bienesSeleccionados" scrollable scrollHeight="300px" size="small" tableStyle="min-width: 100%" stripedRows>
+          <DataTable :value="bienesSeleccionados" size="small" tableStyle="min-width: 100%" stripedRows>
             <Column field="numeroBien" header="Número">
               <template #body="{ data }">
                 <span class="px-1 whitespace-nowrap rounded border border-slate-150 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -349,10 +349,12 @@ watch(visible, async(isOpen) => {
           <span class="text-sm">Seleccione los bienes a incorporar...</span>
         </div>
       </div>
-      <div class="pt-6 flex justify-end gap-3">
-        <Button @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
-        <Button label="Actualizar" type="submit" />
-      </div>
     </Form>
+    <template #footer>
+      <div class="flex justify-end gap-3 p-3! border-t border-slate-200 dark:border-slate-700 w-full">
+        <Button type="button" @click="visible = false" label="Cancelar" variant="outlined" severity="secondary" />
+        <Button label="Actualizar" type="submit" form="form-actualizar-incorporacion" />
+      </div>
+    </template>
   </Drawer>
 </template>

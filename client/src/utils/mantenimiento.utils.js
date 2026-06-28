@@ -14,9 +14,9 @@ export const crearMantenimientoSchema = (presupuestosList = [], mantenimientoOri
     id: z.number().optional(),
     bien: z.any().refine((val) => val !== null && val !== '', 'Seleccione un bien'),
     tipo: z.string().trim().min(1, 'Seleccione un tipo de mantenimiento'),
-    descripcion: z.string().trim().min(1, 'La descripción es obligatoria').max(50, 'La descripción debe tener máximo 50 caracteres'),
+    descripcion: z.string().trim().min(1, 'La descripción es obligatoria').max(100, 'La descripción debe tener máximo 100 caracteres'),
     fecha_inicio: z.preprocess(
-      (val) => (val === null || val === undefined ? '' : val), // Convierte null/undefined a string vacío
+      (val) => (val === null || val === undefined ? '' : val),
       z.string().trim().min(1, 'La fecha de inicio es obligatoria')
     ),
     estatus: z.string().trim().default('En proceso'),
