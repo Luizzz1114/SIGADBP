@@ -127,19 +127,27 @@ onMounted(async () => {
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tiempo promedio de mantenimiento</span>
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="opDiasPromedio.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-7! shrink-0" />
+            <Button @click="opDiasPromedio.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opDiasPromedio">
-              <div class="flex flex-col gap-3 p-1">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                   <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                     <i class="fi-br-info text-xs"></i>
                   </div>
+                  Descripción
+                </span>
+                <p>Días que toma, en promedio, completar la revisión o reparación de un bien. Mide la rapidez de respuesta del equipo técnico.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <Tag :value="'Meta: ≤ 5 días'" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag :value="'5 a 15 días'" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag :value="'> 15 días'" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Óptimo: ≤ 5 días'" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Atención: 6 a 15 días'" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Crítico: > 15 días'" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
             </Popover>
@@ -167,19 +175,27 @@ onMounted(async () => {
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad post-mantenimiento</span>
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="opOperatividad.toggle($event)" severity="secondary" outlined icon="fi-rr-info" class="size-7! shrink-0" />
+            <Button @click="opOperatividad.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opOperatividad">
-              <div class="flex flex-col gap-3 p-1">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                   <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                     <i class="fi-br-info text-xs"></i>
                   </div>
+                  Descripción
+                </span>
+                <p>Porcentaje de bienes que logran quedar 100% funcionales luego de ser reparados. Evalúa la calidad y el éxito de los mantenimientos realizados.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <Tag value="Meta: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="90% a 60%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="< 60%" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Óptimo: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: 60% a 89%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: < 60%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
             </Popover>

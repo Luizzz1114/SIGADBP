@@ -153,7 +153,7 @@ onMounted(async () => {
           </div>
           <Button @click="opInfoKPIs.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opInfoKPIs">
-            <div class="flex flex-col p-1">
+            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
               <div class="flex flex-col gap-2">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                   <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
@@ -161,10 +161,11 @@ onMounted(async () => {
                   </div>
                   Tasa de Disponibilidad
                 </span>
+                <p>Porcentaje del inventario de esta dependencia que se mantuvo operativo y listo para su uso durante el mes pasado.</p>
                 <div class="flex items-center gap-2 flex-wrap text-xs">
-                  <Tag value="Meta: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="90% a 80%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="> 80%" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Óptimo: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: 80% a 89%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: < 80%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
               <Divider class="my-4!" />
@@ -175,10 +176,11 @@ onMounted(async () => {
                   </div>
                   Índice de Mantenimiento
                 </span>
+                <p>Porcentaje de bienes de esta dependencia que estuvieron inoperativos por encontrarse en revisión o reparación a lo largo del mes anterior.</p>
                 <div class="flex items-center gap-2 flex-wrap text-xs">
-                  <Tag value="Meta: ≤ 5%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="5% a 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="> 15%" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Óptimo: ≤ 5%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: 6% a 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: > 15%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
             </div>

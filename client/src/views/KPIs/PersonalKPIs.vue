@@ -55,8 +55,8 @@ const satisfechos = computed(() => construirChartData(
 ));
 
 const metricsConfig = computed(() => [
-  { title: 'Personal capacitado', icon: 'fi-rr-book-alt', data: capacitados.value },
-  { title: 'Satisfacción del personal', icon: 'fi-rr-smile-beam', data: satisfechos.value }
+  { title: 'Personal capacitado', icon: 'fi-rr-book-alt', data: capacitados.value, description: 'Porcentaje de trabajadores de la Unidad de Administración que recibieron formación o completaron cursos durante el semestre evaluado.' },
+  { title: 'Satisfacción del personal', icon: 'fi-rr-smile-beam', data: satisfechos.value, description: 'Porcentaje de empleados de la Unidad de Administración que reportaron estar conformes o satisfechos con su entorno laboral en el semestre evaluado.' }
 ]);
 
 const evaluarEstatus = (percentage) => {
@@ -144,19 +144,27 @@ onMounted(async () => {
             />
           </div>
           <div class="flex items-center gap-3">
-            <Button @click="togglePopover($event, index)" severity="secondary" outlined icon="fi-rr-info" class="size-7! shrink-0" />
+            <Button @click="togglePopover($event, index)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover :ref="el => popovers[index] = el">
-              <div class="flex flex-col gap-3 p-1">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                   <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                     <i class="fi-br-info text-xs"></i>
                   </div>
+                  Descripción
+                </span>
+                <p>{{ metric.description }}</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <Tag :value="'Meta: ≥ 75%'" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag :value="'75% a 60%'" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag :value="'< 60%'" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Óptimo: ≥ 75%'" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Atención: 60 a 74%'" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag :value="'Crítico: < 60%'" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
             </Popover>

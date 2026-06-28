@@ -128,17 +128,25 @@ onMounted(async () => {
           </div>
           <Button @click="opCrecimiento.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opCrecimiento">
-            <div class="flex flex-col gap-3 p-1">
+            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                 <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                   <i class="fi-br-info text-xs"></i>
                 </div>
+                Descripción
+              </span>
+              <p>Porcentaje que indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.</p>
+              <Divider class="my-1!" />
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                  <i class="fi-br-triangle-warning text-xs"></i>
+                </div>
                 Rangos de alerta (Índice)
               </span>
               <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="< -5%" severity="danger" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="Meta: -5% a 15%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="> 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Óptimo: -5% a 15%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Atención: > 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Crítico: < -5%" severity="danger" class="ring-1 ring-inset ring-current/10" />
               </div>
             </div>
           </Popover>
@@ -157,17 +165,25 @@ onMounted(async () => {
           </div>
           <Button @click="opRangos.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opRangos" >
-            <div class="flex flex-col gap-3 p-1">
+            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                 <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                   <i class="fi-br-info text-xs"></i>
                 </div>
+                Descripción
+              </span>
+              <p>Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañados o en reparación.</p>
+              <Divider class="my-1!" />
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                  <i class="fi-br-triangle-warning text-xs"></i>
+                </div>
                 Rangos de alerta
               </span>
               <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="Meta: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10"/>
-                <Tag value="90% a 70%" severity="warn" class="ring-1 ring-inset ring-current/10"/>
-                <Tag value="< 70%" severity="danger" class="ring-1 ring-inset ring-current/10"/>
+                <Tag value="Óptimo: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10"/>
+                <Tag value="Atención: 60 a 89%" severity="warn" class="ring-1 ring-inset ring-current/10"/>
+                <Tag value="Crítico: < 60%" severity="danger" class="ring-1 ring-inset ring-current/10"/>
               </div>
             </div>
           </Popover>
@@ -202,17 +218,25 @@ onMounted(async () => {
           <div class="flex items-center gap-3">
             <Button @click="opSinNumero.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opSinNumero">
-              <div class="flex flex-col gap-3 p-1">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
                 <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                   <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                     <i class="fi-br-info text-xs"></i>
                   </div>
+                  Descripción
+                </span>
+                <p>Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
                   Rangos de alerta
                 </span>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <Tag value="Meta: ≤ 5%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="5% a 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                  <Tag value="> 15%" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Óptimo: ≤ 5%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: 6% a 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: > 15%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
               </div>
             </Popover>

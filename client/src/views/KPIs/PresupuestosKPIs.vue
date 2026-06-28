@@ -33,10 +33,10 @@ const cardsData = computed(() => {
     return kpisConfig.map(config => ({
       icon: config.icon,
       tipo: config.name,
-      color: config.color, // Añadimos el color
+      color: config.color,
       gasto_total: 0,
       presupuesto_total_usd: 0,
-      porcentaje_uso: null, // Usamos null explícitamente para indicar que no hay datos aún
+      porcentaje_uso: null,
       message: 'Cargando datos...'
     }));
   }
@@ -53,7 +53,7 @@ const cardsData = computed(() => {
     return {
       icon: config.icon, 
       tipo: config.name, 
-      color: config.color, // ¡AQUÍ ESTABA EL ERROR! Faltaba pasar el color
+      color: config.color,
       gasto_total: lastItem?.detalles?.cantidad ?? 0,
       presupuesto_total_usd: lastItem?.detalles?.total ?? 0,
       porcentaje_uso: lastValue,
@@ -153,17 +153,25 @@ onMounted(async () => {
           </div>
           <Button @click="opPresupuesto.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
           <Popover ref="opPresupuesto">
-            <div class="flex flex-col gap-3 p-1">
+            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
               <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
                 <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
                   <i class="fi-br-info text-xs"></i>
                 </div>
+                Descripción
+              </span>
+              <p>Porcentaje de uso del presupuesto asignado a cada categoría durante el semestre culminado.</p>
+              <Divider class="my-1!" />
+              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                  <i class="fi-br-triangle-warning text-xs"></i>
+                </div>
                 Rangos de alerta
               </span>
               <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="Meta: ≥ 60%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="60% a 30" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="< 30" severity="danger" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Óptimo: ≥ 60%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Atención: 30% a 59%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                <Tag value="Crítico: < 30%" severity="danger" class="ring-1 ring-inset ring-current/10" />
               </div>
             </div>
           </Popover>
