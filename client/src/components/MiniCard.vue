@@ -52,7 +52,7 @@ const iconStyles = {
 </script>
 
 <template>
-  <div class="flex items-center gap-3 p-1 rounded-xl border min-w-0" :class="containerStyles[color]">
+  <div class="flex items-center gap-3 p-1 rounded-xl border min-w-0 ring-inset ring-2 ring-white dark:ring-slate-900/55" :class="containerStyles[color]">
     <div class="grid place-items-center size-7.5 text-base! rounded-lg text-white shrink-0" :class="iconStyles[color]">
       <i :class="icon"></i>
     </div>

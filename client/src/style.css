@@ -289,7 +289,7 @@ i, span::before, span::after {
 }
 
 .p-dialog-header {
-  padding-block: 10px !important;
+  padding: 10px 12px !important;
   border-bottom: 1px solid;
   border-color: var(--color-slate-200);
 }

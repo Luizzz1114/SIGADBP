@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mx-auto">
-    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region" aria-label="Gráfico de barras mensual">
+    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region">
       <svg 
         :viewBox="`0 0 ${svgWidth} ${svgHeight}`" 
         :style="{ width: '100%', minWidth: `${svgWidth}px`, height: `${svgHeight}px` }"
@@ -29,7 +29,7 @@
               stroke-width="1"
             />
             <text 
-              :x="margins.left - 8"
+              :x="margins.left - 5"
               :y="tick.y + 4" 
               text-anchor="end"
               class="fill-slate-500 dark:fill-slate-400 text-[13px] transition-colors duration-300"

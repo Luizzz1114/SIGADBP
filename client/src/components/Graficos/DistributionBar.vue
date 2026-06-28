@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mx-auto" ref="chartWrapper">
-    <div class="relative flex items-center justify-start w-full min-h-7" role="region" aria-label="Gráfico de tasa de aprobación">
+    <div class="relative flex items-center justify-start w-full min-h-7" role="region">
       <svg 
         v-if="containerWidth > 0"
         :viewBox="`0 0 ${containerWidth} ${svgHeight}`"

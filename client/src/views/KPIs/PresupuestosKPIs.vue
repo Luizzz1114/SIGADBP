@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import MoneyCard from '@/components/MoneyCard.vue';
-import BarChart from '@/components/Graficos/BarChart.vue';
+import MiniBarChart from '@/components/Graficos/MiniBarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -15,9 +15,9 @@ const items = [
 ];
 
 const kpisConfig = [
-  { name: 'Inversión Equipos Tecnológicos', color: '#2563eb', icon: 'fi-rr-computer' },
-  { name: 'Inversión Muebles', color: '#60a5fa', icon: 'fi-rr-chair' },
-  { name: 'Mantenimiento Bienes', color: '#93c5fd', icon: 'fi-rr-tools' }
+  { name: 'Inversión Equipos Tecnológicos', color: 'blue', icon: 'fi-rr-computer' },
+  { name: 'Inversión Muebles', color: 'cyan', icon: 'fi-rr-chair' },
+  { name: 'Mantenimiento Bienes', color: 'sky', icon: 'fi-rr-tools' }
 ];
 
 
@@ -28,26 +28,32 @@ const opPresupuesto = ref();
 
 // --- Computados ---
 const cardsData = computed(() => {
+  // Estado 1: Cargando datos (respuestasAPI vacío)
   if (!respuestasAPI.value.length) {
     return kpisConfig.map(config => ({
-      ...config,
-      value: '0%',
-      status: '',
-      message: ''
+      icon: config.icon,
+      tipo: config.name,
+      color: config.color, // Añadimos el color
+      gasto_total: 0,
+      presupuesto_total_usd: 0,
+      porcentaje_uso: null, // Usamos null explícitamente para indicar que no hay datos aún
+      message: 'Cargando datos...'
     }));
   }
 
+  // Estado 2: Datos cargados
   return respuestasAPI.value.map((res, index) => {
     const config = kpisConfig[index] || {};
     const kpiData = res?.[0] || {};
     const historial = kpiData.historial_metricas || [];
     const lastItem = historial.at(-1);
-    const lastValue = lastItem?.valor ?? 0;
+    const lastValue = lastItem?.valor ?? null;
     const message = lastItem ? lastItem.periodo : 'Sin datos';
 
     return {
       icon: config.icon, 
       tipo: config.name, 
+      color: config.color, // ¡AQUÍ ESTABA EL ERROR! Faltaba pasar el color
       gasto_total: lastItem?.detalles?.cantidad ?? 0,
       presupuesto_total_usd: lastItem?.detalles?.total ?? 0,
       porcentaje_uso: lastValue,
@@ -132,6 +138,7 @@ onMounted(async () => {
         :key="index"
         :icon="card.icon"
         :item="card"
+        :color="card.color || 'blue'"
       />
     </div>
 
@@ -171,7 +178,7 @@ onMounted(async () => {
               <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Equipos Tecnológicos</span>
             </div>
             <div class="w-full">
-              <BarChart
+              <MiniBarChart
                 v-if="chartDataEquipos.length"
                 :data="chartDataEquipos" 
                 is-percentage
@@ -179,19 +186,20 @@ onMounted(async () => {
                 type="Ejecución"
                 unit="%"
                 :details-formatter="formatDetallesPresupuesto"
+                color="blue"
               />
             </div>
           </div>
           <!-- Muebles -->
           <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
             <div class="flex items-center gap-2">
-              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
+              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-cyan-50 text-cyan-500 dark:bg-cyan-500/10 dark:text-cyan-400">
                 <i class="fi-rr-chair"></i>
               </div>
               <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Muebles</span>
             </div>
             <div class="w-full">
-              <BarChart
+              <MiniBarChart
                 v-if="chartDataMuebles.length"
                 :data="chartDataMuebles" 
                 is-percentage
@@ -199,19 +207,20 @@ onMounted(async () => {
                 type="Ejecución"
                 unit="%"
                 :details-formatter="formatDetallesPresupuesto"
+                color="cyan"
               />
             </div>
           </div>
           <!-- Mantenimiento Bienes -->
           <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
             <div class="flex items-center gap-2">
-              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
+              <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-sky-50 text-sky-500 dark:bg-sky-500/10 dark:text-sky-400">
                 <i class="fi-rr-tools"></i>
               </div>
               <span class="font-semibold text-sm text-slate-700 dark:text-slate-300 truncate">Mantenimiento Bienes</span>
             </div>
             <div class="w-full">
-              <BarChart
+              <MiniBarChart
                 v-if="chartDataMantenimiento.length"
                 :data="chartDataMantenimiento" 
                 is-percentage
@@ -219,6 +228,7 @@ onMounted(async () => {
                 type="Ejecución"
                 unit="%"
                 :details-formatter="formatDetallesPresupuesto"
+                color="sky"
               />
             </div>
           </div>

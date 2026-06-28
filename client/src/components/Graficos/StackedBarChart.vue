@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mx-auto">
-    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region" aria-label="Gráfico de barras apiladas porcentual">
+    <div ref="chartWrapper" class="relative flex items-center justify-start w-full overflow-x-auto" role="region">
       <svg 
         :viewBox="`0 0 ${svgWidth} ${svgHeight}`" 
         :style="{ width: '100%', minWidth: `${svgWidth}px`, height: `${svgHeight}px` }"
