@@ -21,21 +21,20 @@ router.get('/', (req, res) => {
 });
 
 router.use('/usuarios', UsuariosRouter);
-router.use('/desincorporaciones', DesincorporacionesRouter);
-router.use('/metricas', IndicadoresRouter);
-router.use('/presupuestos', PresupuestosRouter);
 
-router.use(verificarToken);
+//router.use(verificarToken);
 
 router.use('/cargos', CargosRouter);
 router.use('/personal', PersonalRouter);
 router.use('/dependencias', DependenciasRouter);
 router.use('/ubicacion', UbicacionRouter);
 router.use('/bienes', BienesRouter);
-
+router.use('/presupuestos', PresupuestosRouter);
 router.use('/incorporaciones', IncorporacionesRouter);
 router.use('/mantenimientos', MantenimientosRouter);
 router.use('/movimientos', MovimientoRouter);
 router.use('/evaluaciones', EvaluacionesRouter);
+router.use('/desincorporaciones', DesincorporacionesRouter);
+router.use('/metricas', IndicadoresRouter);
 
 export default router;
