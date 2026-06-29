@@ -122,11 +122,21 @@ async procesarKpiIIET() {
 
       const IIET = await IndicadoresRepositorio.IIET(client);
       const resultadosIIET = await PresupuestoRepositorio.obtenerResumenMetricas();
+      if (resultadosIIET.length === 0) {
+        await client.query('ROLLBACK'); // <-- CRÍTICO: Cerrar transacción antes del return
+        return;
+      }
 
       const itemTecnologico = resultadosIIET.find(
-        item => item.tipo === "Compra de Equipos Tecnológicos"
+      item => item.tipo === "Compra de Equipos Tecnológicos"
       );
 
+      // Validación 2: Si el array tiene datos, pero NO encontró "Compra de Equipos Tecnológicos"
+      // (Esta es la que estaba causando tu error)
+      if (!itemTecnologico) {
+        await client.query('ROLLBACK'); // <-- CRÍTICO: Cerrar transacción
+        return; 
+      }
       const metrica = {
         valor: itemTecnologico.porcentaje_uso,
         idIndicador: IIET.id,
@@ -154,10 +164,19 @@ async procesarKpiIIM() {
 
       const IIM = await IndicadoresRepositorio.IIM(client);
       const resultadosIIM = await PresupuestoRepositorio.obtenerResumenMetricas();
+      if (resultadosIIM.length === 0) {
+        await client.query('ROLLBACK'); // <-- CRÍTICO: Cerrar transacción antes del return
+        return;
+      }
 
       const itemMueble = resultadosIIM.find(
         item => item.tipo === "Compra de Muebles"
       );
+
+      if (!itemMueble) {
+        await client.query('ROLLBACK'); // <-- CRÍTICO: Cerrar transacción
+        return; 
+      }
 
       const metrica = {
         valor: itemMueble.porcentaje_uso,
@@ -186,10 +205,20 @@ async procesarKpiIIMB() {
 
       const IIMB = await IndicadoresRepositorio.IIMB(client);
       const resultadosIIMB = await PresupuestoRepositorio.obtenerResumenMetricas();
+      if (resultadosIIMB.length === 0) {
+        await client.query('ROLLBACK');
+        return;
+      }
+
 
       const itemMantenimiento = resultadosIIMB.find(
         item => item.tipo === "Mantenimiento de Bienes"
       );
+
+      if (!itemMantenimiento) {
+        await client.query('ROLLBACK');
+        return; 
+      }      
 
       const metrica = {
         valor: itemMantenimiento.porcentaje_uso,

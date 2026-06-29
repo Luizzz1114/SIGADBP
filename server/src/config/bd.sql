@@ -1311,7 +1311,7 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 (12, '02-2026', 0.00, '2026-02-28', '{"total": 0, "cantidad": 0}'),
 (12, '03-2026', 0.00, '2026-03-31', '{"total": 0, "cantidad": 0}'),
 (12, '04-2026', 0.00, '2026-04-30', '{"total": 0, "cantidad": 0}'),
-(12, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}');
+(12, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}'),
 -- 13. % Desincorporaciones por Obsolescencia (%IDO)
 (13, '01-2026', 0.00, '2026-01-31', '{"total": 0, "cantidad": 0}'),
 (13, '02-2026', 0.00, '2026-02-28', '{"total": 0, "cantidad": 0}'),

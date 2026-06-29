@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import Card from '@/components/Card.vue';
 import StackedBarChart from '@/components/Graficos/StackedBarChart.vue';
 import metricasServices from '@/services/metricas.services';
+import { exportarAImpresion } from '@/utils/imprimir';
 import { listarDependencias } from '@/utils/fetch.utils';
 import { adaptarDatosStackedBar } from '@/utils/graficos.formatter.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
@@ -17,6 +18,8 @@ const defaultData = {
   porcentaje_operativos: "0.00",
   porcentaje_mantenimiento: "0.00"
 };
+
+const chartRef = ref(null);
 
 
 // --- Variables Reactivas ---
@@ -243,8 +246,31 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Histórico de disponibilidad de bienes</span>
           </div>
+          <div class="flex items-center gap-2">
+            <Button
+              @click="
+                exportarAImpresion(
+                  chartRef,
+                  chartData,
+                  'Histórico de disponibilidad de bienes',
+                  'Distribución mensual de bienes operativos y en mantenimiento por dependencia.',
+                  ['Período', 'Operativos', 'En mantenimiento', 'Total de bienes'],
+                  (d) => [
+                    d.label,
+                    `${d.valueBottom}% - ${d.countBottom || 0} Bienes` || 0,
+                    `${d.valueTop}% - ${d.countTop || 0} Bienes` || 0,
+                    `${d.total || 0} Bienes` || 0
+                  ],
+                )
+              "
+              label="Exportar PDF"
+              icon="fi-rr-file-export"
+              severity="secondary"
+              class="h-7! shrink-0"
+            />
+          </div>
         </div>
-        <div class="flex-1 flex items-center justify-center w-full p-5 min-h-0">
+        <div ref="chartRef" class="flex-1 flex items-center justify-center w-full p-5 min-h-0">
           <StackedBarChart 
             :data="chartData" 
             labelBottom="Bienes operativos"

@@ -5,6 +5,7 @@ import AreaChart from '@/components/Graficos/AreaChart.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
 import DonutChart from '@/components/Graficos/DonutChart.vue';
 import metricasServices from '@/services/metricas.services.js';
+import { exportarAImpresion } from '@/utils/imprimir';
 import { obtenerMesAnio } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -14,6 +15,11 @@ const { showError } = useNotificaciones();
 const opSinNumero = ref();
 const opRangos = ref();
 const opCrecimiento = ref();
+
+const chartCrecimientoRef = ref(null);
+const chartOperatividadRef = ref(null);
+const chartSinNumeroRef = ref(null);
+const chartTendenciasRef = ref(null);
 
 
 // --- Estados ---
@@ -126,32 +132,50 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Crecimiento del inventario</span>
           </div>
-          <Button @click="opCrecimiento.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
-          <Popover ref="opCrecimiento">
-            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-info text-xs"></i>
+          <div class="flex items-center gap-2">
+            <Button
+              @click="
+                exportarAImpresion(
+                  chartCrecimientoRef,
+                  crecimiento,
+                  'Crecimiento del Inventario de Bienes',
+                  'Indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.',
+                  ['Período', 'Bienes en inventario'],
+                  (d) => [d.label, `${d.value} Bienes`],
+                )
+              "
+              label="Exportar PDF"
+              icon="fi-rr-file-export"
+              severity="secondary"
+              class="h-7! shrink-0"
+            />
+            <Button @click="opCrecimiento.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
+            <Popover ref="opCrecimiento">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
+                  Descripción
+                </span>
+                <p>Indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
+                  Rangos de alerta (Índice)
+                </span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <Tag value="Óptimo: -5% a 15%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: > 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: < -5%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
-                Descripción
-              </span>
-              <p>Porcentaje que indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.</p>
-              <Divider class="my-1!" />
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-triangle-warning text-xs"></i>
-                </div>
-                Rangos de alerta (Índice)
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="Óptimo: -5% a 15%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="Atención: > 15%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="Crítico: < -5%" severity="danger" class="ring-1 ring-inset ring-current/10" />
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartCrecimientoRef" class="w-full p-4">
           <BarChart :data="crecimiento" :historical="true" type="Bienes" />
         </div>
       </div>
@@ -163,32 +187,55 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad</span>
           </div>
-          <Button @click="opRangos.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
-          <Popover ref="opRangos" >
-            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-info text-xs"></i>
+          <div class="flex items-center gap-2">
+            <Button
+              @click="
+                exportarAImpresion(
+                  chartOperatividadRef,
+                  operatividad,
+                  'Tendencia de Operatividad de Bienes',
+                  'Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañados o en reparación.',
+                  ['Período', 'Tasa de Operatividad', 'Bienes Operativos', 'Total en Inventario'],
+                  (d) => [
+                    d.label,
+                    `${d.value}%`,
+                    d.detalles?.cantidad || 0,
+                    d.detalles?.total || 0,
+                  ],
+                )
+              "
+              label="Exportar PDF"
+              icon="fi-rr-file-export"
+              severity="secondary"
+              class="h-7! shrink-0"
+            />
+            <Button @click="opRangos.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
+            <Popover ref="opRangos" >
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
+                  Descripción
+                </span>
+                <p>Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañados o en reparación.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
+                  Rangos de alerta
+                </span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <Tag value="Óptimo: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10"/>
+                  <Tag value="Atención: 60 a 89%" severity="warn" class="ring-1 ring-inset ring-current/10"/>
+                  <Tag value="Crítico: < 60%" severity="danger" class="ring-1 ring-inset ring-current/10"/>
                 </div>
-                Descripción
-              </span>
-              <p>Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañados o en reparación.</p>
-              <Divider class="my-1!" />
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-triangle-warning text-xs"></i>
-                </div>
-                Rangos de alerta
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="Óptimo: ≥ 90%" severity="success" class="ring-1 ring-inset ring-current/10"/>
-                <Tag value="Atención: 60 a 89%" severity="warn" class="ring-1 ring-inset ring-current/10"/>
-                <Tag value="Crítico: < 60%" severity="danger" class="ring-1 ring-inset ring-current/10"/>
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartOperatividadRef" class="w-full p-4">
           <AreaChart
             :data="operatividad"
             unit="Tasa"
@@ -200,6 +247,8 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex flex-col flex-1 rounded-xl border border-slate-200 shadow-xs dark:border-slate-700 overflow-hidden">
         <div class="flex items-center justify-between gap-x-4 p-2 rounded-t-xl border-b border-slate-200 bg-slate-50 ring-2 ring-inset ring-white dark:ring-slate-900/55 dark:border-slate-700 dark:bg-slate-800">
@@ -215,7 +264,23 @@ onMounted(async () => {
               class="ring-1 ring-inset ring-current/10"
             />
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button
+              @click="
+                exportarAImpresion(
+                  chartSinNumeroRef,
+                  actualSinNumero,
+                  'Distribución de Bienes (Sin Número)',
+                  'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
+                  ['Categoría', 'Cantidad', 'Porcentaje'],
+                  (d) => [d.label, d.value, `${d.percentage}%`],
+                )
+              "
+              label="Exportar PDF"
+              icon="fi-rr-file-export"
+              severity="secondary"
+              class="h-7! shrink-0"
+            />
             <Button @click="opSinNumero.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opSinNumero">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -242,7 +307,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="flex-1 flex items-center justify-center w-full overflow-x-auto p-5">
+        <div ref="chartSinNumeroRef" class="flex-1 flex items-center justify-center w-full overflow-x-auto p-5">
           <DonutChart :data="actualSinNumero" unit="Bienes" />
         </div>
       </div>
@@ -254,8 +319,30 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de bienes sin número asignado</span>
           </div>
+          <div class="flex items-center gap-2">
+            <Button
+              @click="
+                exportarAImpresion(
+                  chartTendenciasRef,
+                  sinNumero,
+                  'Tendencia de Bienes sin Número',
+                  'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
+                  ['Período', 'Cantidad', 'En Inventario'],
+                  (d) => [
+                    d.label,
+                    d.detalles?.cantidad || d.value,
+                    d.detalles?.total || 0,
+                  ],
+                )
+              "
+              label="Exportar PDF"
+              icon="fi-rr-file-export"
+              severity="secondary"
+              class="h-7! shrink-0"
+            />
+          </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartTendenciasRef" class="w-full p-4">
           <AreaChart
             :data="sinNumero"
             unit="Sin número"
