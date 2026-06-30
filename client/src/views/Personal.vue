@@ -140,7 +140,7 @@ onMounted(async () => {
           <span class="-mt-1 text-xs text-slate-400">Gestión del personal</span>
         </div>
       </div>
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center flex-wrap gap-2.5">
         <Button as="router-link" to="/personal/estadisticas" label="Estadísticas" icon="fi-sr-arrow-trend-up" severity="secondary" outlined class="h-9" />
         <Button as="router-link" to="/personal/historial" label="Historial" icon="fi-rr-time-past" severity="secondary" outlined class="h-9" />
         <Button @click="isDrawerRegisterOpen = true" type="button" label="Agregar Personal" icon="fi-sr-plus-small" />
