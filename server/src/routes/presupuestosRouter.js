@@ -7,7 +7,7 @@ const PresupuestosRouter = express.Router();
 PresupuestosRouter.get('/activos-mantenimiento', PresupuestosController.listarActivosMantenimiento);
 PresupuestosRouter.get('/activos', PresupuestosController.listarActivos);
 
-//PresupuestosRouter.use(verificarRolAdmin);
+PresupuestosRouter.use(verificarRolAdmin);
 
 PresupuestosRouter.get('/metricas/resumen', PresupuestosController.obtenerResumenMetricas);
 PresupuestosRouter.post('/validar-codigo', PresupuestosController.validarCodigoUnico);

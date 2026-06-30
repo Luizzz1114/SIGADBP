@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
 router.use('/usuarios', UsuariosRouter);
 
-//router.use(verificarToken);
+router.use(verificarToken);
 
 router.use('/cargos', CargosRouter);
 router.use('/personal', PersonalRouter);
