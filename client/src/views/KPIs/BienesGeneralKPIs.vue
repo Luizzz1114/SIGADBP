@@ -22,6 +22,64 @@ const chartSinNumeroRef = ref(null);
 const chartTendenciasRef = ref(null);
 
 
+const manejarExportacion = (tipoGrafico) => {
+  const configuraciones = {
+    crecimiento: {
+      elementoRef: chartCrecimientoRef.value,
+      datos: crecimiento.value,
+      titulo: 'Crecimiento del Inventario de Bienes',
+      descripcion: 'Indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.',
+      columnas: ['Período', 'Bienes en inventario'],
+      formatearFila: (d) => [d.label, `${d.value} Bienes`],
+    },
+    operatividad: {
+      elementoRef: chartOperatividadRef.value,
+      datos: operatividad.value,
+      titulo: 'Tendencia de Operatividad de Bienes',
+      descripcion: 'Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañosados o en reparación.',
+      columnas: ['Período', 'Tasa de Operatividad', 'Bienes Operativos', 'Total en Inventario'],
+      formatearFila: (d) => [d.label, `${d.value}%`, d.detalles?.cantidad || 0, d.detalles?.total || 0],
+      rangosAlerta: [
+        { value: 'Óptimo: ≥ 90%', severity: 'success' },
+        { value: 'Atención: 60 a 89%', severity: 'warn' },
+        { value: 'Crítico: < 60%', severity: 'danger' }
+      ]
+    },
+    distribucionSinNumero: {
+      elementoRef: chartSinNumeroRef.value,
+      datos: actualSinNumero.value,
+      titulo: 'Distribución de Bienes (Sin Número)',
+      descripcion: 'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
+      columnas: ['Categoría', 'Cantidad', 'Porcentaje'],
+      formatearFila: (d) => [d.label, d.value, `${d.percentage}%`],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 5%', severity: 'success' },
+        { value: 'Atención: 6% a 15%', severity: 'warn' },
+        { value: 'Crítico: > 15%', severity: 'danger' }
+      ]
+    },
+    tendenciaSinNumero: {
+      elementoRef: chartTendenciasRef.value,
+      datos: sinNumero.value,
+      titulo: 'Tendencia de Bienes sin Número',
+      descripcion: 'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
+      columnas: ['Período', 'Porcentaje', 'Cantidad', 'En Inventario'],
+      formatearFila: (d) => [d.label, `${d.value}%`, d.detalles?.cantidad || d.value, d.detalles?.total || 0],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 5%', severity: 'success' },
+        { value: 'Atención: 6% a 15%', severity: 'warn' },
+        { value: 'Crítico: > 15%', severity: 'danger' }
+      ]
+    }
+  };
+
+  const config = configuraciones[tipoGrafico];
+  if (config) {
+    exportarAImpresion(config);
+  }
+};
+
+
 // --- Estados ---
 const sinNumero = ref([]);
 const historialSinNumero = ref([]);
@@ -134,16 +192,7 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-2">
             <Button
-              @click="
-                exportarAImpresion(
-                  chartCrecimientoRef,
-                  crecimiento,
-                  'Crecimiento del Inventario de Bienes',
-                  'Indica cuánto aumentó o disminuyó el total de bienes en comparación con el mes anterior.',
-                  ['Período', 'Bienes en inventario'],
-                  (d) => [d.label, `${d.value} Bienes`],
-                )
-              "
+              @click="manejarExportacion('crecimiento')"
               label="Exportar PDF"
               icon="fi-rr-file-export"
               severity="secondary"
@@ -189,21 +238,7 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-2">
             <Button
-              @click="
-                exportarAImpresion(
-                  chartOperatividadRef,
-                  operatividad,
-                  'Tendencia de Operatividad de Bienes',
-                  'Porcentaje del inventario total que se encuentra en estado funcional y en uso, excluyendo equipos dañados o en reparación.',
-                  ['Período', 'Tasa de Operatividad', 'Bienes Operativos', 'Total en Inventario'],
-                  (d) => [
-                    d.label,
-                    `${d.value}%`,
-                    d.detalles?.cantidad || 0,
-                    d.detalles?.total || 0,
-                  ],
-                )
-              "
+              @click="manejarExportacion('operatividad')"
               label="Exportar PDF"
               icon="fi-rr-file-export"
               severity="secondary"
@@ -266,16 +301,7 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-2">
             <Button
-              @click="
-                exportarAImpresion(
-                  chartSinNumeroRef,
-                  actualSinNumero,
-                  'Distribución de Bienes (Sin Número)',
-                  'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
-                  ['Categoría', 'Cantidad', 'Porcentaje'],
-                  (d) => [d.label, d.value, `${d.percentage}%`],
-                )
-              "
+              @click="manejarExportacion('distribucionSinNumero')"
               label="Exportar PDF"
               icon="fi-rr-file-export"
               severity="secondary"
@@ -321,20 +347,7 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-2">
             <Button
-              @click="
-                exportarAImpresion(
-                  chartTendenciasRef,
-                  sinNumero,
-                  'Tendencia de Bienes sin Número',
-                  'Porcentaje y cantidad de bienes en el sistema que aún no tienen un número de identificación registrado.',
-                  ['Período', 'Cantidad', 'En Inventario'],
-                  (d) => [
-                    d.label,
-                    d.detalles?.cantidad || d.value,
-                    d.detalles?.total || 0,
-                  ],
-                )
-              "
+              @click="manejarExportacion('tendenciaSinNumero')"
               label="Exportar PDF"
               icon="fi-rr-file-export"
               severity="secondary"

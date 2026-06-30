@@ -19,6 +19,29 @@ const defaultData = {
   porcentaje_mantenimiento: "0.00"
 };
 
+const manejarExportacion = () => {
+  const config = {
+    elementoRef: chartRef.value,
+    datos: chartData.value,
+    titulo: 'Histórico de disponibilidad de bienes',
+    descripcion: 'Distribución mensual de bienes operativos y en mantenimiento para la dependencia seleccionada.',
+    columnas: ['Período', 'Operativos', 'En mantenimiento', 'Total de bienes'],
+    formatearFila: (d) => [
+      d.label,
+      `${d.valueBottom}% - ${d.countBottom || 0} Bienes`,
+      `${d.valueTop}% - ${d.countTop || 0} Bienes`,
+      `${d.total || 0} Bienes`
+    ],
+    rangosAlerta: [
+      { value: 'Disp. Óptima: ≥ 90%', severity: 'success' },
+      { value: 'Disp. Atención: 80 a 89%', severity: 'warn' },
+      { value: 'Disp. Crítica: < 80%', severity: 'danger' },
+    ]
+  };
+
+  exportarAImpresion(config);
+};
+
 const chartRef = ref(null);
 
 
@@ -248,21 +271,7 @@ onMounted(async () => {
           </div>
           <div class="flex items-center gap-2">
             <Button
-              @click="
-                exportarAImpresion(
-                  chartRef,
-                  chartData,
-                  'Histórico de disponibilidad de bienes',
-                  'Distribución mensual de bienes operativos y en mantenimiento por dependencia.',
-                  ['Período', 'Operativos', 'En mantenimiento', 'Total de bienes'],
-                  (d) => [
-                    d.label,
-                    `${d.valueBottom}% - ${d.countBottom || 0} Bienes` || 0,
-                    `${d.valueTop}% - ${d.countTop || 0} Bienes` || 0,
-                    `${d.total || 0} Bienes` || 0
-                  ],
-                )
-              "
+              @click="manejarExportacion()"
               label="Exportar PDF"
               icon="fi-rr-file-export"
               severity="secondary"

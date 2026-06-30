@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
+import { exportarAImpresion } from '@/utils/imprimir';
 import { obtenerMesAnio } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -17,6 +18,56 @@ const items = [
 
 const opDiasPromedio = ref(null);
 const opOperatividad = ref(null);
+
+// --- Referencias para impresión ---
+const chartDiasRef = ref(null);
+const chartOperatividadRef = ref(null);
+
+// --- Exportación a PDF ---
+const manejarExportacion = (tipoGrafico) => {
+  const configuraciones = {
+    dias: {
+      elementoRef: chartDiasRef.value,
+      datos: diasPromedio.value,
+      titulo: 'Tiempo promedio de mantenimiento',
+      descripcion: 'Días que toma, en promedio, completar la revisión o reparación de un bien. Mide la rapidez de respuesta del equipo técnico.',
+      columnas: ['Período', 'Tiempo Promedio', 'Mantenimientos Realizados'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value} días`,
+        d.detalles?.cantidad || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 5 días', severity: 'success' },
+        { value: 'Atención: 6 a 15 días', severity: 'warn' },
+        { value: 'Crítico: > 15 días', severity: 'danger' }
+      ]
+    },
+    operatividad: {
+      elementoRef: chartOperatividadRef.value,
+      datos: operatividad.value,
+      titulo: 'Tendencia de operatividad post-mantenimiento',
+      descripcion: 'Porcentaje de bienes que logran quedar 100% funcionales luego de ser reparados. Evalúa la calidad y el éxito de los mantenimientos realizados.',
+      columnas: ['Período', 'Tasa de Operatividad', 'Estado Óptimo', 'Mant. Realizados'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≥ 90%', severity: 'success' },
+        { value: 'Atención: 60% a 89%', severity: 'warn' },
+        { value: 'Crítico: < 60%', severity: 'danger' }
+      ]
+    }
+  };
+
+  const config = configuraciones[tipoGrafico];
+  if (config) {
+    exportarAImpresion(config);
+  }
+};
 
 
 // --- Estados ---
@@ -126,7 +177,8 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tiempo promedio de mantenimiento</span>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('dias')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
             <Button @click="opDiasPromedio.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opDiasPromedio">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -153,7 +205,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartDiasRef" class="w-full p-4">
           <BarChart 
             :data="diasPromedio" 
             :historical="true"
@@ -174,7 +226,8 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de operatividad post-mantenimiento</span>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('operatividad')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
             <Button @click="opOperatividad.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opOperatividad">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -201,7 +254,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartOperatividadRef" class="w-full p-4">
           <AreaChart
             :data="operatividad"
             unit="Eficiencia"

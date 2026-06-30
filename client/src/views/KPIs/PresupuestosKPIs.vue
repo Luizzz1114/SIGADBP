@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import MoneyCard from '@/components/MoneyCard.vue';
 import MiniBarChart from '@/components/Graficos/MiniBarChart.vue';
 import metricasServices from '@/services/metricas.services.js';
+import { exportarAImpresion } from '@/utils/imprimir.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -19,6 +20,108 @@ const kpisConfig = [
   { name: 'Inversión Muebles', color: 'cyan', icon: 'fi-rr-chair' },
   { name: 'Mantenimiento Bienes', color: 'sky', icon: 'fi-rr-tools' }
 ];
+
+// --- Referencias para impresión (Individuales) ---
+const chartEquiposRef = ref(null);
+const chartMueblesRef = ref(null);
+const chartMantenimientoRef = ref(null);
+
+// --- Computado para unificar la tabla (Se mantiene igual) ---
+const datosConsolidadosPresupuesto = computed(() => {
+  const equipos = chartDataEquipos.value;
+  const muebles = chartDataMuebles.value;
+  const mant = chartDataMantenimiento.value;
+
+  return equipos.map((item, index) => {
+    const valMuebles = muebles[index];
+    const valMant = mant[index];
+
+    return {
+      periodo: item.label,
+      porcEquipos: item.value,
+      totalEquipos: item.detalles?.total || 0,
+      porcMuebles: valMuebles?.value || 0,
+      totalMuebles: valMuebles?.detalles?.total || 0,
+      porcMant: valMant?.value || 0,
+      totalMant: valMant?.detalles?.total || 0,
+    };
+  });
+});
+
+// --- Exportación a PDF (Gráficos en pág 1, Tabla en pág 2) ---
+const manejarExportacion = () => {
+  // 1. Contenedor virtual
+  const contenedorVirtual = document.createElement('div');
+  contenedorVirtual.style.display = 'flex';
+  contenedorVirtual.style.flexDirection = 'column';
+  contenedorVirtual.style.alignItems = 'center';
+  contenedorVirtual.style.gap = '12px'; // Reducimos un poco el gap para ahorrar espacio
+  contenedorVirtual.style.width = '100%';
+  
+  // ¡LA MAGIA DEL SALTO DE PÁGINA!
+  // Esto obliga al PDF a pasar todo lo que viene después (la tabla) a la siguiente hoja.
+  contenedorVirtual.style.pageBreakAfter = 'always';
+  contenedorVirtual.style.breakAfter = 'page';
+
+  // 2. Función auxiliar para clonar y aplastar a medida
+  const agregarClon = (elemento) => {
+    if (!elemento) return;
+    const clon = elemento.cloneNode(true);
+    clon.classList.remove('min-w-0'); 
+    
+    // Control de tamaño estricto para que los 3 entren en una hoja A4
+    clon.style.width = '100%';
+    clon.style.maxWidth = '600px'; 
+    clon.style.height = '230px'; // Forzamos una altura fija compacta
+    clon.style.overflow = 'hidden';
+    
+    // Estética
+    clon.style.border = '1px solid #e2e8f0'; 
+    clon.style.borderRadius = '10px';
+    clon.style.padding = '12px';
+    clon.style.pageBreakInside = 'avoid';
+    clon.style.breakInside = 'avoid';
+
+    // Ajustamos el SVG/Canvas interno para que no se desborde de nuestra nueva altura
+    const graficoInterno = clon.querySelector('svg, canvas, .apexcharts-canvas');
+    if (graficoInterno) {
+      graficoInterno.style.maxHeight = '160px'; // Deja espacio para el título de la tarjeta
+      graficoInterno.style.height = '100%';
+    }
+
+    contenedorVirtual.appendChild(clon);
+  };
+
+  // 3. Añadimos los 3 gráficos
+  agregarClon(chartEquiposRef.value);
+  agregarClon(chartMueblesRef.value);
+  agregarClon(chartMantenimientoRef.value);
+
+  // 4. Exportamos
+  const config = {
+    elementoRef: contenedorVirtual,
+    datos: datosConsolidadosPresupuesto.value,
+    titulo: 'Histórico de ejecución presupuestaria (Comparativo)',
+    descripcion: 'Porcentaje de uso y montos totales del presupuesto asignado a Equipos Tecnológicos, Muebles y Mantenimiento de Bienes durante los semestres evaluados.',
+    columnas: ['Período', 'Equipos Tecnológicos', 'Muebles', 'Mantenimiento'],
+    formatearFila: (d) => {
+      const fmt = (monto) => new Intl.NumberFormat('de-DE').format(monto);
+      return [
+        d.periodo,
+        `${d.porcEquipos}% ($${fmt(d.totalEquipos)})`,
+        `${d.porcMuebles}% ($${fmt(d.totalMuebles)})`,
+        `${d.porcMant}% ($${fmt(d.totalMant)})`
+      ];
+    },
+    rangosAlerta: [
+      { value: 'Óptimo: ≥ 60%', severity: 'success' },
+      { value: 'Atención: 30% a 59%', severity: 'warn' },
+      { value: 'Crítico: < 30%', severity: 'danger' }
+    ]
+  };
+
+  exportarAImpresion(config);
+};
 
 
 // --- Estados ---
@@ -151,34 +254,37 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Histórico de ejecución presupuestaria</span>
           </div>
-          <Button @click="opPresupuesto.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
-          <Popover ref="opPresupuesto">
-            <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-info text-xs"></i>
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
+            <Button @click="opPresupuesto.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
+            <Popover ref="opPresupuesto">
+              <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-info text-xs"></i>
+                  </div>
+                  Descripción
+                </span>
+                <p>Porcentaje de uso del presupuesto asignado a cada categoría durante el semestre culminado.</p>
+                <Divider class="my-1!" />
+                <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
+                  <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
+                    <i class="fi-br-triangle-warning text-xs"></i>
+                  </div>
+                  Rangos de alerta
+                </span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <Tag value="Óptimo: ≥ 60%" severity="success" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Atención: 30% a 59%" severity="warn" class="ring-1 ring-inset ring-current/10" />
+                  <Tag value="Crítico: < 30%" severity="danger" class="ring-1 ring-inset ring-current/10" />
                 </div>
-                Descripción
-              </span>
-              <p>Porcentaje de uso del presupuesto asignado a cada categoría durante el semestre culminado.</p>
-              <Divider class="my-1!" />
-              <span class="flex items-center gap-2 font-bold text-sm uppercase dark:text-slate-50">
-                <div class="flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10 size-6 text-blue-500">
-                  <i class="fi-br-triangle-warning text-xs"></i>
-                </div>
-                Rangos de alerta
-              </span>
-              <div class="flex items-center gap-2 flex-wrap">
-                <Tag value="Óptimo: ≥ 60%" severity="success" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="Atención: 30% a 59%" severity="warn" class="ring-1 ring-inset ring-current/10" />
-                <Tag value="Crítico: < 30%" severity="danger" class="ring-1 ring-inset ring-current/10" />
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </div>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-px bg-slate-200 dark:bg-slate-700">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-slate-200 dark:bg-slate-700">
           <!-- Equipos Tecnológicos -->
-          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
+          <div ref="chartEquiposRef" class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
             <div class="flex items-center gap-2">
               <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
                 <i class="fi-rr-computer"></i>
@@ -199,7 +305,7 @@ onMounted(async () => {
             </div>
           </div>
           <!-- Muebles -->
-          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
+          <div ref="chartMueblesRef" class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
             <div class="flex items-center gap-2">
               <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-cyan-50 text-cyan-500 dark:bg-cyan-500/10 dark:text-cyan-400">
                 <i class="fi-rr-chair"></i>
@@ -220,7 +326,7 @@ onMounted(async () => {
             </div>
           </div>
           <!-- Mantenimiento Bienes -->
-          <div class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
+          <div ref="chartMantenimientoRef" class="flex flex-col p-4 gap-3 min-w-0 bg-white dark:bg-slate-850">
             <div class="flex items-center gap-2">
               <div class="grid place-items-center shrink-0 size-8 rounded-lg bg-sky-50 text-sky-500 dark:bg-sky-500/10 dark:text-sky-400">
                 <i class="fi-rr-tools"></i>

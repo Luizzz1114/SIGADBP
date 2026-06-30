@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import DistributionBar from '@/components/Graficos/DistributionBar.vue';
 import metricasServices from '@/services/metricas.services';
+import { exportarAImpresion } from '@/utils/imprimir';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -19,6 +20,57 @@ const popovers = ref([]);
 const togglePopover = (event, index) => {
   if (popovers.value[index]) {
     popovers.value[index].toggle(event);
+  }
+};
+
+// --- Referencias para impresión ---
+const chartCapacitacionRef = ref(null);
+const chartSatisfaccionRef = ref(null);
+
+// --- Exportación a PDF ---
+const manejarExportacion = (tipoGrafico) => {
+  const configuraciones = {
+    capacitacion: {
+      elementoRef: chartCapacitacionRef.value,
+      datos: capacitacionHistorial.value,
+      titulo: 'Tendencia de capacitación',
+      descripcion: 'Evolución histórica del porcentaje de trabajadores de la Unidad de Administración que recibieron formación o completaron cursos.',
+      columnas: ['Período', 'Tasa de Capacitación', 'Capacitados', 'Total Evaluados'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≥ 75%', severity: 'success' },
+        { value: 'Atención: 60 a 74%', severity: 'warn' },
+        { value: 'Crítico: < 60%', severity: 'danger' }
+      ]
+    },
+    satisfaccion: {
+      elementoRef: chartSatisfaccionRef.value,
+      datos: satisfacionHistorial.value,
+      titulo: 'Tendencia de satisfacción',
+      descripcion: 'Evolución histórica del porcentaje de empleados de la Unidad de Administración que reportaron estar conformes o satisfechos con su entorno laboral.',
+      columnas: ['Período', 'Índice de Satisfacción', 'Satisfechos', 'Total Evaluados'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≥ 75%', severity: 'success' },
+        { value: 'Atención: 60 a 74%', severity: 'warn' },
+        { value: 'Crítico: < 60%', severity: 'danger' }
+      ]
+    }
+  };
+
+  const config = configuraciones[tipoGrafico];
+  if (config) {
+    exportarAImpresion(config);
   }
 };
 
@@ -184,8 +236,11 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de capacitación</span>
           </div>
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('capacitacion')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
+          </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartCapacitacionRef" class="w-full p-4">
           <AreaChart
             :data="capacitacionHistorial"
             unit="Personal capacitado"
@@ -204,8 +259,11 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de satisfacción</span>
           </div>
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('satisfaccion')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
+          </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartSatisfaccionRef" class="w-full p-4">
           <AreaChart
             :data="satisfacionHistorial"
             unit="Personal satisfecho"

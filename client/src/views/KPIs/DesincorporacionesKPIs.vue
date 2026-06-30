@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import Card from '@/components/Card.vue';
 import AreaChart from '@/components/Graficos/AreaChart.vue';
 import metricasServices from '@/services/metricas.services';
+import { exportarAImpresion } from '@/utils/imprimir';
 import { obtenerMesAnio } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
@@ -18,6 +19,76 @@ const items = [
 const opTasaDesincorporacion = ref(null);
 const opDeterioro = ref(null);
 const opObsolescencia = ref(null);
+
+// --- Referencias para impresión ---
+const chartTasaRef = ref(null);
+const chartDeterioroRef = ref(null);
+const chartObsolescenciaRef = ref(null);
+
+// --- Exportación a PDF ---
+const manejarExportacion = (tipoGrafico) => {
+  const configuraciones = {
+    tasa: {
+      elementoRef: chartTasaRef.value,
+      datos: tasaDesincorporacion.value,
+      titulo: 'Tendencia de desincorporaciones',
+      descripcion: 'Porcentaje que representan las bajas del inventario en comparación con el total de bienes activos. Indica el ritmo al que se está reduciendo el patrimonio.',
+      columnas: ['Período', 'Tasa de Desinc.', 'Desincorporados', 'Total en Inventario'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 5%', severity: 'success' },
+        { value: 'Atención: 6% a 10%', severity: 'warn' },
+        { value: 'Crítico: > 10%', severity: 'danger' }
+      ]
+    },
+    deterioro: {
+      elementoRef: chartDeterioroRef.value,
+      datos: deterioro.value,
+      titulo: 'Tendencia de desincorporaciones por deterioro',
+      descripcion: 'Proporción de las desincorporaciones causadas por daños físicos, averías o desgaste extremo por el uso del bien.',
+      columnas: ['Período', 'Índice de Deterioro', 'Por Deterioro', 'Desinc. Totales'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 20%', severity: 'success' },
+        { value: 'Atención: 21% a 30%', severity: 'warn' },
+        { value: 'Crítico: > 30%', severity: 'danger' }
+      ]
+    },
+    obsolescencia: {
+      elementoRef: chartObsolescenciaRef.value,
+      datos: obsolescencia.value,
+      titulo: 'Tendencia de desincorporaciones por obsolescencia',
+      descripcion: 'Proporción de las desincorporaciones que ocurren porque los equipos quedaron tecnológicamente desfasados o dejaron de ser útiles para los procesos actuales.',
+      columnas: ['Período', 'Índice de Obsolescencia', 'Por Obsolescencia', 'Desinc. Totales'],
+      formatearFila: (d) => [
+        d.label,
+        `${d.value}%`,
+        d.detalles?.cantidad || 0,
+        d.detalles?.total || 0
+      ],
+      rangosAlerta: [
+        { value: 'Óptimo: ≤ 20%', severity: 'success' },
+        { value: 'Atención: 21% a 30%', severity: 'warn' },
+        { value: 'Crítico: > 30%', severity: 'danger' }
+      ]
+    }
+  };
+
+  const config = configuraciones[tipoGrafico];
+  if (config) {
+    exportarAImpresion(config);
+  }
+};
 
 
 // --- Estados ---
@@ -140,7 +211,8 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones</span>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('tasa')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
             <Button @click="opTasaDesincorporacion.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opTasaDesincorporacion">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -167,7 +239,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartTasaRef" class="w-full p-4">
           <AreaChart
             :data="tasaDesincorporacion"
             unit="Tasa"
@@ -186,7 +258,8 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones por deterioro</span>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('deterioro')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
             <Button @click="opDeterioro.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opDeterioro">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -213,7 +286,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartDeterioroRef" class="w-full p-4">
           <AreaChart
             :data="deterioro"
             unit="Deterioro"
@@ -232,7 +305,8 @@ onMounted(async () => {
             </div>
             <span class="font-bold text-base leading-tight dark:text-slate-50">Tendencia de desincorporaciones por obsolescencia</span>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <Button @click="manejarExportacion('obsolescencia')" label="Exportar PDF" icon="fi-rr-file-export" severity="secondary" class="h-7! shrink-0" />
             <Button @click="opObsolescencia.toggle($event)" severity="secondary" icon="fi-rr-info" class="size-7! shrink-0" />
             <Popover ref="opObsolescencia">
               <div class="flex flex-col gap-2 p-1 max-w-[calc(100vw-4rem)] sm:max-w-96">
@@ -259,7 +333,7 @@ onMounted(async () => {
             </Popover>
           </div>
         </div>
-        <div class="w-full p-4">
+        <div ref="chartObsolescenciaRef" class="w-full p-4">
           <AreaChart
             :data="obsolescencia"
             unit="Obsolescencia"
