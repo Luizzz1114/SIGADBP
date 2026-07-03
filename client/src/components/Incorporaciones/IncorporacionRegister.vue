@@ -35,7 +35,8 @@ const resetForm = () => {
 const eliminarBien = (id) => {
   const index = bienesSeleccionados.value.findIndex(b => b.id === id);
   if (index !== -1) {
-    // Mutamos el array original en memoria
+    bienesSeleccionados.value[index].gasto = null;
+    bienesSeleccionados.value[index].id_presupuesto = null;
     bienesSeleccionados.value.splice(index, 1);
   }
 }

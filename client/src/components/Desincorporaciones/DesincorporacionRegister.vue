@@ -27,7 +27,11 @@ const resetForm = () => {
 };
 
 const eliminarBien = (id) => {
-  bienesSeleccionados.value = bienesSeleccionados.value.filter(b => b.id !== id);
+  const index = bienesSeleccionados.value.findIndex(b => b.id === id);
+  if (index !== -1) {
+    bienesSeleccionados.value[index].tipo_desincorporacion = null;
+    bienesSeleccionados.value.splice(index, 1);
+  }
 };
 
 const onFormSubmit = (e) => {
