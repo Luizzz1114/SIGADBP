@@ -970,13 +970,20 @@ INSERT INTO Usuarios (id, username, correo, contrasena, rol, idPersonal) VALUES
 (4, 'Analista02', 'jgarcia@gmail.com', crypt('Analista02*', gen_salt('bf', 10)), 'Analista', 8);          -- Analista Bienes
 
 --- ==========================================
---- 5. PRESUPUESTOS E INCORPORACIONES
+--- 5. PRESUPUESTOS
 --- ==========================================
-INSERT INTO Presupuestos (id, codigoPartida, anioFiscal, semestre, tipo, montoUsd, montoBs, tasaCambio, descripcion) VALUES
-(1, '401-01', 2026, 'Semestre I', 'Compra de Equipos Tecnológicos', 500.00, 303500.00, 607.00, 'Modernización tecnológica'),
-(2, '402-05', 2026, 'Semestre I', 'Compra de Vehículos / Equipos de Elevación', 5000.00, 3035000.00, 607.00, 'Renovación de flota'),
-(3, '403-10', 2026, 'Semestre I', 'Compra de Muebles', 500.00, 303500.00, 607.00, 'Dotación de oficinas y módulos'),
-(4, '404-01', 2026, 'Semestre I', 'Mantenimiento de Bienes', 500.00, 303500.00, 607.00, 'Mantenimiento preventivo general');
+INSERT INTO Presupuestos (id, codigoPartida, anioFiscal, semestre, tipo, montoUsd, montoBs, tasaCambio, estatus, descripcion, fechaRegistro) VALUES
+-- Semestre I (Cerrados)
+(1, '401-01', 2026, 'Semestre I', 'Compra de Equipos Tecnológicos', 500.00, 303500.00, 607.00, 'Cerrado', 'Modernización tecnológica', '2026-01-10'),
+(2, '402-05', 2026, 'Semestre I', 'Compra de Vehículos / Equipos de Elevación', 5000.00, 3035000.00, 607.00, 'Cerrado', 'Renovación de flota', '2026-01-10'),
+(3, '403-10', 2026, 'Semestre I', 'Compra de Muebles', 500.00, 303500.00, 607.00, 'Cerrado', 'Dotación de oficinas y módulos', '2026-01-10'),
+(4, '404-01', 2026, 'Semestre I', 'Mantenimiento de Bienes', 500.00, 303500.00, 607.00, 'Cerrado', 'Mantenimiento preventivo general', '2026-01-10'),
+
+-- Semestre II (Nuevos / Activos)
+(5, '401-01', 2026, 'Semestre II', 'Compra de Equipos Tecnológicos', 500.00, 303500.00, 607.00, 'Activo', 'Asignación presupuestaria Semestre II', '2026-07-01'),
+(6, '402-05', 2026, 'Semestre II', 'Compra de Vehículos / Equipos de Elevación', 5000.00, 3035000.00, 607.00, 'Activo', 'Asignación presupuestaria Semestre II', '2026-07-01'),
+(7, '403-10', 2026, 'Semestre II', 'Compra de Muebles', 500.00, 303500.00, 607.00, 'Activo', 'Asignación presupuestaria Semestre II', '2026-07-01'),
+(8, '404-01', 2026, 'Semestre II', 'Mantenimiento de Bienes', 500.00, 303500.00, 607.00, 'Activo', 'Asignación presupuestaria Semestre II', '2026-07-01');
 
 --- ==========================================
 --- 5. INCORPORACIONES (Motivos según interfaz)
@@ -1239,36 +1246,45 @@ INSERT INTO Indicadores (id, perspectiva, denominacion, meta, peligro, frecuenci
 
 
 --- ==============================================================================
---- 12. MÉTRICAS DE INDICADORES (Historial Consistente - Enero a Mayo 2026)
+--- 12. MÉTRICAS DE INDICADORES (Historial Consistente)
 --- ==============================================================================
 INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 -- ==============================================================================
--- INDICADORES SEMESTRALES (I-2025 a I-2026)
+-- INDICADORES SEMESTRALES (4 registros: II-2024 a I-2026)
 -- Basado en: Presupuestos ($500), Personal (8 empleados)
 -- ==============================================================================
--- 1. % Inversión en Equipos Tecnológicos (%IIET) (Ppto: 500, Gastado: 490)
+-- 1. % Inversión en Equipos Tecnológicos (%IIET)
+(1, 'II-2024', 45.00, '2024-12-31', '{"total": 500, "cantidad": 225}'),
 (1, 'I-2025', 50.00, '2025-06-30', '{"total": 500, "cantidad": 250}'),
 (1, 'II-2025', 70.00, '2025-12-31', '{"total": 500, "cantidad": 350}'),
 (1, 'I-2026', 98.00, '2026-06-15', '{"total": 500, "cantidad": 490}'),
--- 2. % Inversión en Muebles (%IIM) (Ppto: 500, Gastado: 495)
+
+-- 2. % Inversión en Muebles (%IIM)
+(2, 'II-2024', 35.00, '2024-12-31', '{"total": 500, "cantidad": 175}'),
 (2, 'I-2025', 40.00, '2025-06-30', '{"total": 500, "cantidad": 200}'),
 (2, 'II-2025', 60.00, '2025-12-31', '{"total": 500, "cantidad": 300}'),
 (2, 'I-2026', 99.00, '2026-06-15', '{"total": 500, "cantidad": 495}'),
--- 3. % Inversión en Mantenimiento de Bienes (%IIMB) (Ppto: 500, Gastado: 350)
+
+-- 3. % Inversión en Mantenimiento de Bienes (%IIMB)
+(3, 'II-2024', 15.00, '2024-12-31', '{"total": 500, "cantidad": 75}'),
 (3, 'I-2025', 20.00, '2025-06-30', '{"total": 500, "cantidad": 100}'),
 (3, 'II-2025', 50.00, '2025-12-31', '{"total": 500, "cantidad": 250}'),
 (3, 'I-2026', 70.00, '2026-06-15', '{"total": 500, "cantidad": 350}'),
--- 14. % Capacitación del Personal (%ICP) (Total Personal: 8)
+
+-- 14. % Capacitación del Personal (%ICP)
+(14, 'II-2024', 37.50, '2024-12-31', '{"total": 8, "cantidad": 3}'),
 (14, 'I-2025', 50.00, '2025-06-30', '{"total": 8, "cantidad": 4}'),
 (14, 'II-2025', 62.50, '2025-12-31', '{"total": 8, "cantidad": 5}'),
 (14, 'I-2026', 75.00, '2026-06-15', '{"total": 8, "cantidad": 6}'),
--- 15. % Personal Satisfecho (%IPS) (Total Personal: 8)
+
+-- 15. % Personal Satisfecho (%IPS)
+(15, 'II-2024', 50.00, '2024-12-31', '{"total": 8, "cantidad": 4}'),
 (15, 'I-2025', 62.50, '2025-06-30', '{"total": 8, "cantidad": 5}'),
 (15, 'II-2025', 75.00, '2025-12-31', '{"total": 8, "cantidad": 6}'),
 (15, 'I-2026', 87.50, '2026-06-15', '{"total": 8, "cantidad": 7}'),
+
 -- ==============================================================================
--- INDICADORES MENSUALES (Enero 2026 a Mayo 2026)
--- Crecimiento progresivo de 10 en 10 hasta los 50 bienes actuales.
+-- INDICADORES MENSUALES (6 registros: Enero 2026 a Junio 2026)
 -- ==============================================================================
 -- 6. % Bienes en Estado Operativo (%IBEO)
 (6, '01-2026', 100.00, '2026-01-31', '{"total": 10, "cantidad": 10}'),
@@ -1276,52 +1292,68 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 (6, '03-2026', 93.33,  '2026-03-31', '{"total": 30, "cantidad": 28}'),
 (6, '04-2026', 95.00,  '2026-04-30', '{"total": 40, "cantidad": 38}'),
 (6, '05-2026', 96.00,  '2026-05-31', '{"total": 50, "cantidad": 48}'),
--- 7. % Bienes No Identificados (%IBNI) (El único S/N es el ID 8, asumiendo ingreso en Feb)
+(6, '06-2026', 95.45,  '2026-06-30', '{"total": 44, "cantidad": 42}'),
+
+-- 7. % Bienes No Identificados (%IBNI)
 (7, '01-2026', 0.00, '2026-01-31', '{"total": 10, "cantidad": 0}'),
 (7, '02-2026', 5.00, '2026-02-28', '{"total": 20, "cantidad": 1}'),
 (7, '03-2026', 3.33, '2026-03-31', '{"total": 30, "cantidad": 1}'),
 (7, '04-2026', 2.50, '2026-04-30', '{"total": 40, "cantidad": 1}'),
 (7, '05-2026', 2.00, '2026-05-31', '{"total": 50, "cantidad": 1}'),
--- 8. Índice de Crecimiento Mensual de Inventario (ICMI) (Solo guarda la cantidad neta)
+(7, '06-2026', 0.00, '2026-06-30', '{"total": 44, "cantidad": 0}'),
+
+-- 8. Índice de Crecimiento Mensual de Inventario (ICMI)
 (8, '01-2026', 10.00, '2026-01-31', NULL),
 (8, '02-2026', 20.00, '2026-02-28', NULL),
 (8, '03-2026', 30.00, '2026-03-31', NULL),
 (8, '04-2026', 40.00, '2026-04-30', NULL),
 (8, '05-2026', 50.00, '2026-05-31', NULL),
+(8, '06-2026', 44.00, '2026-06-30', NULL),
+
 -- 9. % Bienes Operativos Después del Mantenimiento (%IBODP)
 (9, '01-2026', 100.00, '2026-01-31', '{"total": 1, "cantidad": 1}'),
 (9, '02-2026', 100.00, '2026-02-28', '{"total": 1, "cantidad": 1}'),
 (9, '03-2026', 100.00, '2026-03-31', '{"total": 2, "cantidad": 2}'),
 (9, '04-2026', 100.00, '2026-04-30', '{"total": 1, "cantidad": 1}'),
 (9, '05-2026', 100.00, '2026-05-31', '{"total": 1, "cantidad": 1}'),
+(9, '06-2026', 100.00, '2026-06-30', '{"total": 1, "cantidad": 1}'),
+
 -- 10. Tiempo Promedio de Mantenimiento de Bienes (ITPMB)
 (10, '01-2026', 5.00, '2026-01-31', '{"total": 5, "cantidad": 1}'),
 (10, '02-2026', 4.00, '2026-02-28', '{"total": 4, "cantidad": 1}'),
 (10, '03-2026', 5.00, '2026-03-31', '{"total": 10, "cantidad": 2}'),
 (10, '04-2026', 6.00, '2026-04-30', '{"total": 6, "cantidad": 1}'),
 (10, '05-2026', 5.00, '2026-05-31', '{"total": 5, "cantidad": 1}'),
--- 11. % Tasa de Desincorporación de Bienes (%ITDB) (Todo en 0 porque las bajas son en Junio)
+(10, '06-2026', 5.00, '2026-06-30', '{"total": 5, "cantidad": 1}'),
+
+-- 11. % Tasa de Desincorporación de Bienes (%ITDB)
 (11, '01-2026', 0.00, '2026-01-31', '{"total": 10, "cantidad": 0}'),
 (11, '02-2026', 0.00, '2026-02-28', '{"total": 20, "cantidad": 0}'),
 (11, '03-2026', 0.00, '2026-03-31', '{"total": 30, "cantidad": 0}'),
 (11, '04-2026', 0.00, '2026-04-30', '{"total": 40, "cantidad": 0}'),
 (11, '05-2026', 0.00, '2026-05-31', '{"total": 50, "cantidad": 0}'),
+(11, '06-2026', 12.00, '2026-06-30', '{"total": 50, "cantidad": 6}'),
+
 -- 12. % Desincorporaciones por Deterioro (%IDD)
 (12, '01-2026', 0.00, '2026-01-31', '{"total": 0, "cantidad": 0}'),
 (12, '02-2026', 0.00, '2026-02-28', '{"total": 0, "cantidad": 0}'),
 (12, '03-2026', 0.00, '2026-03-31', '{"total": 0, "cantidad": 0}'),
 (12, '04-2026', 0.00, '2026-04-30', '{"total": 0, "cantidad": 0}'),
 (12, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}'),
+(12, '06-2026', 16.67, '2026-06-30', '{"total": 6, "cantidad": 1}'),
+
 -- 13. % Desincorporaciones por Obsolescencia (%IDO)
 (13, '01-2026', 0.00, '2026-01-31', '{"total": 0, "cantidad": 0}'),
 (13, '02-2026', 0.00, '2026-02-28', '{"total": 0, "cantidad": 0}'),
 (13, '03-2026', 0.00, '2026-03-31', '{"total": 0, "cantidad": 0}'),
 (13, '04-2026', 0.00, '2026-04-30', '{"total": 0, "cantidad": 0}'),
-(13, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}');
+(13, '05-2026', 0.00, '2026-05-31', '{"total": 0, "cantidad": 0}'),
+(13, '06-2026', 16.67, '2026-06-30', '{"total": 6, "cantidad": 1}');
 
 
 --- ==============================================================================
 --- 12.1 MÉTRICAS CON DESGLOSE POR DEPENDENCIA: %TDRB (ID: 4) e IAOM (ID: 5)
+--- (6 registros mensuales: Enero a Junio 2026)
 --- ==============================================================================
 INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
 -- ==============================================================================
@@ -1372,6 +1404,15 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
   "4": {"id_dependencia": 5, "nombre_dependencia": "Módulo Brasil", "total_bienes": 10, "bienes_operativos": 9, "bienes_mantenimiento": 1, "porcentaje_operativos": 90.00, "porcentaje_mantenimiento": 10.00}
 }'::jsonb),
 
+(4, '06-2026', 95.45, '2026-06-30', 
+'{
+  "0": {"id_dependencia": 1, "nombre_dependencia": "Jefatura Estadal", "total_bienes": 10, "bienes_operativos": 9, "bienes_mantenimiento": 1, "porcentaje_operativos": 90.00, "porcentaje_mantenimiento": 10.00},
+  "1": {"id_dependencia": 2, "nombre_dependencia": "Área de Administración", "total_bienes": 8, "bienes_operativos": 8, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00},
+  "2": {"id_dependencia": 3, "nombre_dependencia": "Área de Logística y Distribución", "total_bienes": 9, "bienes_operativos": 9, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00},
+  "3": {"id_dependencia": 4, "nombre_dependencia": "Área de Soporte Técnico", "total_bienes": 7, "bienes_operativos": 6, "bienes_mantenimiento": 1, "porcentaje_operativos": 85.71, "porcentaje_mantenimiento": 14.29},
+  "4": {"id_dependencia": 5, "nombre_dependencia": "Módulo Brasil", "total_bienes": 10, "bienes_operativos": 10, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00}
+}'::jsonb),
+
 -- ==============================================================================
 -- 5. Índice de Afectación Operativa por Mantenimiento (IAOM) - ID: 5
 -- ==============================================================================
@@ -1418,6 +1459,15 @@ INSERT INTO Metricas (idIndicador, periodo, valor, fecha, detalles) VALUES
   "2": {"id_dependencia": 3, "nombre_dependencia": "Área de Logística y Distribución", "total_bienes": 10, "bienes_operativos": 10, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00},
   "3": {"id_dependencia": 4, "nombre_dependencia": "Área de Soporte Técnico", "total_bienes": 10, "bienes_operativos": 9, "bienes_mantenimiento": 1, "porcentaje_operativos": 90.00, "porcentaje_mantenimiento": 10.00},
   "4": {"id_dependencia": 5, "nombre_dependencia": "Módulo Brasil", "total_bienes": 10, "bienes_operativos": 9, "bienes_mantenimiento": 1, "porcentaje_operativos": 90.00, "porcentaje_mantenimiento": 10.00}
+}'::jsonb),
+
+(5, '06-2026', 4.55, '2026-06-30', 
+'{
+  "0": {"id_dependencia": 1, "nombre_dependencia": "Jefatura Estadal", "total_bienes": 10, "bienes_operativos": 9, "bienes_mantenimiento": 1, "porcentaje_operativos": 90.00, "porcentaje_mantenimiento": 10.00},
+  "1": {"id_dependencia": 2, "nombre_dependencia": "Área de Administración", "total_bienes": 8, "bienes_operativos": 8, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00},
+  "2": {"id_dependencia": 3, "nombre_dependencia": "Área de Logística y Distribución", "total_bienes": 9, "bienes_operativos": 9, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00},
+  "3": {"id_dependencia": 4, "nombre_dependencia": "Área de Soporte Técnico", "total_bienes": 7, "bienes_operativos": 6, "bienes_mantenimiento": 1, "porcentaje_operativos": 85.71, "porcentaje_mantenimiento": 14.29},
+  "4": {"id_dependencia": 5, "nombre_dependencia": "Módulo Brasil", "total_bienes": 10, "bienes_operativos": 10, "bienes_mantenimiento": 0, "porcentaje_operativos": 100.00, "porcentaje_mantenimiento": 0.00}
 }'::jsonb);
 
 --- ==========================================
