@@ -25,6 +25,11 @@ export default {
   async eliminar(id) {
     const res = await api.delete(`/mantenimientos/${id}`);
     return res.data;
+  },
+
+  async obtenerPromedioActual() {
+    const res = await api.get('/mantenimientos/promedio-mantenimiento');
+    return res.data;
   }
 
 }
