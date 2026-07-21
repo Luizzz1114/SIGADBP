@@ -71,6 +71,8 @@ const handleDeleteRequest = (item) => {
 // --- Operaciones con la API
 const mantenimientos = ref([]);
 const selectedMantenimiento = ref(null);
+const promedioMantenimiento = ref(0);
+const mantenimientosFinalizados = ref(0);
 
 async function listarMantenimientos() {
   try {
@@ -124,8 +126,20 @@ async function actualizarMantenimiento(mantenimiento) {
   }
 }
 
+async function obtenerPromedioMantenimiento() {
+  try {
+    const promedio = await mantenimientoServices.obtenerPromedioActual();
+    promedioMantenimiento.value = promedio.promedio_dias;
+    mantenimientosFinalizados.value = promedio.mantenimientos_realizados;
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error('Error al obtener promedio de mantenimiento: ', error);
+  }
+}
+
 onMounted(async() => {
   await listarMantenimientos();
+  await obtenerPromedioMantenimiento();
 });
 
 const totalMes = computed(() => {
@@ -161,16 +175,28 @@ const totalMes = computed(() => {
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4 lg:max-w-220">
       <Card
-        label="Mantenimientos"
+        label="Total registrados"
         :value="totalMes"
         icon="fi-rr-screw-alt"
         message="Este mes"
       />
       <Card
-        label="Mantenimientos en proceso"
+        label="En proceso"
         :value="mantenimientos.filter(m => m.estatus === 'En proceso').length"
         icon="fi-rr-clock"
         message="En este momento"
+      />
+      <Card
+        label="Finalizados"
+        :value="mantenimientosFinalizados"
+        icon="fi-rr-check-circle"
+        message="Este mes"
+      />
+      <Card
+        label="Tiempo promedio"
+        :value="promedioMantenimiento + ' días'"
+        icon="fi-rr-time-fast"
+        message="Este mes"
       />
     </div>
 
