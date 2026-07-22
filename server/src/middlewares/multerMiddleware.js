@@ -22,4 +22,18 @@ const storage = multer.diskStorage({
   }
 });
 
-export const uploadMiddleware = multer({ storage });
+export const uploadMiddleware = multer({ 
+  storage,
+  fileFilter: (req, file, cb) => {
+    // Definimos qué extensiones están permitidas
+    const permitidos = /jpeg|jpg|png/;
+    const ext = permitidos.test(path.extname(file.originalname).toLowerCase());
+    const mime = permitidos.test(file.mimetype);
+
+    if (ext && mime) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten imágenes (JPEG/PNG) y archivos PDF.'));
+    }
+  }
+});

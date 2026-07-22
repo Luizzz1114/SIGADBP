@@ -210,7 +210,7 @@ const onChangeDependencia = async (event) => {
                 ref="fileUploadRef"
                 mode="basic" 
                 auto
-                accept="image/*" 
+                accept="image/jpeg, image/png, image/jpg" 
                 :maxFileSize="5000000"
                 :chooseLabel="fileLabel"
                 :chooseButtonProps="{ severity: 'secondary', variant: 'text', class: 'flex-1! justify-start! w-full! text-nowrap' }"
