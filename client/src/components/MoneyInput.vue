@@ -65,6 +65,7 @@ const handleInput = (event) => {
         fluid
         v-keyfilter.int
         maxlength="12"
+        :disabled="disabled"
       />
       <Button 
         v-if="showButton"

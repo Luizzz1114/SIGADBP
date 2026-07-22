@@ -109,6 +109,40 @@ const estaAgotado = (presupuestoId, bienIdActual) => {
   return getDisponibleReal(presupuestoId, bienIdActual) <= 0;
 };
 
+const camposHabilitados = computed(() => {
+  // Leemos el motivo directamente del estado reactivo
+  const m = incorporacion.value.motivo; 
+  return {
+    orden_compra: m === 'Compra',
+    factura: m === 'Compra',
+    nota_entrega: ['Compra', 'Donación', 'Permuta', 'Reposición'].includes(m),
+    proveedor: ['Compra', 'Donación', 'Permuta'].includes(m),
+    presupuesto: m === 'Compra' // Para bloquear gastos en la tabla si no es compra
+  };
+});
+
+const onChangeMotivo = (e) => {
+  const m = e.value;
+  
+  // Limpiamos forzosamente los campos que NO correspondan al nuevo motivo
+  if (m !== 'Compra') {
+    incorporacion.value.orden_compra = '';
+    incorporacion.value.factura = '';
+    
+    // (Opcional) Limpia gastos y partidas si dejas de estar en "Compra"
+    bienesSeleccionados.value.forEach(b => {
+      b.gasto = null;
+      b.id_presupuesto = null;
+    });
+  }
+  if (!['Compra', 'Donación', 'Permuta', 'Reposición'].includes(m)) {
+    incorporacion.value.nota_entrega = '';
+  }
+  if (!['Compra', 'Donación', 'Permuta'].includes(m)) {
+    incorporacion.value.proveedor = '';
+  }
+};
+
 const onFormSubmit = (e) => {
 
   if (!e.valid || !puedeEnviar.value) return;
@@ -215,35 +249,38 @@ watch(visible, async(isOpen) => {
         </div>
         <div class="flex flex-col gap-1">
           <span>Motivo <span class="text-red-500">*</span></span>
-          <Select name="motivo" :options="motivos" placeholder="Selecione" size="small" fluid editable />
+          <Select name="motivo" v-model="incorporacion.motivo" @change="onChangeMotivo" :options="motivos" placeholder="Selecione" size="small" fluid editable />
           <Message v-if="$form.motivo?.invalid" severity="error" size="small" variant="simple">
             {{ $form.motivo.error?.message }}
           </Message>
         </div>
         <div class="flex flex-col gap-1">
-          <label for="orden_compra">Orden de compra</label>
-          <InputText name="orden_compra" id="orden_compra" maxlength="25" autocomplete="off" size="small" fluid />
+          <label for="orden_compra" :class="{ 'opacity-50': !camposHabilitados.orden_compra }">Orden de compra</label>
+          <InputText name="orden_compra" v-model="incorporacion.orden_compra" :disabled="!camposHabilitados.orden_compra" id="orden_compra" maxlength="25" autocomplete="off" size="small" fluid />
           <Message v-if="$form.orden_compra?.invalid" severity="error" size="small" variant="simple">
             {{ $form.orden_compra.error?.message }}
           </Message>
         </div>
+
         <div class="flex flex-col gap-1">
-          <label for="nota_entrega">Nota de entrega</label>
-          <InputText name="nota_entrega" id="nota_entrega" maxlength="100" autocomplete="off" size="small" fluid />
+          <label for="nota_entrega" :class="{ 'opacity-50': !camposHabilitados.nota_entrega }">Nota de entrega</label>
+          <InputText name="nota_entrega" v-model="incorporacion.nota_entrega" :disabled="!camposHabilitados.nota_entrega" id="nota_entrega" maxlength="100" autocomplete="off" size="small" fluid />
           <Message v-if="$form.nota_entrega?.invalid" severity="error" size="small" variant="simple">
             {{ $form.nota_entrega.error?.message }}
           </Message>
         </div>
+
         <div class="flex flex-col gap-1">
-          <label for="factura">Factura</label>
-          <InputText name="factura" id="factura" maxlength="30" autocomplete="off" size="small" fluid />
+          <label for="factura" :class="{ 'opacity-50': !camposHabilitados.factura }">Factura</label>
+          <InputText name="factura" v-model="incorporacion.factura" :disabled="!camposHabilitados.factura" id="factura" maxlength="30" autocomplete="off" size="small" fluid />
           <Message v-if="$form.factura?.invalid" severity="error" size="small" variant="simple">
             {{ $form.factura.error?.message }}
           </Message>
         </div>
+
         <div class="flex flex-col gap-1">
-          <label for="proveedor">Proveedor</label>
-          <InputText name="proveedor" id="proveedor" maxlength="50" autocomplete="off" size="small" fluid />
+          <label for="proveedor" :class="{ 'opacity-50': !camposHabilitados.proveedor }">Proveedor</label>
+          <InputText name="proveedor" v-model="incorporacion.proveedor" :disabled="!camposHabilitados.proveedor" id="proveedor" maxlength="50" autocomplete="off" size="small" fluid />
           <Message v-if="$form.proveedor?.invalid" severity="error" size="small" variant="simple">
             {{ $form.proveedor.error?.message }}
           </Message>
@@ -302,7 +339,8 @@ watch(visible, async(isOpen) => {
             <Column header="Gasto (Opcional)" style="min-width: 12rem; max-width: 14rem">
               <template #body="{ data }">
                 <div class="flex flex-col gap-1">
-                  <MoneyInput v-model="data.gasto" currency="USD" />
+                  <!-- Añadimos :disabled -->
+                  <MoneyInput v-model="data.gasto" :disabled="!camposHabilitados.presupuesto" currency="USD" />
                   <span v-if="erroresValidacion[data.id]" class="text-xs! text-red-500">{{ erroresValidacion[data.id] }}</span>
                 </div>
               </template>
@@ -310,7 +348,7 @@ watch(visible, async(isOpen) => {
             <Column header="Partida Presupuestaria" style="max-width: 15rem">
               <template #body="{ data }">
                 <div class="flex flex-col gap-1">
-                  <Select v-model="data.id_presupuesto" :options="presupuestos" optionLabel="tipo" optionValue="id" placeholder="Seleccione" size="small" class="w-full" showClear showChangeIcon>
+                  <Select v-model="data.id_presupuesto" :disabled="!camposHabilitados.presupuesto" :options="presupuestos" optionLabel="tipo" optionValue="id" placeholder="Seleccione" size="small" class="w-full" showClear showChangeIcon>
                     <template #option="slotProps">
                       <div class="flex flex-col">
                         <span>{{ slotProps.option.tipo }}</span>
