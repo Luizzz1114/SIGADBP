@@ -320,7 +320,7 @@ watch(visible, async(isOpen) => {
         </div>
 
         <div v-if="bienesSeleccionados.length > 0" class="sm:col-span-2">
-          <DataTable :value="bienesSeleccionados" scrollable scrollHeight="300px" size="small" tableStyle="min-width: 100%" stripedRows>
+          <DataTable :value="bienesSeleccionados" size="small" tableStyle="min-width: 100%" stripedRows>
             <Column field="numeroBien" header="Número">
               <template #body="{ data }">
                 <span class="px-1 whitespace-nowrap rounded border border-slate-150 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
