@@ -8,7 +8,11 @@ export default {
   },
   
   async crear(desincorporacion) {
-    const res = await api.post('/desincorporaciones', desincorporacion);
+    const res = await api.post('/desincorporaciones', desincorporacion, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return res.data;
   },
 

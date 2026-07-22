@@ -48,17 +48,26 @@ class DesincorporacionesServices {
     try {
       await client.query('BEGIN');
 
+      // 🔥 LÓGICA DE LA FOTO 🔥
+      // Transformamos el nombre de la foto en la URL estática que irá a la Base de Datos
+      if (desincorporacion.comprobante) {
+        desincorporacion.url_comprobante = `/uploads/comprobantes/${desincorporacion.comprobante}`;
+      }
+
+      // Mandamos al Repositorio para guardar
       const idDesincorporacion = await DesincorporacionesRepositorio.crear(client, desincorporacion);
 
+      // Guardamos los detalles de los bienes
       if (desincorporacion.bienes && desincorporacion.bienes.length > 0) {
-        for(const bien of desincorporacion.bienes ) {
-          const desincorporaciones = {
+        for (const bien of desincorporacion.bienes) {
+          const detalles = {
             idDesincorporacion: idDesincorporacion,
             idBien: bien.id_bien,
-            tipo:bien.tipo  
+            tipo: bien.tipo
           };
-          await BienesRepositorio.desvincularBienDesincorporacion(client, desincorporaciones);
-          await DesincorporacionesRepositorio.crearDetalles(client, desincorporaciones);
+          
+          await BienesRepositorio.desvincularBienDesincorporacion(client, detalles);
+          await DesincorporacionesRepositorio.crearDetalles(client, detalles);
         }
       }
 

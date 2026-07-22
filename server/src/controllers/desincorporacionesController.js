@@ -1,4 +1,5 @@
 import DesincorporacionesServices from '../services/desincorporacionesService.js';
+import { uploadMiddleware } from '../middlewares/multerMiddleware.js';
 
 class DesincorporacionesController {
   async listar(req, res) {
@@ -30,17 +31,40 @@ class DesincorporacionesController {
   }
 
   async crear(req, res) {
-    try {
-      const desincorporacion = req.body;
-      const resultado = await DesincorporacionesServices.crear(desincorporacion);
-      if (resultado) {
-        res.status(200).json({ message: 'Desincorporacion creada correctamente.' });
-      } else {
-        res.status(400).json({ message: 'Error al crear la desincorporacion.' });
+    // Le decimos a Multer que intercepte el campo llamado 'comprobante'
+    const procesarSubida = uploadMiddleware.single('comprobante');
+
+    procesarSubida(req, res, async (errorSubida) => {
+      if (errorSubida) {
+        return res.status(400).json({ message: 'Error al subir el archivo.', error: errorSubida.message });
       }
-    } catch (error) {
-      res.status(500).json({ message: 'Error al crear la desincorporacion.', error: error.message });
-    }
+
+      try {
+        // 1. Tomamos los datos de texto que llegaron
+        const desincorporacion = { ...req.body };
+        
+        // 2. Parseamos el array de bienes (FormData los envía como texto)
+        if (typeof desincorporacion.bienes === 'string') {
+          desincorporacion.bienes = JSON.parse(desincorporacion.bienes);
+        }
+
+        // 3. ¡La clave! Inyectamos el nombre de la foto de vuelta al JSON
+        if (req.file) {
+          desincorporacion.comprobante = req.file.filename;
+        }
+
+        // 4. Mandamos el JSON completo a tu capa lógica
+        const resultado = await DesincorporacionesServices.crear(desincorporacion);
+
+        if (resultado) {
+          res.status(200).json({ message: 'Desincorporación creada correctamente.', id: resultado });
+        } else {
+          res.status(400).json({ message: 'Error al crear la desincorporación.' });
+        }
+      } catch (error) {
+        res.status(500).json({ message: 'Error al crear la desincorporación.', error: error.message });
+      }
+    });
   }
 
   async actualizar(req, res) {

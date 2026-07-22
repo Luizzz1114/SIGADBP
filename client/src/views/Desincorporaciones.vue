@@ -34,6 +34,7 @@ const confirmDialogRef = ref(null);
 
 const handleViewRequest = async (item) => {
   selectedDesincorporacion.value = await obtenerDesincorporacion(item.id);
+  console.log('selectedDesincorporacion.value', selectedDesincorporacion.value);
   if (selectedDesincorporacion.value) {
     isDrawerViewOpen.value = true;
   }

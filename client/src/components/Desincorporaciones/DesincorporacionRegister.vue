@@ -21,9 +21,27 @@ const initialFormState = {
 const desincorporacion = ref({ ...initialFormState });
 const bienesSeleccionados = ref([]);
 
+const fileUploadRef = ref(null);
+const errorComprobante = ref(false);
+const fileLabel = ref('Seleccionar archivo');
+
+const onFileSelect = (event) => {
+  const files = event.files || [];
+  if (files.length) {
+    const name = files.map((f) => f.name).join(', ');
+    fileLabel.value = name;
+    errorComprobante.value = false;
+  }
+};
+
 const resetForm = () => {
   desincorporacion.value = { ...initialFormState };
   bienesSeleccionados.value = [];
+  fileLabel.value = 'Seleccionar archivo';
+  errorComprobante.value = false;  
+  if (fileUploadRef.value) {
+    fileUploadRef.value.clear();
+  }
 };
 
 const eliminarBien = (id) => {
@@ -35,21 +53,44 @@ const eliminarBien = (id) => {
 };
 
 const onFormSubmit = (e) => {
+  // --- NUEVO: Validar el archivo manualmente ---
+  const file = fileUploadRef.value?.files[0];
+  if (!file) {
+    errorComprobante.value = true; // Muestra el mensaje de error
+    return; // Detiene la ejecución
+  }
+  errorComprobante.value = false;
 
+  // --- Validar el resto de los campos (Zod) ---
   if (!e.valid) return;
+  
   const { bienes, dependencia, ...datos } = e.values;
 
-  const payload = {
-    ...datos,
-    responsable: dependencia?.idr,
-    dependencia: dependencia?.id,
-    bienes: bienesSeleccionados.value.map(b => ({
-      id_bien: b.id,
-      tipo: b.tipo_desincorporacion,
-    }))
-  };
+  const formData = new FormData();
+  formData.append('responsable', dependencia?.idr);
+  formData.append('dependencia', dependencia?.id);
+  formData.append('fecha_salida', datos.fecha_salida);
+  formData.append('descripcion', datos.descripcion || '');
+  formData.append('bienes', JSON.stringify(bienesSeleccionados.value.map(b => ({
+    id_bien: b.id,
+    tipo: b.tipo_desincorporacion,
+  }))));
+
+  // Agregar el archivo físicamente validado
+  formData.append('comprobante', file);
+
+  console.log('=== DATA LISTA PARA ENVIAR ===');
+  for (let [key, value] of formData.entries()) {
+    // Si el valor es un archivo, imprimimos sus propiedades para confirmarlo
+    if (value instanceof File) {
+      console.log(`${key}: [Archivo] -> Nombre: ${value.name}, Tamaño: ${value.size} bytes, Tipo: ${value.type}`);
+    } else {
+      console.log(`${key}:`, value);
+    }
+  }
+  console.log('================================');
   
-  emit('register', payload);
+  emit('register', formData);
   visible.value = false;
   resetForm();
 };
@@ -150,6 +191,32 @@ const onChangeDependencia = async (event) => {
           <Textarea name="descripcion" id="descripcion" maxlength="100" autocomplete="off" size="small" fluid class="h-20!" />
           <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
             {{ $form.descripcion.error?.message }}
+          </Message>
+        </div>
+        <div class="flex flex-col gap-1 col-span-full">
+          <span for="comprobante">Comprobante (Imagen) <span class="text-red-500">*</span></span>
+          <InputGroup>
+            <InputGroupAddon>Subir archivo</InputGroupAddon>
+            <InputGroupAddon>
+              <FileUpload 
+                ref="fileUploadRef"
+                mode="basic" 
+                auto
+                accept="image/*" 
+                :maxFileSize="5000000" 
+                :chooseLabel="fileLabel"
+                :chooseButtonProps="{ severity: 'secondary', variant: 'text', class: 'flex-1 justify-start' }"
+                @select="onFileSelect"
+                @clear="() => { fileLabel = 'Seleccionar archivo'; }" 
+              >
+                <template #chooseicon>
+                  <i class="fi-rr-file-upload text-base!" />
+                </template>
+              </FileUpload>
+            </InputGroupAddon>
+          </InputGroup>
+          <Message v-if="errorComprobante" severity="error" size="small" variant="simple">
+            El comprobante (PDF o Imagen) es obligatorio
           </Message>
         </div>
       </div>

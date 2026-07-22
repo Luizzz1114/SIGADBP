@@ -165,6 +165,7 @@ CREATE TABLE Desincorporaciones (
   id SERIAL PRIMARY KEY,
   fechaSalida DATE NOT NULL,
   descripcion TEXT,
+  comprobante VARCHAR(255),
   idDependencia INT REFERENCES Dependencias(id),
   idPersonal INT REFERENCES Personal(id)
 );
@@ -498,7 +499,7 @@ WITH resumen_bienes AS (
   FROM DetallesDesincorporacion AS DD
   GROUP BY DD.idDesincorporacion
 )
-SELECT D.id, TO_CHAR(D.fechaSalida, 'DD/MM/YYYY') AS fecha_salida, D.descripcion,
+SELECT D.id, TO_CHAR(D.fechaSalida, 'DD/MM/YYYY') AS fecha_salida, D.descripcion, D.comprobante,
   P.id AS idp, P.cedula, CONCAT(P.nombres, ' ', P.apellidos) AS responsable, C.nombre AS cargo, P.nivelProfesional AS nivel_profesional,
   DP.id AS idd, DP.nombre AS dependencia,
   RB.cantidad_bienes

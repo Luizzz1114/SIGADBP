@@ -20,9 +20,9 @@ class Desincorporaciones {
   }
 
   async crear(client, desincorporacion) {
-    const { dependencia, descripcion, fecha_salida, responsable } = desincorporacion;
-    const sql = 'INSERT INTO Desincorporaciones (fechaSalida, descripcion, idDependencia, idPersonal) VALUES ($1, $2, $3, $4) RETURNING id;';
-    const resultado = await client.query(sql, [fecha_salida, descripcion, dependencia, responsable]);
+    const { dependencia, descripcion, fecha_salida, responsable, url_comprobante } = desincorporacion;
+    const sql = 'INSERT INTO Desincorporaciones (fechaSalida, descripcion, comprobante, idDependencia, idPersonal) VALUES ($1, $2, $3, $4, $5) RETURNING id;';
+    const resultado = await client.query(sql, [fecha_salida, descripcion, url_comprobante, dependencia, responsable]);
     return resultado.rows[0].id;
   }
 
