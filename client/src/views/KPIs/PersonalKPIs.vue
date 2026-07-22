@@ -15,6 +15,31 @@ const items = [
   { label: 'Estadísticas', route: '/personal/estadisticas' }
 ];
 
+const obtenerUltimoSemestre = () => {
+  const hoy = new Date();
+  return hoy.getMonth() >= 6 ? `I-${hoy.getFullYear()}` : `II-${hoy.getFullYear() - 1}`;
+};
+
+const obtenerSemestres = () => {
+  const semestres = [];
+  let periodo = obtenerUltimoSemestre();
+
+  for (let indice = 0; indice < 10; indice += 1) {
+    const [semestre, anio] = periodo.split('-');
+    semestres.push({
+      label: `${semestre} semestre ${anio}`,
+      value: periodo
+    });
+    periodo = semestre === 'I' ? `II-${Number(anio) - 1}` : `I-${anio}`;
+  }
+
+  return semestres;
+};
+
+const semestres = obtenerSemestres();
+const semestreSeleccionado = ref(semestres[0]?.value || null);
+const cargandoHistorial = ref(false);
+
 const popovers = ref([]);
 
 const togglePopover = (event, index) => {
@@ -131,17 +156,33 @@ const procesarHistorial = (res) => {
     .sort((a, b) => (a.fecha > b.fecha ? 1 : -1)); 
 };
 
+const cargarHistorial = async () => {
+  cargandoHistorial.value = true;
+  try {
+    const periodo = semestreSeleccionado.value;
+    const [resCapacitacion, resSatisfaccion] = await Promise.all([
+      metricasServices.obtenerKPI('ICP', null, periodo),
+      metricasServices.obtenerKPI('IPS', null, periodo)
+    ]);
+
+    capacitacionHistorial.value = procesarHistorial(resCapacitacion);
+    satisfacionHistorial.value = procesarHistorial(resSatisfaccion);
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando el historial del personal:", error);
+  } finally {
+    cargandoHistorial.value = false;
+  }
+};
+
 onMounted(async () => {
   try {
-    const [resActual, resCapacitacion, resSatisfaccion] = await Promise.all([
+    const [resActual] = await Promise.all([
       metricasServices.evaluacionesResumen(),
-      metricasServices.obtenerKPI('ICP'),
-      metricasServices.obtenerKPI('IPS')
     ]);
 
     data.value = resActual;
-    capacitacionHistorial.value = procesarHistorial(resCapacitacion);
-    satisfacionHistorial.value = procesarHistorial(resSatisfaccion);
+    await cargarHistorial();
 
   } catch (error) {
     showError(error.response?.data?.message);
@@ -163,17 +204,32 @@ onMounted(async () => {
           <span class="-mt-1 text-xs text-slate-400">Formación y crecimiento del Área de Administración</span>
         </div>
       </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Historial hasta</span>
+        <Select
+          v-model="semestreSeleccionado"
+          :options="semestres"
+          optionLabel="label"
+          optionValue="value"
+          :disabled="cargandoHistorial"
+          size="small"
+          class="w-full sm:w-52"
+          @change="cargarHistorial"
+        />
+      </div>
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">
       <Card
         label="Personal evaluado"
         icon="fi-rr-user"
         :value="data.total_evaluados"
+        message="En tiempo real"
       />
       <Card
         label="Último semestre evaluado"
         icon="fi-rr-calendar"
         :value="data.semestre"
+        message="En tiempo real"
       />
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
