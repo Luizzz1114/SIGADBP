@@ -42,7 +42,11 @@ class BienesController {
 
   async bienesNoIdentificados(req, res) {
     try {
-      const noIdentificados = await BienesServices.bienesNoIdentificados();
+      const { hasta } = req.query;
+      if (hasta && !/^\d{4}-(0[1-9]|1[0-2])$/.test(hasta)) {
+        return res.status(400).json({ message: "El mes debe tener el formato YYYY-MM" });
+      }
+      const noIdentificados = await BienesServices.bienesNoIdentificados(hasta);
       res.status(200).json(noIdentificados);
     } catch (error) {
       res
@@ -139,8 +143,12 @@ class BienesController {
 
   async metricaDisponibilidadPorDependencia(req, res) {
     try {
+      const { hasta } = req.query;
+      if (hasta && !/^\d{4}-(0[1-9]|1[0-2])$/.test(hasta)) {
+        return res.status(400).json({ message: "El mes debe tener el formato YYYY-MM" });
+      }
       const resultados =
-        await BienesServices.metricaDisponibilidadPorDependencia();
+        await BienesServices.metricaDisponibilidadPorDependencia(hasta);
       res.status(200).json(resultados);
     } catch (error) {
       res

@@ -6,6 +6,7 @@ import metricasServices from '@/services/metricas.services';
 import { exportarAImpresion } from '@/utils/imprimir';
 import { listarDependencias } from '@/utils/fetch.utils';
 import { adaptarDatosStackedBar } from '@/utils/graficos.formatter.js';
+import { obtenerMesAnterior } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -52,6 +53,9 @@ const dependencias = ref([]);
 const selectedDependencia = ref(null);
 const datosActualesList = ref([]);
 const isMounted = ref(false); 
+const mesSeleccionado = ref(obtenerMesAnterior());
+const cargando = ref(false);
+const maxDate = ref(obtenerMesAnterior());
 
 
 // --- Propiedades Computadas ---
@@ -98,27 +102,42 @@ const barrasData = computed(() => [
 
 
 // --- Operaciones con la API ---
-onMounted(async () => {
+const obtenerMesConsulta = () => {
+  const mes = mesSeleccionado.value;
+  return `${mes.getFullYear()}-${String(mes.getMonth() + 1).padStart(2, '0')}`;
+};
+
+const cargarMetricas = async () => {
+  cargando.value = true;
   try {
-    const [res, res1, res2] = await Promise.all([
-      metricasServices.obtenerKPI('TDRB'),
+    const hasta = obtenerMesConsulta();
+    const [res, res1] = await Promise.all([
+      metricasServices.obtenerKPI('TDRB', hasta),
       metricasServices.disponibilidadDependencia(),
-      listarDependencias(),
     ]);
 
     dataGeneral.value = res || [];
     datosActualesList.value = res1 || [];
-    dependencias.value = res2 || [];
-
-    if (dependencias.value.length > 0) {
-      selectedDependencia.value = dependencias.value[0].id;
-    }
 
   } catch (error) {
     showError(error.response?.data?.message);
     console.error("Error cargando datos de estadísticas:", error);
   } finally {
+    cargando.value = false;
     setTimeout(() => { isMounted.value = true }, 50);
+  }
+};
+
+onMounted(async () => {
+  try {
+    dependencias.value = await listarDependencias() || [];
+    if (dependencias.value.length > 0) {
+      selectedDependencia.value = dependencias.value[0].id;
+    }
+    await cargarMetricas();
+  } catch (error) {
+    showError(error.response?.data?.message);
+    console.error("Error cargando dependencias:", error);
   }
 });
 </script>
@@ -143,6 +162,20 @@ onMounted(async () => {
           />
         </InputGroup>
       </div>
+      <DatePicker
+        v-model="mesSeleccionado"
+        view="month"
+        dateFormat="mm/yy"
+        showIcon
+        :manualInput="false"
+        :disabled="cargando"
+        :maxDate="maxDate"
+        placeholder="Seleccionar mes"
+        class="w-full sm:w-52"
+        @date-select="cargarMetricas"
+        size="small"
+        fluid
+      />
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">

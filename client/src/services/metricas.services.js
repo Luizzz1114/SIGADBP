@@ -70,9 +70,9 @@ export default {
 
 
   // --- BIENES SIN NUMERO ---
-  async sinNumeroResumen() {
+  async sinNumeroResumen(hasta = null) {
     try {
-      const res = await api.get('/bienes/metricas/no-identificados');
+      const res = await api.get('/bienes/metricas/no-identificados', { params: hasta ? { hasta } : {} });
       return res.data;
     } catch(error) {
       console.log(error);
@@ -81,9 +81,9 @@ export default {
   },
 
 
-  async disponibilidadDependencia() {
+  async disponibilidadDependencia(hasta = null) {
     try {
-      const res = await api.get('/bienes/metricas/disponibilidad-dependencia');
+      const res = await api.get('/bienes/metricas/disponibilidad-dependencia', { params: hasta ? { hasta } : {} });
       return res.data;
     } catch(error) {
       console.log(error);

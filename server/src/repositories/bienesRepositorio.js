@@ -37,9 +37,30 @@ class Bienes {
     return resultado.rows;
   }
 
-  async bienesNoIdentificados() {
-    const sql = 'SELECT * FROM vistaBienesSinNumero';
-    const resultado = await pool.query(sql);
+  async bienesNoIdentificados(hasta) {
+    const sql = `
+      WITH fecha_corte AS (
+        SELECT ($1::date + INTERVAL '1 month' - INTERVAL '1 day')::date AS fecha
+      ), bienes_activos AS (
+        SELECT B.*
+        FROM Bienes B
+        LEFT JOIN Incorporaciones I ON I.id = B.idIncorporacion
+        CROSS JOIN fecha_corte F
+        WHERE (I.fechaEntrada IS NULL OR I.fechaEntrada <= F.fecha)
+          AND NOT EXISTS (
+            SELECT 1
+            FROM DetallesDesincorporacion DD
+            INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
+            WHERE DD.idBien = B.id AND D.fechaSalida <= F.fecha
+          )
+      )
+      SELECT COUNT(*) AS total_bienes,
+        COUNT(*) FILTER (WHERE numeroBien = 'S/N') AS total_sin_numero,
+        ROUND(COALESCE(
+          (COUNT(*) FILTER (WHERE numeroBien = 'S/N') * 100.0) / NULLIF(COUNT(*), 0), 0
+        ), 2) AS porcentaje_sin_numero
+      FROM bienes_activos;`;
+    const resultado = await pool.query(sql, [hasta ? `${hasta}-01` : new Date().toISOString().slice(0, 10)]);
     return resultado.rows[0];
   }
 
@@ -93,9 +114,45 @@ class Bienes {
     return resultado.rows;
   }
 
-  async metricaDisponibilidadPorDependencia() {
-    const sql = 'SELECT * FROM vistaDisponibilidadPorDependencia';
-    const resultado = await pool.query(sql);
+  async metricaDisponibilidadPorDependencia(hasta) {
+    const sql = `
+      WITH fecha_corte AS (
+        SELECT ($1::date + INTERVAL '1 month' - INTERVAL '1 day')::date AS fecha
+      ), mantenimiento_activo AS (
+        SELECT M.idBien
+        FROM Mantenimientos M
+        CROSS JOIN fecha_corte F
+        WHERE M.fechaInicio <= F.fecha
+          AND (M.fechaFin IS NULL OR M.fechaFin > F.fecha)
+        GROUP BY M.idBien
+      ), bienes_activos AS (
+        SELECT B.*
+        FROM Bienes B
+        LEFT JOIN Incorporaciones I ON I.id = B.idIncorporacion
+        CROSS JOIN fecha_corte F
+        WHERE (I.fechaEntrada IS NULL OR I.fechaEntrada <= F.fecha)
+          AND NOT EXISTS (
+            SELECT 1
+            FROM DetallesDesincorporacion DD
+            INNER JOIN Desincorporaciones D ON D.id = DD.idDesincorporacion
+            WHERE DD.idBien = B.id AND D.fechaSalida <= F.fecha
+          )
+      ), conteo_bienes AS (
+        SELECT D.id AS id_dependencia, D.nombre AS nombre_dependencia,
+          COUNT(B.id) AS total_bienes,
+          COUNT(M.idBien) AS bienes_mantenimiento,
+          COUNT(B.id) - COUNT(M.idBien) AS bienes_operativos
+        FROM Dependencias D
+        LEFT JOIN bienes_activos B ON D.id = B.idDependencia
+        LEFT JOIN mantenimiento_activo M ON B.id = M.idBien
+        GROUP BY D.id, D.nombre
+      )
+      SELECT id_dependencia, nombre_dependencia, total_bienes, bienes_operativos,
+        bienes_mantenimiento,
+        ROUND(COALESCE((bienes_operativos * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_operativos,
+        ROUND(COALESCE((bienes_mantenimiento * 100.0) / NULLIF(total_bienes, 0), 0), 2) AS porcentaje_mantenimiento
+      FROM conteo_bienes;`;
+    const resultado = await pool.query(sql, [hasta ? `${hasta}-01` : new Date().toISOString().slice(0, 10)]);
     return resultado.rows;
   }
 

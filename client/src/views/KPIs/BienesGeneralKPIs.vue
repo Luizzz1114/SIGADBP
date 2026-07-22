@@ -6,7 +6,7 @@ import BarChart from '@/components/Graficos/BarChart.vue';
 import DonutChart from '@/components/Graficos/DonutChart.vue';
 import metricasServices from '@/services/metricas.services.js';
 import { exportarAImpresion } from '@/utils/imprimir';
-import { obtenerMesAnio } from '@/utils/formatters.js';
+import { obtenerMesAnio, obtenerMesAnterior } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -15,6 +15,9 @@ const { showError } = useNotificaciones();
 const opSinNumero = ref();
 const opRangos = ref();
 const opCrecimiento = ref();
+const mesSeleccionado = ref(obtenerMesAnterior());
+const cargando = ref(false);
+const maxDate = ref(obtenerMesAnterior());
 
 const chartCrecimientoRef = ref(null);
 const chartOperatividadRef = ref(null);
@@ -124,6 +127,11 @@ const actualCrecimiento = computed(() => {
 
 
 // --- Operaciones con la API ---
+const obtenerMesConsulta = () => {
+  const mes = mesSeleccionado.value;
+  return `${mes.getFullYear()}-${String(mes.getMonth() + 1).padStart(2, '0')}`;
+};
+
 const procesarHistorial = (res) => {
   const historial = res?.[0]?.historial_metricas || [];
   return historial
@@ -136,13 +144,15 @@ const procesarHistorial = (res) => {
     .sort((a, b) => (a.fecha > b.fecha ? 1 : -1)); 
 };
 
-onMounted(async () => {
+const cargarMetricas = async () => {
+  cargando.value = true;
   try {
+    const hasta = obtenerMesConsulta();
     const [resActual, resIBNI, resIBEO, resICMI] = await Promise.all([
       metricasServices.sinNumeroResumen(),
-      metricasServices.obtenerKPI('IBNI'),
-      metricasServices.obtenerKPI('IBEO'),
-      metricasServices.obtenerKPI('ICMI')
+      metricasServices.obtenerKPI('IBNI', hasta),
+      metricasServices.obtenerKPI('IBEO', hasta),
+      metricasServices.obtenerKPI('ICMI', hasta)
     ]);
 
     historialSinNumero.value = resActual || {};
@@ -153,12 +163,32 @@ onMounted(async () => {
   } catch (error) {
     showError(error.response?.data?.message);
     console.error("Error cargando datos de estadísticas:", error);
+  } finally {
+    cargando.value = false;
   }
-});
+};
+
+onMounted(cargarMetricas);
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
+    <div class="flex justify-end">
+      <DatePicker
+        v-model="mesSeleccionado"
+        view="month"
+        dateFormat="mm/yy"
+        showIcon
+        :manualInput="false"
+        :disabled="cargando"
+        :maxDate="maxDate"
+        placeholder="Seleccionar mes"
+        class="w-full sm:w-52"
+        @date-select="cargarMetricas"
+        size="small"
+        fluid
+      />
+    </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">
       <Card
         label="Total de bienes"

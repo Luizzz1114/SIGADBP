@@ -25,8 +25,8 @@ class BienesServices {
     return await BienesRepositorio.listarNoAsignados();
   }
 
-  async bienesNoIdentificados() {
-    return await BienesRepositorio.bienesNoIdentificados();
+  async bienesNoIdentificados(hasta) {
+    return await BienesRepositorio.bienesNoIdentificados(hasta);
   }
 
   async validarNumeroBienUnico(validar) {
@@ -57,8 +57,8 @@ class BienesServices {
     return await BienesRepositorio.obtenerMetricasPorDependencia();
   }
 
-  async metricaDisponibilidadPorDependencia() {
-    return await BienesRepositorio.metricaDisponibilidadPorDependencia();
+  async metricaDisponibilidadPorDependencia(hasta) {
+    return await BienesRepositorio.metricaDisponibilidadPorDependencia(hasta);
   }
 
   async crear(bien) {
