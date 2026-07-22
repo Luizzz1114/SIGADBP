@@ -7,7 +7,7 @@ import DesincorporacionesRepositorio from '../repositories/desincorporacionesRep
 import pool from '../config/database.js';
 
 class IndicadoresServices {
-  async listar(siglas) {
+  async listar(siglas, hasta) {
     let denominacion = null;
     switch (siglas) {
       case 'IBEO':
@@ -59,7 +59,7 @@ class IndicadoresServices {
         denominacion = null;
         break;  
     }
-    return await IndicadoresRepositorio.listar(denominacion);
+    return await IndicadoresRepositorio.listar(denominacion, hasta);
   }
 
   async procesarKpiIBEO() {

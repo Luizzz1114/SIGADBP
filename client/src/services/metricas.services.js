@@ -105,9 +105,11 @@ export default {
 
 
   // --- KPIs ---
-  async obtenerKPI(siglas) {
+  async obtenerKPI(siglas, hasta = null) {
     try {
-      const res = await api.get(`/metricas?siglas=${siglas}`);
+      const params = { siglas };
+      if (hasta) params.hasta = hasta;
+      const res = await api.get('/metricas', { params });
       return res.data;
     } catch(error) {
       console.log(error);

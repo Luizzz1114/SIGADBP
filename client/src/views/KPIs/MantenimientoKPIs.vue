@@ -5,7 +5,7 @@ import Card from '@/components/Card.vue';
 import BarChart from '@/components/Graficos/BarChart.vue';
 import metricasServices from '@/services/metricas.services';
 import { exportarAImpresion } from '@/utils/imprimir';
-import { obtenerMesAnio } from '@/utils/formatters.js';
+import { obtenerMesAnio, obtenerMesAnterior } from '@/utils/formatters.js';
 import { useNotificaciones } from '@/utils/useNotificaciones.js';
 const { showError } = useNotificaciones();
 
@@ -18,6 +18,9 @@ const items = [
 
 const opDiasPromedio = ref(null);
 const opOperatividad = ref(null);
+const mesSeleccionado = ref(obtenerMesAnterior());
+const cargando = ref(false);
+const maxDate = ref(obtenerMesAnterior());
 
 // --- Referencias para impresión ---
 const chartDiasRef = ref(null);
@@ -103,6 +106,11 @@ const actualOperatividad = computed(() => {
 
 
 // --- Operaciones con la API ---
+const obtenerMesConsulta = () => {
+  const mes = mesSeleccionado.value;
+  return `${mes.getFullYear()}-${String(mes.getMonth() + 1).padStart(2, '0')}`;
+};
+
 const procesarHistorial = (res) => {
   const historial = res?.[0]?.historial_metricas || [];
   return historial
@@ -115,11 +123,13 @@ const procesarHistorial = (res) => {
     .sort((a, b) => (a.fecha > b.fecha ? 1 : -1)); 
 };
 
-onMounted(async () => {
+const cargarMetricas = async () => {
+  cargando.value = true;
   try {
+    const hasta = obtenerMesConsulta();
     const [resITPMB, resIBODP] = await Promise.all([
-      metricasServices.obtenerKPI('ITPMB'),
-      metricasServices.obtenerKPI('IBODP'),
+      metricasServices.obtenerKPI('ITPMB', hasta),
+      metricasServices.obtenerKPI('IBODP', hasta),
     ]);
 
     diasPromedio.value = procesarHistorial(resITPMB);
@@ -128,8 +138,12 @@ onMounted(async () => {
   } catch (error) {
     showError(error.response?.data?.message);
     console.error("Error cargando datos de estadísticas:", error);
+  } finally {
+    cargando.value = false;
   }
-});
+};
+
+onMounted(cargarMetricas);
 </script>
 
 <template>
@@ -145,6 +159,20 @@ onMounted(async () => {
           <span class="-mt-1 text-xs text-slate-400">Análisis de la efectividad de los mantenimientos realizados</span>
         </div>
       </div>
+      <DatePicker
+        v-model="mesSeleccionado"
+        view="month"
+        dateFormat="mm/yy"
+        showIcon
+        :manualInput="false"
+        :disabled="cargando"
+        :maxDate="maxDate"
+        placeholder="Seleccionar mes"
+        class="w-full sm:w-52"
+        @date-select="cargarMetricas"
+        size="small"
+        fluid
+      />
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:max-w-220">
       <Card

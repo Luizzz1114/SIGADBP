@@ -91,9 +91,32 @@ class Indicadores {
     return resultado.rows[0];
   }
 
-  async listar(denominacion) {
-    const sql = "SELECT * FROM vistaIndicadores WHERE denominacion = $1 OR $1 IS NULL;";
-    const resultado = await pool.query(sql, [denominacion]);
+  async listar(denominacion, hasta) {
+    const sql = `
+      SELECT I.id AS id_indicador, I.denominacion, I.frecuencia, I.meta, I.peligro,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'valor', M.valor,
+              'periodo', M.periodo,
+              'fecha', M.fecha,
+              'detalles', M.detalles
+            ) ORDER BY M.fecha ASC
+          ) FILTER (WHERE M.fecha IS NOT NULL),
+          '[]'::json
+        ) AS historial_metricas
+      FROM Indicadores I
+      LEFT JOIN LATERAL (
+        SELECT valor, periodo, fecha, detalles
+        FROM Metricas
+        WHERE idIndicador = I.id
+          AND ($2::text IS NULL OR fecha < ($2::date + INTERVAL '1 month'))
+        ORDER BY fecha DESC
+        LIMIT 6
+      ) AS M ON true
+      WHERE I.denominacion = $1 OR $1 IS NULL
+      GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;`;
+    const resultado = await pool.query(sql, [denominacion, hasta ? `${hasta}-01` : null]);
     return resultado.rows;
   }
 

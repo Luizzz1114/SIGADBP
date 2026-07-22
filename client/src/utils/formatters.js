@@ -75,6 +75,12 @@ export const obtenerInicioMes = (fecha = null) => {
   return fechaa;
 };
 
+export const obtenerMesAnterior = () => {
+  const hoy = new Date();
+  const limiteMesAnterior = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+  return limiteMesAnterior;
+}
+
 
 
 // --- Formatear dinero ---
