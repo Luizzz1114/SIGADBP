@@ -105,10 +105,11 @@ export default {
 
 
   // --- KPIs ---
-  async obtenerKPI(siglas, hasta = null) {
+  async obtenerKPI(siglas, hasta = null, periodo = null) {
     try {
       const params = { siglas };
       if (hasta) params.hasta = hasta;
+      if (periodo) params.periodo = periodo;
       const res = await api.get('/metricas', { params });
       return res.data;
     } catch(error) {

@@ -21,6 +21,31 @@ const kpisConfig = [
   { name: 'Mantenimiento Bienes', color: 'sky', icon: 'fi-rr-tools' }
 ];
 
+const obtenerUltimoSemestre = () => {
+  const hoy = new Date();
+  return hoy.getMonth() >= 6 ? `I-${hoy.getFullYear()}` : `II-${hoy.getFullYear() - 1}`;
+};
+
+const obtenerSemestres = () => {
+  const semestres = [];
+  let periodo = obtenerUltimoSemestre();
+
+  for (let indice = 0; indice < 10; indice += 1) {
+    const [semestre, anio] = periodo.split('-');
+    semestres.push({
+      label: `${semestre} semestre ${anio}`,
+      value: periodo
+    });
+    periodo = semestre === 'I' ? `II-${Number(anio) - 1}` : `I-${anio}`;
+  }
+
+  return semestres;
+};
+
+const semestres = obtenerSemestres();
+const semestreSeleccionado = ref(semestres[0]?.value || null);
+const cargando = ref(false);
+
 // --- Referencias para impresión (Individuales) ---
 const chartEquiposRef = ref(null);
 const chartMueblesRef = ref(null);
@@ -202,12 +227,14 @@ const formatDetallesPresupuesto = (detalles) => {
 
 
 // --- Operaciones con la API ---
-onMounted(async () => {
+const cargarMetricas = async () => {
+  cargando.value = true;
   try {
+    const periodo = semestreSeleccionado.value;
     const [resEquipos, resMuebles, resMantenimiento] = await Promise.all([
-      metricasServices.obtenerKPI('IIET'),
-      metricasServices.obtenerKPI('IIM'),
-      metricasServices.obtenerKPI('IIMB')
+      metricasServices.obtenerKPI('IIET', null, periodo),
+      metricasServices.obtenerKPI('IIM', null, periodo),
+      metricasServices.obtenerKPI('IIMB', null, periodo)
     ]);
 
     respuestasAPI.value = [resEquipos, resMuebles, resMantenimiento];
@@ -215,8 +242,12 @@ onMounted(async () => {
   } catch (error) {
     showError(error.response?.data?.message);
     console.error("Error cargando los KPIs:", error);
+  } finally {
+    cargando.value = false;
   }
-});
+};
+
+onMounted(cargarMetricas);
 </script>
 
 <template>
@@ -233,6 +264,16 @@ onMounted(async () => {
           <span class="-mt-1 text-xs text-slate-400">Control y seguimiento de inversión en bienes</span>
         </div>
       </div>
+      <Select
+        v-model="semestreSeleccionado"
+        :options="semestres"
+        optionLabel="label"
+        optionValue="value"
+        :disabled="cargando"
+        size="small"
+        class="w-full sm:w-52"
+        @change="cargarMetricas"
+      />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">

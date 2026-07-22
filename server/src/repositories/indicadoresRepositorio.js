@@ -91,7 +91,7 @@ class Indicadores {
     return resultado.rows[0];
   }
 
-  async listar(denominacion, hasta) {
+  async listar(denominacion, hasta, periodo) {
     const sql = `
       SELECT I.id AS id_indicador, I.denominacion, I.frecuencia, I.meta, I.peligro,
         COALESCE(
@@ -111,12 +111,21 @@ class Indicadores {
         FROM Metricas
         WHERE idIndicador = I.id
           AND ($2::text IS NULL OR fecha < ($2::date + INTERVAL '1 month'))
+          AND ($3::text IS NULL OR fecha <= CASE
+            WHEN split_part($3, '-', 1) = 'I'
+              THEN make_date(split_part($3, '-', 2)::int, 6, 30)
+            ELSE make_date(split_part($3, '-', 2)::int, 12, 31)
+          END)
         ORDER BY fecha DESC
         LIMIT 6
       ) AS M ON true
       WHERE I.denominacion = $1 OR $1 IS NULL
       GROUP BY I.id, I.denominacion, I.frecuencia, I.meta, I.peligro;`;
-    const resultado = await pool.query(sql, [denominacion, hasta ? `${hasta}-01` : null]);
+    const resultado = await pool.query(sql, [
+      denominacion,
+      hasta ? `${hasta}-01` : null,
+      periodo || null
+    ]);
     return resultado.rows;
   }
 
