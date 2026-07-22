@@ -8,6 +8,14 @@ import { desincorporacionSchema, tiposDesincorporacion } from '@/utils/desincorp
 const visible = defineModel('visible');
 const emit = defineEmits(['confirmEdit']);
 
+const fileUploadRef = ref(null);
+const fileLabel = ref('Seleccionar archivo');
+const errorComprobante = ref(false);
+const archivoRemovido = ref(false);
+
+// Ref para almacenar la ruta cruda (backend) o la URL temporal (blob)
+const imagePreview = ref(null);
+
 const props = defineProps({
   desincorporacion: {
     type: Object,
@@ -30,9 +38,55 @@ const minDate = computed(()=> {
   return obtenerInicioMes(props.desincorporacion?.fecha_salida);
 });
 
+// Computada para saber si concatenar el localhost o usar el blob local
+const imageSource = computed(() => {
+  if (!imagePreview.value) return null;
+  
+  if (imagePreview.value.startsWith('blob:')) {
+    return imagePreview.value; // Archivo temporal local
+  }
+  
+  // Imagen guardada en backend
+  // NOTA: Para producción, cambiar por algo como import.meta.env.VITE_API_URL
+  return `http://localhost:3000${imagePreview.value}`; 
+});
+
 // --- Estados ---
 const bienesSeleccionados = ref([]);
 const bienesDisponibles = ref([]);
+
+// --- Funciones de manejo de archivo ---
+const onFileSelect = (event) => {
+  const files = event.files || [];
+  if (files.length) {
+    const file = files[0];
+    fileLabel.value = file.name;
+    archivoRemovido.value = false;
+    errorComprobante.value = false;
+    
+    // Limpiar URL temporal previa si existe
+    if (imagePreview.value && imagePreview.value.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview.value);
+    }
+    // Generar nueva vista previa local
+    imagePreview.value = URL.createObjectURL(file);
+  }
+};
+
+const onFileClear = () => {
+  fileLabel.value = 'Seleccionar archivo';
+  archivoRemovido.value = true;
+  
+  // Limpiar URL temporal previa si existe
+  if (imagePreview.value && imagePreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(imagePreview.value);
+  }
+  imagePreview.value = null; // Borrar previsualización visual
+  
+  if (fileUploadRef.value) {
+    fileUploadRef.value.clear();
+  }
+};
 
 const eliminarBien = (id) => {
   const index = bienesSeleccionados.value.findIndex(b => b.id === id);
@@ -42,27 +96,39 @@ const eliminarBien = (id) => {
 };
 
 const onFormSubmit = (e) => {
-  if (!e.valid) return;
-
-  const { descripcion, fecha_salida } = e.values;
-
-  const payload = {
-    id: props.desincorporacion.id,
-    fecha_salida,
-    descripcion,
-    dependencia: props.desincorporacion.idd,
-    responsable: props.desincorporacion.idp,
-    bienes: bienesSeleccionados.value.map(b => ({
-      id_bien: b.id,
-      tipo: b.tipo_desincorporacion,
-    }))
-  };
+  const file = fileUploadRef.value?.files[0];
   
-  emit('confirmEdit', payload);
-  visible.value = false;
-  bienesSeleccionados.value = [];
-};
+  // Validar si existe comprobante en el backend y el usuario NO lo ha quitado
+  const tieneComprobantePrevio = props.desincorporacion.comprobante && !archivoRemovido.value;
+  
+  if (!file && !tieneComprobantePrevio) {
+    errorComprobante.value = true;
+    return;
+  }
+  errorComprobante.value = false;
 
+  if (!e.valid) return;
+  
+  const { descripcion, fecha_salida } = e.values;
+  const formData = new FormData();
+  formData.append('id', props.desincorporacion.id);
+  formData.append('fecha_salida', fecha_salida);
+  formData.append('descripcion', descripcion || '');
+  formData.append('dependencia', props.desincorporacion.idd);
+  formData.append('responsable', props.desincorporacion.idp);
+  formData.append('bienes', JSON.stringify(bienesSeleccionados.value.map(b => ({
+    id_bien: b.id,
+    tipo: b.tipo_desincorporacion,
+  }))));
+
+  // Solo adjuntar si hay un archivo físico NUEVO
+  if (file) {
+    formData.append('comprobante', file);
+  }
+  
+  emit('confirmEdit', formData);
+  visible.value = false;
+};
 
 // --- Operaciones con la API y Carga de Datos ---
 watch(visible, async(isOpen) => {
@@ -81,8 +147,31 @@ watch(visible, async(isOpen) => {
       ...bienesSeleccionados.value,
       ...bs.filter(b => b.idd === props.desincorporacion.idd && !idsExistentes.has(b.id))
     ];
+
+    // Cargar la imagen del backend si existe
+    if (props.desincorporacion.comprobante) {
+      fileLabel.value = props.desincorporacion.comprobante.split('/').pop();
+      imagePreview.value = props.desincorporacion.comprobante; 
+      archivoRemovido.value = false;
+    } else {
+      fileLabel.value = 'Seleccionar archivo';
+      imagePreview.value = null;
+      archivoRemovido.value = false;
+    }
+
   } else {
+    // Limpiar estados al cerrar el panel
     bienesSeleccionados.value = [];
+    errorComprobante.value = false;
+    archivoRemovido.value = false;
+    fileLabel.value = 'Seleccionar archivo';
+    
+    if (imagePreview.value && imagePreview.value.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview.value);
+    }
+    imagePreview.value = null;
+    
+    if (fileUploadRef.value) fileUploadRef.value.clear();
   }
 });
 </script>
@@ -146,6 +235,51 @@ watch(visible, async(isOpen) => {
           <Textarea name="descripcion" id="descripcion" maxlength="100" autocomplete="off" size="small" fluid class="h-20!" />
           <Message v-if="$form.descripcion?.invalid" severity="error" size="small" variant="simple">
             {{ $form.descripcion.error?.message }}
+          </Message>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span for="comprobante">Comprobante (Imagen) <span class="text-red-500">*</span></span>
+          <InputGroup class="h-9!">
+            <InputGroupAddon>
+              <i class="fi-rr-picture text-base!" />
+            </InputGroupAddon>
+            <InputGroupAddon class="flex-1! p-0! overflow-hidden">
+              <FileUpload 
+                ref="fileUploadRef"
+                mode="basic" 
+                auto
+                accept="image/*" 
+                :maxFileSize="5000000"
+                :chooseLabel="fileLabel"
+                :chooseButtonProps="{ severity: 'secondary', variant: 'text', class: 'flex-1! justify-start! w-full! text-nowrap' }"
+                chooseIcon="''"
+                @select="onFileSelect"
+                @clear="onFileClear" 
+              >
+              </FileUpload>
+            </InputGroupAddon>
+            <InputGroupAddon 
+              v-if="fileLabel !== 'Seleccionar archivo'" 
+              class="cursor-pointer bg-red-50 hover:bg-red-100 text-red-500 dark:bg-red-500/10 dark:hover:bg-red-500/20" 
+              @click="onFileClear"
+              v-tooltip.top="'Quitar comprobante'"
+            >
+              <i class="fi-rr-trash text-base!" />
+            </InputGroupAddon>
+          </InputGroup>
+
+          <Image 
+            v-if="imageSource"
+            :src="imageSource" 
+            alt="Comprobante adjunto" 
+            preview 
+            class="mt-2 w-full block border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800/50"
+            imageClass="w-full h-44 object-contain object-center cursor-pointer hover:opacity-75 transition-opacity" 
+          />
+
+          <Message v-if="errorComprobante" severity="error" size="small" variant="simple">
+            El comprobante (PDF o Imagen) es obligatorio
           </Message>
         </div>
       </div>

@@ -33,9 +33,9 @@ class Desincorporaciones {
   }
 
   async actualizar(client, desincorporacion) {
-    const { id, descripcion, fecha_salida } = desincorporacion;
-    const sql = 'UPDATE Desincorporaciones SET fechaSalida = $1, descripcion = $2 WHERE id = $3 RETURNING id;';
-    const resultado = await client.query(sql, [fecha_salida, descripcion, id]);
+    const { id, descripcion, fecha_salida, url_comprobante } = desincorporacion;
+    const sql = 'UPDATE Desincorporaciones SET fechaSalida = $1, descripcion = $2, comprobante = $3 WHERE id = $4 RETURNING id;';
+    const resultado = await client.query(sql, [fecha_salida, descripcion, url_comprobante, id]);
     return resultado.rows[0].id;
   }
 

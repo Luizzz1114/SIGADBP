@@ -58,6 +58,22 @@ const generarReporte = () => {
       </div>
     </div>
 
+    <div class="flex flex-col gap-2 p-3 mt-3 w-full rounded-xl ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+      <span class="flex items-center gap-2 font-bold uppercase">
+        <i class="fi-br-picture text-red-400"></i>
+        Comprobante de desincorporación
+      </span>
+      <div class="w-full h-40 mt-1 rounded-lg overflow-hidden ring-1 ring-inset ring-slate-200 bg-slate-50/60 dark:bg-slate-800 dark:ring-slate-700">
+        <Image
+          :src="`http://localhost:3000${desincorporacion.comprobante}`" 
+          alt="Comprobante" 
+          preview 
+          class="w-full block"
+          imageClass="w-full h-40 object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity" 
+        />
+      </div>
+    </div>
+
     <div class="flex flex-col mt-3 w-full">
       <div class="p-3">
         <span class="font-bold uppercase text-sm flex items-center gap-2">

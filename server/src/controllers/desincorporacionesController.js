@@ -57,7 +57,7 @@ class DesincorporacionesController {
         const resultado = await DesincorporacionesServices.crear(desincorporacion);
 
         if (resultado) {
-          res.status(200).json({ message: 'Desincorporación creada correctamente.', id: resultado });
+          res.status(200).json({ message: 'Desincorporación creada correctamente.'});
         } else {
           res.status(400).json({ message: 'Error al crear la desincorporación.' });
         }
@@ -68,17 +68,38 @@ class DesincorporacionesController {
   }
 
   async actualizar(req, res) {
-    try {
-      const desincorporacion = req.body;
-      const resultado = await DesincorporacionesServices.actualizar(desincorporacion);
-      if (resultado) {
-        res.status(200).json({ message: 'Desincorporacion actualizada correctamente.' });
-      } else {
-        res.status(400).json({ message: 'Error al actualizar la desincorporacion.' });
+    const procesarSubida = uploadMiddleware.single('comprobante');
+
+    procesarSubida(req, res, async (errorSubida) => {
+      if (errorSubida) {
+        return res.status(400).json({ message: 'Error al subir la imagen.', error: errorSubida.message });
       }
-    } catch (error) {
-      res.status(500).json({ message: 'Error al actualizar la desincorporacion.', error: error.message });
-    }
+
+      try {
+        const desincorporacion = { ...req.body };
+
+        if (typeof desincorporacion.bienes === 'string') {
+          desincorporacion.bienes = JSON.parse(desincorporacion.bienes);
+        }
+
+        // Si el usuario subió una FOTO NUEVA, la agregamos al JSON
+        if (req.file) {
+          desincorporacion.comprobante = req.file.filename;
+        }
+        // Si no subió foto, "desincorporacion.comprobante" simplemente no existirá,
+        // y nuestro Servicio sabrá qué hacer.
+
+        const resultado = await DesincorporacionesServices.actualizar(desincorporacion);
+
+        if (resultado) {
+          res.status(200).json({ message: 'Desincorporación actualizada correctamente.', id: resultado });
+        } else {
+          res.status(400).json({ message: 'Error al actualizar.' });
+        }
+      } catch (error) {
+        res.status(500).json({ message: 'Error en la actualización.', error: error.message });
+      }
+    });
   }
 
   async eliminar(req, res) {

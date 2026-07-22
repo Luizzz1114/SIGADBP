@@ -1,12 +1,17 @@
 import 'dotenv/config';
 import http from 'http';
 import express from 'express';
+import path from "path";
+import { fileURLToPath } from "url";
 import cors from 'cors';
 import helmet from 'helmet';
 import router from './routes/index.js';
 import { iniciarTareasProgramadas } from './jobs/scheduler.js';
 import { Server as SocketServer } from 'socket.io';
 import { verificarTokenSocket } from './middlewares/authMiddleware.js'; 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +25,10 @@ const io = new SocketServer(server, {
 app.set('socketio', io);
 app.use(express.json());
 app.use(cors({ origin: '*' }));
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api-sigadbp', router);
 
 iniciarTareasProgramadas();

@@ -22,7 +22,11 @@ export default {
   },
   
   async actualizar(desincorporacion) {
-    const res = await api.put('/desincorporaciones', desincorporacion);
+    const res = await api.put('/desincorporaciones', desincorporacion, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return res.data;
   },
 

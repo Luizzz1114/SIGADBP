@@ -304,6 +304,10 @@ i, span::before, span::after {
   gap: 8px !important;
 }
 
+.p-fileupload {
+  width: 100% !important;
+}
+
 /* --- Drawer (Sidebar) --- */
 .p-drawer-header {
   padding-block: 0px !important;

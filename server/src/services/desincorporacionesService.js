@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises'; // Importante: usar /promises para usar async/await
 import path from "path";
 import { fileURLToPath } from "url";
 import pool from '../config/database.js';
@@ -14,7 +15,7 @@ class DesincorporacionesServices {
   async listar() {
     return await DesincorporacionesRepositorio.listar();
   }
-  
+
   async desincorporacionMetricas() {
     return await DesincorporacionesRepositorio.desincorporacionMetricas();
   }
@@ -27,7 +28,7 @@ class DesincorporacionesServices {
       const desincorporacion = await DesincorporacionesRepositorio.obtenerPorId(client, id);
 
       const bienes = await BienesRepositorio.obtenerPorIdDesincorporacion(client, id);
-      
+
       const resultado = {
         ...desincorporacion,
         bienes: bienes
@@ -65,7 +66,7 @@ class DesincorporacionesServices {
             idBien: bien.id_bien,
             tipo: bien.tipo
           };
-          
+
           await BienesRepositorio.desvincularBienDesincorporacion(client, detalles);
           await DesincorporacionesRepositorio.crearDetalles(client, detalles);
         }
@@ -86,13 +87,40 @@ class DesincorporacionesServices {
     try {
       await client.query('BEGIN');
       const id = desincorporacion.id;
+
+      const obtenerComprobante = await DesincorporacionesRepositorio.obtenerPorId(client, id);
+      if (!obtenerComprobante) {
+        throw new Error(`No se encontró la desincorporación con ID ${id} para obetener el comprobante`);
+      }
+
+      if (desincorporacion.comprobante && desincorporacion.comprobante !== obtenerComprobante.comprobante) {
+        if (obtenerComprobante.comprobante) {
+          try {
+            // Extraemos el nombre final del archivo de la URL
+            const nombreArchivo = path.basename(obtenerComprobante.comprobante);
+
+            // Armamos la ruta exacta a la carpeta
+            const rutaFisica = path.join(__dirname, '../../uploads/comprobantes', nombreArchivo);
+
+            // Borramos el archivo físico del disco duro
+            await fs.unlink(rutaFisica);
+            console.log(`✅ Foto remplazada físicamente: ${nombreArchivo}`);
+          } catch (errorArchivo) {
+            console.warn(`⚠️ Aviso: No se pudo remplazar la foto antigua, continuando...`);
+          }
+        }
+        desincorporacion.url_comprobante = `/uploads/comprobantes/${desincorporacion.comprobante}`;
+      } else {
+        desincorporacion.url_comprobante = obtenerComprobante.comprobante;
+      }
+
       const personalDependencia = await PersonalRepositorio.obtenerJefeDesincorporacion(client, id);
       await BienesRepositorio.deshacerDesincorporacion(client, id, personalDependencia);
       const idDesincorporacion = await DesincorporacionesRepositorio.actualizar(client, desincorporacion);
       await DesincorporacionesRepositorio.eliminarDetalles(client, idDesincorporacion);
 
       if (desincorporacion.bienes && desincorporacion.bienes.length > 0) {
-        for(const bien of desincorporacion.bienes ) {
+        for (const bien of desincorporacion.bienes) {
           const desincorporaciones = {
             idDesincorporacion: idDesincorporacion,
             idBien: bien.id_bien,
@@ -111,12 +139,33 @@ class DesincorporacionesServices {
     } finally {
       client.release();
     }
-  }  
+  }
 
   async eliminar(id) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
+
+      const desincorporacion = await DesincorporacionesRepositorio.obtenerPorId(client, id);
+      if (!desincorporacion) {
+        throw new Error(`No se encontró la desincorporación con ID ${id}`);
+      }
+
+      if (desincorporacion.comprobante) {
+        try {
+          // Extraemos el nombre final del archivo de la URL
+          const nombreArchivo = path.basename(desincorporacion.comprobante);
+
+          // Armamos la ruta exacta a la carpeta
+          const rutaFisica = path.join(__dirname, '../../uploads/comprobantes', nombreArchivo);
+
+          // Borramos el archivo físico del disco duro
+          await fs.unlink(rutaFisica);
+          console.log(`✅ Foto eliminada físicamente: ${nombreArchivo}`);
+        } catch (errorArchivo) {
+          console.warn(`⚠️ Aviso: El archivo físico no se encontró, continuando con el borrado en BD...`);
+        }
+      }
 
       const personalDependencia = await PersonalRepositorio.obtenerJefeDesincorporacion(client, id);
       await BienesRepositorio.deshacerDesincorporacion(client, id, personalDependencia);
@@ -131,7 +180,7 @@ class DesincorporacionesServices {
       client.release();
     }
   }
-  
+
   async generarReporte(idDesincorporacion) {
     const client = await pool.connect();
     try {
@@ -142,11 +191,11 @@ class DesincorporacionesServices {
       const jefe = await PersonalRepositorio.obtenerJefe();
       const coordinador = await PersonalRepositorio.obtenerCoordinador();
       const supervisor = await PersonalRepositorio.obtenerSupervisor();
-        
+
       const templatePath = path.join(__dirname, "../templates/formato_desincorporacion.xlsx");
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(templatePath);
-    
+
       const worksheet = workbook.getWorksheet(1);
 
       // =========================================================
@@ -184,7 +233,7 @@ class DesincorporacionesServices {
 
       bienes.forEach((bien) => {
         const row = worksheet.getRow(filaActual);
-        
+
         row.getCell("C").value = bien.numero;      // Nº DE BIEN
         row.getCell("D").value = bien.descripcion;      // DESCRIPCIÓN
         row.getCell("E").value = bien.tipo_desincorporacion;             // TIPO DE DESINCORPORACIÓN
@@ -199,32 +248,32 @@ class DesincorporacionesServices {
       // 6. INYECTAR EL TOTAL Y FIRMAS AL PIE DE PÁGINA
       // =========================================================
       const filaTotal = 31 + filasExtra;
-      worksheet.getCell(`A${filaTotal}`).value = `TOTAL: ${totalBienes}`; 
-      
+      worksheet.getCell(`A${filaTotal}`).value = `TOTAL: ${totalBienes}`;
+
       worksheet.getCell(`I${filaTotal}`).border = {
         top: { style: "thin" },
-        right: { style: "thin" }, 
+        right: { style: "thin" },
         bottom: { style: "thin" },
         left: { style: "thin" }
       };
 
       const filaFirmas = 33 + filasExtra;
-      
+
       worksheet.getCell(`A${filaFirmas}`).value = `${desincorporacion.nivel_profesional} ${desincorporacion.responsable}`;
       worksheet.getCell(`D${filaFirmas}`).value = `${supervisor.nivel_profesional} ${supervisor.empleado}`;
-      worksheet.getCell(`F${filaFirmas}`).value = `${coordinador.nivel_profesional} ${coordinador.empleado}`; 
+      worksheet.getCell(`F${filaFirmas}`).value = `${coordinador.nivel_profesional} ${coordinador.empleado}`;
       worksheet.getCell(`H${filaFirmas}`).value = `${jefe.nivel_profesional} ${jefe.empleado}`;
 
       for (let f = 1; f <= 3; f++) {
         const filaPie = filaTotal + f;
         const celdaExterna = worksheet.getCell(`I${filaPie}`);
-        
+
         celdaExterna.border = {
-          ...celdaExterna.border, 
+          ...celdaExterna.border,
           right: { style: "thin" }
         };
       }
-    
+
       await client.query('COMMIT');
       return await workbook.xlsx.writeBuffer();
     } catch (error) {

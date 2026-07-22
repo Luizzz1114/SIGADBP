@@ -24,21 +24,38 @@ const bienesSeleccionados = ref([]);
 const fileUploadRef = ref(null);
 const errorComprobante = ref(false);
 const fileLabel = ref('Seleccionar archivo');
+const imagePreview = ref(null);
 
 const onFileSelect = (event) => {
   const files = event.files || [];
   if (files.length) {
-    const name = files.map((f) => f.name).join(', ');
-    fileLabel.value = name;
+    const file = files[0];
+    fileLabel.value = file.name;
     errorComprobante.value = false;
+    
+    if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
+    imagePreview.value = URL.createObjectURL(file);
   }
 };
 
+const onFileClear = () => {
+  fileLabel.value = 'Seleccionar archivo';
+  if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
+  imagePreview.value = null;
+  
+  if (fileUploadRef.value) fileUploadRef.value.clear();
+};
+
+// Modifica la función resetForm para que también limpie la previsualización
 const resetForm = () => {
   desincorporacion.value = { ...initialFormState };
   bienesSeleccionados.value = [];
   fileLabel.value = 'Seleccionar archivo';
   errorComprobante.value = false;  
+  
+  if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
+  imagePreview.value = null;
+
   if (fileUploadRef.value) {
     fileUploadRef.value.clear();
   }
@@ -76,19 +93,7 @@ const onFormSubmit = (e) => {
     tipo: b.tipo_desincorporacion,
   }))));
 
-  // Agregar el archivo físicamente validado
   formData.append('comprobante', file);
-
-  console.log('=== DATA LISTA PARA ENVIAR ===');
-  for (let [key, value] of formData.entries()) {
-    // Si el valor es un archivo, imprimimos sus propiedades para confirmarlo
-    if (value instanceof File) {
-      console.log(`${key}: [Archivo] -> Nombre: ${value.name}, Tamaño: ${value.size} bytes, Tipo: ${value.type}`);
-    } else {
-      console.log(`${key}:`, value);
-    }
-  }
-  console.log('================================');
   
   emit('register', formData);
   visible.value = false;
@@ -193,30 +198,53 @@ const onChangeDependencia = async (event) => {
             {{ $form.descripcion.error?.message }}
           </Message>
         </div>
-        <div class="flex flex-col gap-1 col-span-full">
+        <div class="flex flex-col gap-1">
           <span for="comprobante">Comprobante (Imagen) <span class="text-red-500">*</span></span>
-          <InputGroup>
-            <InputGroupAddon>Subir archivo</InputGroupAddon>
+          <InputGroup class="h-9!">
             <InputGroupAddon>
+              <i class="fi-rr-picture text-base!" />
+            </InputGroupAddon>
+            <!-- Agregamos p-0 y overflow-hidden para que el FileUpload ocupe bien el espacio -->
+            <InputGroupAddon class="flex-1! p-0! overflow-hidden">
               <FileUpload 
                 ref="fileUploadRef"
                 mode="basic" 
                 auto
                 accept="image/*" 
-                :maxFileSize="5000000" 
+                :maxFileSize="5000000"
                 :chooseLabel="fileLabel"
-                :chooseButtonProps="{ severity: 'secondary', variant: 'text', class: 'flex-1 justify-start' }"
+                :chooseButtonProps="{ severity: 'secondary', variant: 'text', class: 'flex-1! justify-start! w-full! text-nowrap' }"
+                chooseIcon="''"
                 @select="onFileSelect"
-                @clear="() => { fileLabel = 'Seleccionar archivo'; }" 
+                @clear="onFileClear" 
               >
-                <template #chooseicon>
-                  <i class="fi-rr-file-upload text-base!" />
-                </template>
               </FileUpload>
             </InputGroupAddon>
+            <!-- Botón con ícono de papelera para limpiar la selección actual -->
+            <InputGroupAddon 
+              v-if="fileLabel !== 'Seleccionar archivo'" 
+              class="cursor-pointer bg-red-50 hover:bg-red-100 text-red-500 dark:bg-red-500/10 dark:hover:bg-red-500/20" 
+              @click="onFileClear"
+              title="Quitar comprobante"
+            >
+              <i class="fi-rr-trash text-base!" />
+            </InputGroupAddon>
           </InputGroup>
+
+          <!-- Contenedor de la previsualización -->
+          <div v-if="imagePreview" class="mt-2 relative w-full h-40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+            <Image 
+              v-if="imagePreview"
+              :src="imagePreview" 
+              alt="Comprobante adjunto" 
+              preview 
+              class="mt-2 w-full block border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800/50"
+              imageClass="w-full h-44 object-contain object-center cursor-pointer hover:opacity-75 transition-opacity" 
+            />
+          </div>
+
           <Message v-if="errorComprobante" severity="error" size="small" variant="simple">
-            El comprobante (PDF o Imagen) es obligatorio
+            El comprobante es obligatorio
           </Message>
         </div>
       </div>

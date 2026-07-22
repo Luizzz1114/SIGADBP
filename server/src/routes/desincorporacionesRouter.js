@@ -18,6 +18,6 @@ DesincorporacionesRouter.route('/metricas')
 
 DesincorporacionesRouter.route('/:id')
   .get(DesincorporacionesController.obtenerPorId)
-  .delete(verificarRolAdmin, DesincorporacionesController.eliminar);
+  .delete(/*verificarRolAdmin,*/ DesincorporacionesController.eliminar);
 
 export default DesincorporacionesRouter;
