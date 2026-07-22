@@ -10,7 +10,7 @@ const emit = defineEmits(['confirmEdit']);
 
 const fileUploadRef = ref(null);
 const fileLabel = ref('Seleccionar archivo');
-const errorComprobante = ref(false);
+const errorComprobante = ref('');
 const archivoRemovido = ref(false);
 
 // Ref para almacenar la ruta cruda (backend) o la URL temporal (blob)
@@ -57,12 +57,20 @@ const bienesDisponibles = ref([]);
 
 // --- Funciones de manejo de archivo ---
 const onFileSelect = (event) => {
+  const selectedFile = event.originalEvent?.target?.files?.[0];
+  if (selectedFile && !event.files?.length) {
+    errorComprobante.value = selectedFile.size > 5000000
+      ? 'El comprobante no puede superar los 5 MB'
+      : 'El comprobante debe ser una imagen JPG o PNG';
+    return;
+  }
+
   const files = event.files || [];
   if (files.length) {
     const file = files[0];
     fileLabel.value = file.name;
     archivoRemovido.value = false;
-    errorComprobante.value = false;
+    errorComprobante.value = '';
     
     // Limpiar URL temporal previa si existe
     if (imagePreview.value && imagePreview.value.startsWith('blob:')) {
@@ -76,6 +84,7 @@ const onFileSelect = (event) => {
 const onFileClear = () => {
   fileLabel.value = 'Seleccionar archivo';
   archivoRemovido.value = true;
+  errorComprobante.value = '';
   
   // Limpiar URL temporal previa si existe
   if (imagePreview.value && imagePreview.value.startsWith('blob:')) {
@@ -102,10 +111,10 @@ const onFormSubmit = (e) => {
   const tieneComprobantePrevio = props.desincorporacion.comprobante && !archivoRemovido.value;
   
   if (!file && !tieneComprobantePrevio) {
-    errorComprobante.value = true;
+    errorComprobante.value = 'El comprobante es obligatorio';
     return;
   }
-  errorComprobante.value = false;
+  errorComprobante.value = '';
 
   if (!e.valid) return;
   
@@ -162,7 +171,7 @@ watch(visible, async(isOpen) => {
   } else {
     // Limpiar estados al cerrar el panel
     bienesSeleccionados.value = [];
-    errorComprobante.value = false;
+    errorComprobante.value = '';
     archivoRemovido.value = false;
     fileLabel.value = 'Seleccionar archivo';
     
@@ -247,6 +256,7 @@ watch(visible, async(isOpen) => {
             <InputGroupAddon class="flex-1! p-0! overflow-hidden">
               <FileUpload 
                 ref="fileUploadRef"
+                class="hide-invalid-file-message"
                 mode="basic" 
                 auto
                 accept="image/jpeg, image/png, image/jpg" 
@@ -279,7 +289,7 @@ watch(visible, async(isOpen) => {
           />
 
           <Message v-if="errorComprobante" severity="error" size="small" variant="simple">
-            El comprobante (PDF o Imagen) es obligatorio
+            {{ errorComprobante }}
           </Message>
         </div>
       </div>

@@ -308,6 +308,10 @@ i, span::before, span::after {
   width: 100% !important;
 }
 
+.p-fileupload .p-message {
+  display: none !important;
+}
+
 /* --- Drawer (Sidebar) --- */
 .p-drawer-header {
   padding-block: 0px !important;

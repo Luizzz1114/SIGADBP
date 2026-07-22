@@ -22,16 +22,24 @@ const desincorporacion = ref({ ...initialFormState });
 const bienesSeleccionados = ref([]);
 
 const fileUploadRef = ref(null);
-const errorComprobante = ref(false);
+const errorComprobante = ref('');
 const fileLabel = ref('Seleccionar archivo');
 const imagePreview = ref(null);
 
 const onFileSelect = (event) => {
+  const selectedFile = event.originalEvent?.target?.files?.[0];
+  if (selectedFile && !event.files?.length) {
+    errorComprobante.value = selectedFile.size > 5000000
+      ? 'El comprobante no puede superar los 5 MB'
+      : 'El comprobante debe ser una imagen JPG o PNG';
+    return;
+  }
+
   const files = event.files || [];
   if (files.length) {
     const file = files[0];
     fileLabel.value = file.name;
-    errorComprobante.value = false;
+    errorComprobante.value = '';
     
     if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
     imagePreview.value = URL.createObjectURL(file);
@@ -40,6 +48,7 @@ const onFileSelect = (event) => {
 
 const onFileClear = () => {
   fileLabel.value = 'Seleccionar archivo';
+  errorComprobante.value = '';
   if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
   imagePreview.value = null;
   
@@ -51,7 +60,7 @@ const resetForm = () => {
   desincorporacion.value = { ...initialFormState };
   bienesSeleccionados.value = [];
   fileLabel.value = 'Seleccionar archivo';
-  errorComprobante.value = false;  
+  errorComprobante.value = '';  
   
   if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
   imagePreview.value = null;
@@ -73,10 +82,10 @@ const onFormSubmit = (e) => {
   // --- NUEVO: Validar el archivo manualmente ---
   const file = fileUploadRef.value?.files[0];
   if (!file) {
-    errorComprobante.value = true; // Muestra el mensaje de error
+    errorComprobante.value = 'El comprobante es obligatorio';
     return; // Detiene la ejecución
   }
-  errorComprobante.value = false;
+  errorComprobante.value = '';
 
   // --- Validar el resto de los campos (Zod) ---
   if (!e.valid) return;
@@ -208,6 +217,7 @@ const onChangeDependencia = async (event) => {
             <InputGroupAddon class="flex-1! p-0! overflow-hidden">
               <FileUpload 
                 ref="fileUploadRef"
+                class="hide-invalid-file-message"
                 mode="basic" 
                 auto
                 accept="image/jpeg, image/png, image/jpg" 
@@ -244,7 +254,7 @@ const onChangeDependencia = async (event) => {
           </div>
 
           <Message v-if="errorComprobante" severity="error" size="small" variant="simple">
-            El comprobante es obligatorio
+            {{ errorComprobante }}
           </Message>
         </div>
       </div>
