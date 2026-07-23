@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
 router.use('/usuarios', UsuariosRouter);
 router.use('/mantenimientos', MantenimientosRouter);
 router.use('/desincorporaciones', DesincorporacionesRouter);
+
 router.use(verificarToken);
 
 router.use('/cargos', CargosRouter);

@@ -4,7 +4,7 @@ import { verificarRolAdmin, verificarRolAdminSup } from '../middlewares/authMidd
 
 const DesincorporacionesRouter = express.Router();
 
-//DesincorporacionesRouter.use(verificarRolAdminSup);  
+DesincorporacionesRouter.use(verificarRolAdminSup);  
 
 DesincorporacionesRouter.get('/reporte/:idDesincorporacion', DesincorporacionesController.generarReporte);  
 
@@ -18,6 +18,6 @@ DesincorporacionesRouter.route('/metricas')
 
 DesincorporacionesRouter.route('/:id')
   .get(DesincorporacionesController.obtenerPorId)
-  .delete(/*verificarRolAdmin,*/ DesincorporacionesController.eliminar);
+  .delete(verificarRolAdmin, DesincorporacionesController.eliminar);
 
 export default DesincorporacionesRouter;
