@@ -202,6 +202,9 @@ class BienesController {
         res.status(400).json({ message: "Error al eliminar bien." });
       }
     } catch (error) {
+      if (error.code === '23503') {
+        return res.status(409).json({ message: "No se puede eliminar un bien con registros asociados." });
+      }
       res
         .status(500)
         .json({ message: "Error al eliminar bien.", error: error.message });

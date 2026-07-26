@@ -147,7 +147,7 @@ CREATE TABLE Mantenimientos (
   tipo VARCHAR(50) NOT NULL,
   descripcion TEXT,
   estatus VARCHAR(20) DEFAULT 'En proceso',
-  idBien INT REFERENCES Bienes(id) ON DELETE CASCADE
+  idBien INT REFERENCES Bienes(id)
 );
 
 CREATE TABLE Gastos (
